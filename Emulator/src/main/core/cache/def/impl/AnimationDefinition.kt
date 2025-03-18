@@ -43,8 +43,8 @@ class AnimationDefinition {
          * @return The [AnimationDefinition] if found, or `null` otherwise.
          */
         @JvmStatic
-        fun forId(emoteId: Int): AnimationDefinition? {
-            return try {
+        fun forId(emoteId: Int): AnimationDefinition? =
+            try {
                 animationDefinition[emoteId] ?: run {
                     val data = Cache.getData(CacheIndex.SEQUENCE_CONFIGURATION, emoteId ushr 7, emoteId and 0x7f)
                     val definition = AnimationDefinition()
@@ -56,7 +56,6 @@ class AnimationDefinition {
             } catch (_: Throwable) {
                 null
             }
-        }
 
         /**
          * Retrieves all loaded animation definitions.
@@ -85,27 +84,21 @@ class AnimationDefinition {
      *
      * @return The animation duration in milliseconds.
      */
-    fun getDuration(): Int {
-        return duration?.filter { it <= 100 }?.sumOf { it * 20 } ?: 0
-    }
+    fun getDuration(): Int = duration?.filter { it <= 100 }?.sumOf { it * 20 } ?: 0
 
     /**
      * Gets the total cycle count for the animation.
      *
      * @return The number of cycles.
      */
-    fun getCycles(): Int {
-        return duration?.sum() ?: 0
-    }
+    fun getCycles(): Int = duration?.sum() ?: 0
 
     /**
      * Gets the duration of the animation in game ticks.
      *
      * @return The duration in game ticks.
      */
-    fun getDurationTicks(): Int {
-        return maxOf(getDuration() / 600, 1)
-    }
+    fun getDurationTicks(): Int = maxOf(getDuration() / 600, 1)
 
     /**
      * Reads values from a buffer based on opcodes.
@@ -113,7 +106,10 @@ class AnimationDefinition {
      * @param buffer The [ByteBuffer] containing the data.
      * @param opcode The opcode indicating what data to read.
      */
-    private fun readValues(buffer: ByteBuffer, opcode: Int) {
+    private fun readValues(
+        buffer: ByteBuffer,
+        opcode: Int,
+    ) {
         when (opcode) {
             1 -> {
                 val length = buffer.short.toInt() and 0xFFFF
@@ -155,10 +151,11 @@ class AnimationDefinition {
                 repeat(i) { index ->
                     val size = buffer.get().toInt() and 0xFF
                     if (size > 0) {
-                        handledSounds!![index] = IntArray(size).apply {
-                            this[0] = ByteBufferUtils.getMedium(buffer)
-                            for (j in 1 until size) this[j] = buffer.short.toInt() and 0xFFFF
-                        }
+                        handledSounds!![index] =
+                            IntArray(size).apply {
+                                this[0] = ByteBufferUtils.getMedium(buffer)
+                                for (j in 1 until size) this[j] = buffer.short.toInt() and 0xFFFF
+                            }
                     }
                 }
             }

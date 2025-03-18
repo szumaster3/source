@@ -14,7 +14,9 @@ import java.nio.ByteBuffer
  * @property id The id for struct.
  * @property dataStore A mutable map holding the key-value pairs of the struct.
  */
-class Struct(val id: Int) {
+class Struct(
+    val id: Int,
+) {
     val dataStore = mutableMapOf<Int, Any>()
 
     /**
@@ -23,12 +25,11 @@ class Struct(val id: Int) {
      * @param key The key to look up in the `dataStore`.
      * @return The integer value associated with the key, or -1 if the value is not valid.
      */
-    fun getInt(key: Int): Int {
-        return dataStore[key] as? Int ?: run {
+    fun getInt(key: Int): Int =
+        dataStore[key] as? Int ?: run {
             log(javaClass, Log.ERR, "Invalid value passed for key: [$key] struct: [$id]")
             -1
         }
-    }
 
     /**
      * Gets a string value associated with a given key from the Struct.
@@ -36,18 +37,14 @@ class Struct(val id: Int) {
      * @param key The key to look up in the `dataStore`.
      * @return The string value associated with the key, or null if the value is not a string.
      */
-    fun getString(key: Int): String? {
-        return dataStore[key] as? String
-    }
+    fun getString(key: Int): String? = dataStore[key] as? String
 
     /**
      * Provides a string representation of the Struct, including its id and the stored key-value pairs.
      *
      * @return A string describing the Struct.
      */
-    override fun toString(): String {
-        return "Struct(id=$id, dataStore=$dataStore)"
-    }
+    override fun toString(): String = "Struct(id=$id, dataStore=$dataStore)"
 
     companion object {
         private val definitions = mutableMapOf<Int, Struct>()
@@ -59,12 +56,11 @@ class Struct(val id: Int) {
          * @return The Struct associated with the given id.
          */
         @JvmStatic
-        fun get(id: Int): Struct {
-            return definitions[id] ?: run {
+        fun get(id: Int): Struct =
+            definitions[id] ?: run {
                 val data = Cache.getData(CacheIndex.CONFIGURATION, CacheArchive.STRUCT_TYPE, id)
                 parse(id, data).also { definitions[id] = it }
             }
-        }
 
         /**
          * Parses a byte array of data to create and initialize a Struct.
@@ -74,7 +70,10 @@ class Struct(val id: Int) {
          * @return The fully initialized Struct instance.
          */
         @JvmStatic
-        fun parse(id: Int, data: ByteArray?): Struct {
+        fun parse(
+            id: Int,
+            data: ByteArray?,
+        ): Struct {
             val struct = Struct(id)
             data?.let {
                 val buffer = ByteBuffer.wrap(it)

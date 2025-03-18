@@ -20,7 +20,9 @@ import java.nio.file.Paths
  * @property map A HashMap that associates an integer key with a value of type Any (either a String or an Integer).
  * @property array An array that holds the values in the same order as they appear in the map.
  */
-class CS2Mapping private constructor(val scriptId: Int) {
+class CS2Mapping private constructor(
+    val scriptId: Int,
+) {
     var unknown: Int = 0
     var unknown1: Int = 0
     var defaultString: String? = null

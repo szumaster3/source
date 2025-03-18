@@ -72,7 +72,10 @@ class ClothDefinition {
      * @param opcode The opcode indicating the type of data to read.
      * @param buffer The [ByteBuffer] containing the data.
      */
-    private fun parse(opcode: Int, buffer: ByteBuffer) {
+    private fun parse(
+        opcode: Int,
+        buffer: ByteBuffer,
+    ) {
         when (opcode) {
             1 -> bodyPartId = buffer.get().toInt() and 0xFF
             2 -> {

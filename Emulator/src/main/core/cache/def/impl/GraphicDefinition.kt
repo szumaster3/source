@@ -35,8 +35,8 @@ class GraphicDefinition {
          * @return The [GraphicDefinition] associated with the specified id.
          */
         @JvmStatic
-        fun forId(gfxId: Int): GraphicDefinition {
-            return graphicDefinitions[gfxId] ?: run {
+        fun forId(gfxId: Int): GraphicDefinition =
+            graphicDefinitions[gfxId] ?: run {
                 val data = Cache.getData(CacheIndex.GRAPHICS, gfxId ushr 8, gfxId and 0xFF)
                 GraphicDefinition().apply {
                     graphicsId = gfxId
@@ -44,7 +44,6 @@ class GraphicDefinition {
                     graphicDefinitions[gfxId] = this
                 }
             }
-        }
     }
 
     /**
@@ -66,7 +65,10 @@ class GraphicDefinition {
      * @param buffer The [ByteBuffer] containing the data to be read.
      * @param opcode The opcode that determines how to interpret the following data.
      */
-    private fun readValues(buffer: ByteBuffer, opcode: Int) {
+    private fun readValues(
+        buffer: ByteBuffer,
+        opcode: Int,
+    ) {
         when (opcode) {
             1 -> modelID = buffer.short.toInt()
             2 -> animationID = buffer.short.toInt()

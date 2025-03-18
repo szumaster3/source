@@ -82,11 +82,10 @@ object ByteBufferUtils {
      */
 
     @JvmStatic
-    fun getMedium(buffer: ByteBuffer): Int {
-        return ((buffer.get().toInt() and 0xFF) shl 16) +
+    fun getMedium(buffer: ByteBuffer): Int =
+        ((buffer.get().toInt() and 0xFF) shl 16) +
             ((buffer.get().toInt() and 0xFF) shl 8) +
             (buffer.get().toInt() and 0xFF)
-    }
 
     /*
      * Get a smart-sized value from the buffer.

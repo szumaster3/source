@@ -14,7 +14,6 @@ import java.nio.ByteBuffer
  * [Displee cache library](https://github.com/Displee/rs-cache-library/tree/master)
  */
 object Cache {
-
     /**
      * The main cache library used to interact with cache files and indices.
      */
@@ -80,9 +79,7 @@ object Cache {
      * @param index The cache index to retrieve.
      * @return The corresponding `Index` object.
      */
-    fun getIndex(index: CacheIndex): Index {
-        return cacheLibrary.index(index.id)
-    }
+    fun getIndex(index: CacheIndex): Index = cacheLibrary.index(index.id)
 
     /**
      * Gets data from the cache for the index, archive, and file.
@@ -93,9 +90,11 @@ object Cache {
      * @return A byte array of the requested data, or null if not found.
      */
     @JvmStatic
-    fun getData(index: CacheIndex, archive: Int, file: Int): ByteArray? {
-        return cacheLibrary.data(index.id, archive, file, null)
-    }
+    fun getData(
+        index: CacheIndex,
+        archive: Int,
+        file: Int,
+    ): ByteArray? = cacheLibrary.data(index.id, archive, file, null)
 
     /**
      * Gets data from the cache for the index and archive.
@@ -106,9 +105,11 @@ object Cache {
      * @return A byte array of the requested data, or null if not found.
      */
     @JvmStatic
-    fun getData(index: CacheIndex, archive: CacheArchive, file: Int): ByteArray? {
-        return cacheLibrary.data(index.id, archive.id, file, null)
-    }
+    fun getData(
+        index: CacheIndex,
+        archive: CacheArchive,
+        file: Int,
+    ): ByteArray? = cacheLibrary.data(index.id, archive.id, file, null)
 
     /**
      * Gets data from the cache for the index and archive using a string identifier.
@@ -118,9 +119,10 @@ object Cache {
      * @return A byte array of the requested data, or null if not found.
      */
     @JvmStatic
-    fun getData(index: CacheIndex, archive: String): ByteArray? {
-        return cacheLibrary.data(index.id, archive, 0)
-    }
+    fun getData(
+        index: CacheIndex,
+        archive: String,
+    ): ByteArray? = cacheLibrary.data(index.id, archive, 0)
 
     /**
      * Gets data from the cache for the index and archive using a string identifier and decryption keys.
@@ -131,9 +133,11 @@ object Cache {
      * @return A byte array of the requested data, or null if not found.
      */
     @JvmStatic
-    fun getData(index: CacheIndex, archive: String, xtea: IntArray): ByteArray? {
-        return cacheLibrary.data(index.id, archive, 0, xtea)
-    }
+    fun getData(
+        index: CacheIndex,
+        archive: String,
+        xtea: IntArray,
+    ): ByteArray? = cacheLibrary.data(index.id, archive, 0, xtea)
 
     /**
      * Gets the archive ID for a given archive name in an index.
@@ -143,9 +147,10 @@ object Cache {
      * @return The archive ID, or -1 if not found.
      */
     @JvmStatic
-    fun getArchiveId(index: CacheIndex, archive: String): Int {
-        return cacheLibrary.index(index.id).archiveId(archive)
-    }
+    fun getArchiveId(
+        index: CacheIndex,
+        archive: String,
+    ): Int = cacheLibrary.index(index.id).archiveId(archive)
 
     /**
      * Gets the number of files within a given archive in a specific cache index.
@@ -155,9 +160,15 @@ object Cache {
      * @return The number of files in the archive, or -1 if the archive is not found.
      */
     @JvmStatic
-    fun getArchiveCapacity(index: CacheIndex, archive: CacheArchive): Int {
-        return cacheLibrary.index(index.id).archive(archive.id)?.files()?.size ?: -1
-    }
+    fun getArchiveCapacity(
+        index: CacheIndex,
+        archive: CacheArchive,
+    ): Int =
+        cacheLibrary
+            .index(index.id)
+            .archive(archive.id)
+            ?.files()
+            ?.size ?: -1
 
     /**
      * Gets the number of files in a specific archive within a cache index.
@@ -167,7 +178,10 @@ object Cache {
      * @return The number of files in the archive, or -1 if the archive is not found.
      */
     @JvmStatic
-    fun getArchiveFileCount(index: CacheIndex, archive: Int): Int {
+    fun getArchiveFileCount(
+        index: CacheIndex,
+        archive: Int,
+    ): Int {
         val archiveObject = cacheLibrary.index(index.id).archive(archive)
         return archiveObject?.files()?.size ?: -1
     }

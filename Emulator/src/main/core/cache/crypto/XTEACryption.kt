@@ -81,9 +81,7 @@ object XTEACryption {
     fun decrypt(
         keys: IntArray,
         buffer: ByteBuffer,
-    ): ByteBuffer {
-        return decrypt(keys, buffer, buffer.position(), buffer.limit())
-    }
+    ): ByteBuffer = decrypt(keys, buffer, buffer.position(), buffer.limit())
 
     @JvmStatic
     fun decrypt(
