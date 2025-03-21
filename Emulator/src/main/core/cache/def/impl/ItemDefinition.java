@@ -97,9 +97,6 @@ public class ItemDefinition extends Definition<Item> {
                 log(ItemDefinition.class, Log.ERR, "Could not load item definitions for id " + itemId + " - no definitions found!");
                 return;
             }
-            if (itemId == 14958)
-                def.setStackable(true);
-
             ItemDefinition.getDefinitions().put(itemId, def);
         }
         ItemDefinition.defineTemplates();
@@ -302,7 +299,7 @@ public class ItemDefinition extends Definition<Item> {
                 def.equipId = equipId++;
             }
         }
-        forId(2513).equipId = forId(3140).equipId;
+        forId(Items.DRAGON_CHAINBODY_2513).equipId = forId(Items.DRAGON_CHAINBODY_3140).equipId;
     }
 
     /**
