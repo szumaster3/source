@@ -2,12 +2,25 @@ package core.cache.crypto
 
 import java.nio.ByteBuffer
 
+/**
+ * The object `XTEACryption` provides encryption and decryption methods using the XTEA algorithm.
+ * XTEA (extended Tiny Encryption Algorithm) is a block cipher that operates on 64-bit blocks and uses a 128-bit key.
+ */
 object XTEACryption {
     private const val DELTA: Int = -1640531527
     private const val SUM: Int = -957401312
     private const val NUM_ROUNDS: Int = 32
     private const val GOLDEN_RATIO = -0x61c88647
 
+    /**
+     * Deciphers the provided byte array using the XTEA decryption algorithm.
+     *
+     * @param buffer The byte array to be decrypted.
+     * @param key The key used for decryption (should contain exactly 4 integers).
+     * @param start The starting index in the buffer where the decryption should begin (default is 0).
+     *
+     * @throws IllegalArgumentException If the key array does not contain exactly 4 integers.
+     */
     @JvmStatic
     fun decipher(
         buffer: ByteArray,
@@ -15,7 +28,7 @@ object XTEACryption {
         start: Int = 0,
     ) {
         if (key.size != 4) {
-            throw IllegalArgumentException()
+            throw IllegalArgumentException("Key must contain exactly 4 integers.")
         }
 
         val numQuads = buffer.size / 8
@@ -33,6 +46,16 @@ object XTEACryption {
         }
     }
 
+    /**
+     * Encrypts the provided byte array using the XTEA encryption algorithm.
+     *
+     * @param buffer The byte array to be encrypted.
+     * @param start The starting index in the buffer where the encryption should begin.
+     * @param end The ending index (exclusive) where the encryption should stop.
+     * @param key The key used for encryption (should contain exactly 4 integers).
+     *
+     * @throws IllegalArgumentException If the key array does not contain exactly 4 integers.
+     */
     @JvmStatic
     fun encipher(
         buffer: ByteArray,
@@ -41,7 +64,7 @@ object XTEACryption {
         key: IntArray,
     ) {
         if (key.size != 4) {
-            throw IllegalArgumentException()
+            throw IllegalArgumentException("Key must contain exactly 4 integers.")
         }
 
         val numQuads = (end - start) / 8
@@ -59,13 +82,28 @@ object XTEACryption {
         }
     }
 
+    /**
+     * Retrieves a 4-byte integer from the byte array at the specified index.
+     *
+     * @param buffer The byte array.
+     * @param index The index in the byte array from where the integer is to be retrieved.
+     *
+     * @return The integer value from the byte array.
+     */
     private fun getInt(
         buffer: ByteArray,
         index: Int,
     ) = (buffer[index].toInt() and 0xff shl 24) or (buffer[index + 1].toInt() and 0xff shl 16) or
-        (buffer[index + 2].toInt() and 0xff shl 8) or
-        (buffer[index + 3].toInt() and 0xff)
+            (buffer[index + 2].toInt() and 0xff shl 8) or
+            (buffer[index + 3].toInt() and 0xff)
 
+    /**
+     * Puts a 4-byte integer into the byte array at the specified index.
+     *
+     * @param buffer The byte array.
+     * @param index The index in the byte array where the integer should be placed.
+     * @param value The integer value to be placed in the byte array.
+     */
     private fun putInt(
         buffer: ByteArray,
         index: Int,
@@ -77,12 +115,30 @@ object XTEACryption {
         buffer[index + 3] = value.toByte()
     }
 
+    /**
+     * Decrypts a ByteBuffer using the XTEA decryption algorithm.
+     *
+     * @param keys The decryption keys (should contain exactly 4 integers).
+     * @param buffer The ByteBuffer to be decrypted.
+     *
+     * @return The decrypted ByteBuffer.
+     */
     @JvmStatic
     fun decrypt(
         keys: IntArray,
         buffer: ByteBuffer,
     ): ByteBuffer = decrypt(keys, buffer, buffer.position(), buffer.limit())
 
+    /**
+     * Decrypts a ByteBuffer using the XTEA decryption algorithm.
+     *
+     * @param keys The decryption keys (should contain exactly 4 integers).
+     * @param buffer The ByteBuffer to be decrypted.
+     * @param offset The starting index where decryption should begin.
+     * @param length The length of data to be decrypted.
+     *
+     * @return The decrypted ByteBuffer.
+     */
     @JvmStatic
     fun decrypt(
         keys: IntArray,
@@ -103,6 +159,12 @@ object XTEACryption {
         return buffer
     }
 
+    /**
+     * Deciphers a block of data using the XTEA decryption algorithm.
+     *
+     * @param keys The decryption keys (should contain exactly 4 integers).
+     * @param block The block of data to be decrypted.
+     */
     private fun decipher(
         keys: IntArray,
         block: IntArray,
@@ -111,15 +173,21 @@ object XTEACryption {
         for (i in 0 until NUM_ROUNDS) {
             block[1] -=
                 (
-                    keys[((sum and 0x1933L) ushr 11).toInt()] + sum xor
-                        (block[0] + (block[0] shl 4 xor (block[0] ushr 5))).toLong()
-                ).toInt()
+                        keys[((sum and 0x1933L) ushr 11).toInt()] + sum xor
+                                (block[0] + (block[0] shl 4 xor (block[0] ushr 5))).toLong()
+                        ).toInt()
             sum -= DELTA.toLong()
             block[0] -=
                 (((block[1] shl 4 xor (block[1] ushr 5)) + block[1]).toLong() xor keys[(sum and 0x3L).toInt()] + sum).toInt()
         }
     }
 
+    /**
+     * Encrypts a ByteBuffer using the XTEA encryption algorithm.
+     *
+     * @param keys The encryption keys (should contain exactly 4 integers).
+     * @param buffer The ByteBuffer to be encrypted.
+     */
     @JvmStatic
     fun encrypt(
         keys: IntArray,
@@ -128,6 +196,14 @@ object XTEACryption {
         encrypt(keys, buffer, buffer.position(), buffer.limit())
     }
 
+    /**
+     * Encrypts a ByteBuffer using the XTEA encryption algorithm.
+     *
+     * @param keys The encryption keys (should contain exactly 4 integers).
+     * @param buffer The ByteBuffer to be encrypted.
+     * @param offset The starting index where encryption should begin.
+     * @param length The length of data to be encrypted.
+     */
     @JvmStatic
     fun encrypt(
         keys: IntArray,
@@ -147,6 +223,12 @@ object XTEACryption {
         }
     }
 
+    /**
+     * Encrypts a block of data using the XTEA encryption algorithm.
+     *
+     * @param keys The encryption keys (should contain exactly 4 integers).
+     * @param block The block of data to be encrypted.
+     */
     private fun encipher(
         keys: IntArray,
         block: IntArray,
@@ -158,9 +240,9 @@ object XTEACryption {
             sum += DELTA.toLong()
             block[1] +=
                 (
-                    keys[((sum and 0x1933L) ushr 11).toInt()] + sum xor
-                        (block[0] + (block[0] shl 4 xor (block[0] ushr 5))).toLong()
-                ).toInt()
+                        keys[((sum and 0x1933L) ushr 11).toInt()] + sum xor
+                                (block[0] + (block[0] shl 4 xor (block[0] ushr 5))).toLong()
+                        ).toInt()
         }
     }
 }
