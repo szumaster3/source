@@ -103,13 +103,12 @@ class IfaceDefinition {
     var children: Array<IfaceDefinition?>? = null
     var parent: Int = 0
 
-    override fun toString(): String {
-        return if (parent == id) {
+    override fun toString(): String =
+        if (parent == id) {
             "[IF $id (P)]"
         } else {
             "[IF " + (id shr 16) + ", CH " + (id and 0xFF) + " (" + type!!.name + ")]"
         }
-    }
 
     companion object {
         private val defCache = HashMap<Int, IfaceDefinition>()

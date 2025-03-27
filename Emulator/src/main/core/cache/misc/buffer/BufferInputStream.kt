@@ -23,7 +23,5 @@ class BufferInputStream
     val buffer: ByteBuffer,
 ) : InputStream() {
     @Throws(IOException::class)
-    override fun read(): Int {
-        return buffer.get().toInt()
-    }
+    override fun read(): Int = buffer.get().toInt()
 }

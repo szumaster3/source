@@ -296,9 +296,7 @@ class ItemDefinition : Definition<Item?>() {
          */
         get() = getConfiguration(ItemConfigParser.RENDER_ANIM_ID, 1426)
 
-    override fun getId(): Int {
-        return id
-    }
+    override fun getId(): Int = id
 
     override fun setId(id: Int) {
         this.id = id
@@ -309,9 +307,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the interface model id
      */
-    fun getInterfaceModelId(): Int {
-        return interfaceModelId
-    }
+    fun getInterfaceModelId(): Int = interfaceModelId
 
     /**
      * Sets interface model id.
@@ -322,9 +318,7 @@ class ItemDefinition : Definition<Item?>() {
         this.interfaceModelId = interfaceModelId
     }
 
-    override fun getName(): String {
-        return name
-    }
+    override fun getName(): String = name
 
     override fun setName(name: String) {
         this.name = name
@@ -343,9 +337,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the model zoom
      */
-    fun getModelZoom(): Int {
-        return modelZoom
-    }
+    fun getModelZoom(): Int = modelZoom
 
     /**
      * Sets model zoom.
@@ -361,9 +353,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the model rotation x
      */
-    fun getModelRotationX(): Int {
-        return modelRotationX
-    }
+    fun getModelRotationX(): Int = modelRotationX
 
     /**
      * Sets model rotation x.
@@ -379,9 +369,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the model rotation y
      */
-    fun getModelRotationY(): Int {
-        return modelRotationY
-    }
+    fun getModelRotationY(): Int = modelRotationY
 
     /**
      * Sets model rotation y.
@@ -397,9 +385,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the boolean
      */
-    fun isStackable(): Boolean {
-        return stackable || !this.isUnnoted
-    }
+    fun isStackable(): Boolean = stackable || !this.isUnnoted
 
     /**
      * Sets stackable.
@@ -415,9 +401,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the value
      */
-    fun getValue(): Int {
-        return value
-    }
+    fun getValue(): Int = value
 
     /**
      * Has shop currency value boolean.
@@ -425,9 +409,7 @@ class ItemDefinition : Definition<Item?>() {
      * @param currency the currency
      * @return the boolean
      */
-    fun hasShopCurrencyValue(currency: String?): Boolean {
-        return getHandlers().getOrDefault(currency, "0") !== "0"
-    }
+    fun hasShopCurrencyValue(currency: String?): Boolean = getHandlers().getOrDefault(currency, "0") !== "0"
 
     /**
      * Has shop currency value boolean.
@@ -435,15 +417,14 @@ class ItemDefinition : Definition<Item?>() {
      * @param currency the currency
      * @return the boolean
      */
-    fun hasShopCurrencyValue(currency: Int): Boolean {
-        return when (currency) {
+    fun hasShopCurrencyValue(currency: Int): Boolean =
+        when (currency) {
             Items.COINS_995 -> isTradeable
             Items.TOKKUL_6529 -> hasShopCurrencyValue(ItemConfigParser.TOKKUL_PRICE)
             Items.ARCHERY_TICKET_1464 -> hasShopCurrencyValue(ItemConfigParser.ARCHERY_TICKET_PRICE)
             Items.CASTLE_WARS_TICKET_4067 -> hasShopCurrencyValue(ItemConfigParser.CASTLE_WARS_TICKET_PRICE)
             else -> false
         }
-    }
 
     val maxValue: Int
         /**
@@ -485,9 +466,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the boolean
      */
-    fun isMembersOnly(): Boolean {
-        return membersOnly
-    }
+    fun isMembersOnly(): Boolean = membersOnly
 
     /**
      * Sets members only.
@@ -503,9 +482,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the male worn model id 1
      */
-    fun getMaleWornModelId1(): Int {
-        return maleWornModelId1
-    }
+    fun getMaleWornModelId1(): Int = maleWornModelId1
 
     /**
      * Sets male worn model id 1.
@@ -521,9 +498,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the female worn model id 1
      */
-    fun getFemaleWornModelId1(): Int {
-        return femaleWornModelId1
-    }
+    fun getFemaleWornModelId1(): Int = femaleWornModelId1
 
     /**
      * Sets female worn model id 1.
@@ -539,9 +514,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the male worn model id 2
      */
-    fun getMaleWornModelId2(): Int {
-        return maleWornModelId2
-    }
+    fun getMaleWornModelId2(): Int = maleWornModelId2
 
     /**
      * Sets male worn model id 2.
@@ -557,9 +530,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the female worn model id 2
      */
-    fun getFemaleWornModelId2(): Int {
-        return femaleWornModelId2
-    }
+    fun getFemaleWornModelId2(): Int = femaleWornModelId2
 
     /**
      * Sets female worn model id 2.
@@ -592,9 +563,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the short [ ]
      */
-    fun getOriginalModelColors(): ShortArray? {
-        return originalModelColors
-    }
+    fun getOriginalModelColors(): ShortArray? = originalModelColors
 
     /**
      * Sets original model colors.
@@ -610,9 +579,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the short [ ]
      */
-    fun getModifiedModelColors(): ShortArray? {
-        return modifiedModelColors
-    }
+    fun getModifiedModelColors(): ShortArray? = modifiedModelColors
 
     /**
      * Sets modified model colors.
@@ -628,9 +595,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the short [ ]
      */
-    fun getTextureColour1(): ShortArray? {
-        return textureColour1
-    }
+    fun getTextureColour1(): ShortArray? = textureColour1
 
     /**
      * Sets texture colour 1.
@@ -646,9 +611,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the short [ ]
      */
-    fun getTextureColour2(): ShortArray? {
-        return textureColour2
-    }
+    fun getTextureColour2(): ShortArray? = textureColour2
 
     /**
      * Sets texture colour 2.
@@ -664,9 +627,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the byte [ ]
      */
-    fun getUnknownArray1(): ByteArray? {
-        return unknownArray1
-    }
+    fun getUnknownArray1(): ByteArray? = unknownArray1
 
     /**
      * Sets unknown array 1.
@@ -691,9 +652,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the colour equip 1
      */
-    fun getColourEquip1(): Int {
-        return colourEquip1
-    }
+    fun getColourEquip1(): Int = colourEquip1
 
     /**
      * Sets colour equip 1.
@@ -709,9 +668,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the colour equip 2
      */
-    fun getColourEquip2(): Int {
-        return colourEquip2
-    }
+    fun getColourEquip2(): Int = colourEquip2
 
     /**
      * Sets colour equip 2.
@@ -727,9 +684,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the note id
      */
-    fun getNoteId(): Int {
-        return noteId
-    }
+    fun getNoteId(): Int = noteId
 
     /**
      * Sets note id.
@@ -745,9 +700,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the note template id
      */
-    fun getNoteTemplateId(): Int {
-        return noteTemplateId
-    }
+    fun getNoteTemplateId(): Int = noteTemplateId
 
     /**
      * Sets note template id.
@@ -763,9 +716,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the int [ ]
      */
-    fun getStackIds(): IntArray? {
-        return stackIds
-    }
+    fun getStackIds(): IntArray? = stackIds
 
     /**
      * Sets stack ids.
@@ -781,9 +732,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the int [ ]
      */
-    fun getStackAmounts(): IntArray? {
-        return stackAmounts
-    }
+    fun getStackAmounts(): IntArray? = stackAmounts
 
     /**
      * Sets stack amounts.
@@ -799,9 +748,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the team id
      */
-    fun getTeamId(): Int {
-        return teamId
-    }
+    fun getTeamId(): Int = teamId
 
     /**
      * Sets team id.
@@ -817,9 +764,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the lend id
      */
-    fun getLendId(): Int {
-        return lendId
-    }
+    fun getLendId(): Int = lendId
 
     /**
      * Sets lend id.
@@ -835,9 +780,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the lend template id
      */
-    fun getLendTemplateId(): Int {
-        return lendTemplateId
-    }
+    fun getLendTemplateId(): Int = lendTemplateId
 
     /**
      * Sets lend template id.
@@ -853,9 +796,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the equip id
      */
-    fun getEquipId(): Int {
-        return equipId
-    }
+    fun getEquipId(): Int = equipId
 
     /**
      * Sets equip id.
@@ -871,9 +812,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the client script data
      */
-    fun getClientScriptData(): HashMap<Int, Any>? {
-        return clientScriptData
-    }
+    fun getClientScriptData(): HashMap<Int, Any>? = clientScriptData
 
     /**
      * Sets client script data.
@@ -955,9 +894,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the boolean
      */
-    fun hasDestroyAction(): Boolean {
-        return hasAction("destroy") || hasAction("dissolve")
-    }
+    fun hasDestroyAction(): Boolean = hasAction("destroy") || hasAction("dissolve")
 
     /**
      * Has wear action boolean.
@@ -1047,9 +984,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the boolean
      */
-    fun hasPlugin(): Boolean {
-        return itemPlugin != null
-    }
+    fun hasPlugin(): Boolean = itemPlugin != null
 
     var itemPlugin: ItemPlugin?
         /**
@@ -1073,9 +1008,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the item type
      */
-    fun getItemType(): Int {
-        return itemType
-    }
+    fun getItemType(): Int = itemType
 
     /**
      * Sets item type.
@@ -1500,9 +1433,7 @@ class ItemDefinition : Definition<Item?>() {
         fun setOptionHandler(
             name: String,
             handler: OptionHandler?,
-        ): Boolean {
-            return OPTION_HANDLERS.put(name, handler) != null
-        }
+        ): Boolean = OPTION_HANDLERS.put(name, handler) != null
 
         val optionHandlers: Map<String, OptionHandler?>
             /**

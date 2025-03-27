@@ -69,9 +69,7 @@ class VarbitDefinition {
      * @param player the player
      * @return the value
      */
-    fun getValue(player: Player): Int {
-        return getVarbit(player, id)
-    }
+    fun getValue(player: Player): Int = getVarbit(player, id)
 
     val mask: Int
         /**
@@ -85,9 +83,7 @@ class VarbitDefinition {
             return mask
         }
 
-    override fun toString(): String {
-        return "ConfigFileDefinition [id=$id, configId=$varpId, bitShift=$startBit, bitSize=$endBit]"
-    }
+    override fun toString(): String = "ConfigFileDefinition [id=$id, configId=$varpId, bitShift=$startBit, bitSize=$endBit]"
 
     companion object {
         private val MAPPING: MutableMap<Int, VarbitDefinition> = HashMap()
@@ -108,9 +104,7 @@ class VarbitDefinition {
          * @return the varbit definition
          */
         @JvmStatic
-        fun forSceneryId(id: Int): VarbitDefinition {
-            return forId(id)
-        }
+        fun forSceneryId(id: Int): VarbitDefinition = forId(id)
 
         /**
          * For npc id varbit definition.
@@ -119,9 +113,7 @@ class VarbitDefinition {
          * @return the varbit definition
          */
         @JvmStatic
-        fun forNpcId(id: Int): VarbitDefinition {
-            return forId(id)
-        }
+        fun forNpcId(id: Int): VarbitDefinition = forId(id)
 
         /**
          * For item id varbit definition.
@@ -130,9 +122,7 @@ class VarbitDefinition {
          * @return the varbit definition
          */
         @JvmStatic
-        fun forItemId(id: Int): VarbitDefinition {
-            return forId(id)
-        }
+        fun forItemId(id: Int): VarbitDefinition = forId(id)
 
         /**
          * For id varbit definition.

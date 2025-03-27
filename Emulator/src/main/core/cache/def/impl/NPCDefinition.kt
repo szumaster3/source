@@ -509,121 +509,96 @@ class NPCDefinition(
      *
      * @return the boolean
      */
-    fun isaBoolean841(): Boolean {
-        return aBoolean841
-    }
+    fun isaBoolean841(): Boolean = aBoolean841
 
     /**
      * Gets byte 851.
      *
      * @return the byte 851
      */
-    fun getaByte851(): Byte {
-        return aByte851
-    }
+    fun getaByte851(): Byte = aByte851
 
     /**
      * Isa boolean 852 boolean.
      *
      * @return the boolean
      */
-    fun isaBoolean852(): Boolean {
-        return aBoolean852
-    }
+    fun isaBoolean852(): Boolean = aBoolean852
 
     /**
      * Gets byte 854.
      *
      * @return the byte 854
      */
-    fun getaByte854(): Byte {
-        return aByte854
-    }
+    fun getaByte854(): Byte = aByte854
 
     /**
      * Isa boolean 856 boolean.
      *
      * @return the boolean
      */
-    fun isaBoolean856(): Boolean {
-        return aBoolean856
-    }
+    fun isaBoolean856(): Boolean = aBoolean856
 
     /**
      * Isa boolean 857 boolean.
      *
      * @return the boolean
      */
-    fun isaBoolean857(): Boolean {
-        return aBoolean857
-    }
+    fun isaBoolean857(): Boolean = aBoolean857
 
     /**
      * Geta short array 859 short [ ].
      *
      * @return the short [ ]
      */
-    fun getaShortArray859(): ShortArray? {
-        return aShortArray859
-    }
+    fun getaShortArray859(): ShortArray? = aShortArray859
 
     /**
      * Geta byte array 861 byte [ ].
      *
      * @return the byte [ ]
      */
-    fun getaByteArray861(): ByteArray? {
-        return aByteArray861
-    }
+    fun getaByteArray861(): ByteArray? = aByteArray861
 
     /**
      * Gets short 862.
      *
      * @return the short 862
      */
-    fun getaShort862(): Short {
-        return aShort862
-    }
+    fun getaShort862(): Short = aShort862
 
     /**
      * Isa boolean 863 boolean.
      *
      * @return the boolean
      */
-    fun isaBoolean863(): Boolean {
-        return aBoolean863
-    }
+    fun isaBoolean863(): Boolean = aBoolean863
 
     /**
      * Geta short array 866 short [ ].
      *
      * @return the short [ ]
      */
-    fun getaShortArray866(): ShortArray? {
-        return aShortArray866
-    }
+    fun getaShortArray866(): ShortArray? = aShortArray866
 
     /**
      * Geta short array 880 short [ ].
      *
      * @return the short [ ]
      */
-    fun getaShortArray880(): ShortArray? {
-        return aShortArray880
-    }
+    fun getaShortArray880(): ShortArray? = aShortArray880
 
     /**
      * Gets config id.
      *
      * @return the config id
      */
-    fun getConfigId(): Int {
-        return if (configFileId != -1) {
+    fun getConfigId(): Int =
+        if (configFileId != -1) {
             VarbitDefinition.forNpcId(configFileId).varpId
         } else {
             configFileId
         }
-    }
 
     val varbitOffset: Int
         /**
@@ -656,18 +631,14 @@ class NPCDefinition(
      *
      * @return the short 894
      */
-    fun getaShort894(): Short {
-        return aShort894
-    }
+    fun getaShort894(): Short = aShort894
 
     /**
      * Geta short array 896 short [ ].
      *
      * @return the short [ ]
      */
-    fun getaShortArray896(): ShortArray? {
-        return aShortArray896
-    }
+    fun getaShortArray896(): ShortArray? = aShortArray896
 
     companion object {
         private val DEFINITIONS: MutableMap<Int, NPCDefinition> = HashMap()
@@ -739,9 +710,7 @@ class NPCDefinition(
         fun setOptionHandler(
             name: String,
             handler: OptionHandler?,
-        ): Boolean {
-            return OPTION_HANDLERS.put(name, handler) != null
-        }
+        ): Boolean = OPTION_HANDLERS.put(name, handler) != null
 
         val optionHandlers: Map<String, OptionHandler?>
             /**

@@ -381,9 +381,7 @@ class SceneryDefinition : Definition<Scenery?>() {
      *
      * @return the boolean
      */
-    fun isMirrored(): Boolean {
-        return mirrored
-    }
+    fun isMirrored(): Boolean = mirrored
 
     /**
      * Sets mirrored.
@@ -399,170 +397,130 @@ class SceneryDefinition : Definition<Scenery?>() {
      *
      * @return the byte 3837
      */
-    fun getaByte3837(): Byte {
-        return aByte3837
-    }
+    fun getaByte3837(): Byte = aByte3837
 
     /**
      * Isa boolean 3845 boolean.
      *
      * @return the boolean
      */
-    fun isaBoolean3845(): Boolean {
-        return aBoolean3845
-    }
+    fun isaBoolean3845(): Boolean = aBoolean3845
 
     /**
      * Gets byte 3847.
      *
      * @return the byte 3847
      */
-    fun getaByte3847(): Byte {
-        return aByte3847
-    }
+    fun getaByte3847(): Byte = aByte3847
 
     /**
      * Gets byte 3849.
      *
      * @return the byte 3849
      */
-    fun getaByte3849(): Byte {
-        return aByte3849
-    }
+    fun getaByte3849(): Byte = aByte3849
 
     /**
      * Isa boolean 3853 boolean.
      *
      * @return the boolean
      */
-    fun isaBoolean3853(): Boolean {
-        return aBoolean3853
-    }
+    fun isaBoolean3853(): Boolean = aBoolean3853
 
-    override fun getOptions(): Array<String> {
-        return options
-    }
+    override fun getOptions(): Array<String> = options
 
     /**
      * Isa boolean 3866 boolean.
      *
      * @return the boolean
      */
-    fun isaBoolean3866(): Boolean {
-        return aBoolean3866
-    }
+    fun isaBoolean3866(): Boolean = aBoolean3866
 
     /**
      * Isa boolean 3867 boolean.
      *
      * @return the boolean
      */
-    fun isaBoolean3867(): Boolean {
-        return aBoolean3867
-    }
+    fun isaBoolean3867(): Boolean = aBoolean3867
 
     /**
      * Isa boolean 3870 boolean.
      *
      * @return the boolean
      */
-    fun isaBoolean3870(): Boolean {
-        return aBoolean3870
-    }
+    fun isaBoolean3870(): Boolean = aBoolean3870
 
     /**
      * Isa boolean 3873 boolean.
      *
      * @return the boolean
      */
-    fun isaBoolean3873(): Boolean {
-        return membersOnly
-    }
+    fun isaBoolean3873(): Boolean = membersOnly
 
     /**
      * Isa boolean 3891 boolean.
      *
      * @return the boolean
      */
-    fun isaBoolean3891(): Boolean {
-        return aBoolean3891
-    }
+    fun isaBoolean3891(): Boolean = aBoolean3891
 
     /**
      * Isa boolean 3894 boolean.
      *
      * @return the boolean
      */
-    fun isaBoolean3894(): Boolean {
-        return aBoolean3894
-    }
+    fun isaBoolean3894(): Boolean = aBoolean3894
 
     /**
      * Isa boolean 3895 boolean.
      *
      * @return the boolean
      */
-    fun isaBoolean3895(): Boolean {
-        return aBoolean3895
-    }
+    fun isaBoolean3895(): Boolean = aBoolean3895
 
     /**
      * Geta byte array 3899 byte [ ].
      *
      * @return the byte [ ]
      */
-    fun getaByteArray3899(): ByteArray? {
-        return aByteArray3899
-    }
+    fun getaByteArray3899(): ByteArray? = aByteArray3899
 
-    override fun getName(): String {
-        return name
-    }
+    override fun getName(): String = name
 
     /**
      * Isa boolean 3906 boolean.
      *
      * @return the boolean
      */
-    fun isaBoolean3906(): Boolean {
-        return aBoolean3906
-    }
+    fun isaBoolean3906(): Boolean = aBoolean3906
 
     /**
      * Gets byte 3914.
      *
      * @return the byte 3914
      */
-    fun getaByte3914(): Byte {
-        return aByte3914
-    }
+    fun getaByte3914(): Byte = aByte3914
 
     /**
      * Gets class 194 3922.
      *
      * @return the class 194 3922
      */
-    fun getaClass194_3922(): Any? {
-        return aClass194_3922
-    }
+    fun getaClass194_3922(): Any? = aClass194_3922
 
     /**
      * Isa boolean 3923 boolean.
      *
      * @return the boolean
      */
-    fun isaBoolean3923(): Boolean {
-        return aBoolean3923
-    }
+    fun isaBoolean3923(): Boolean = aBoolean3923
 
     /**
      * Isa boolean 3924 boolean.
      *
      * @return the boolean
      */
-    fun isaBoolean3924(): Boolean {
-        return aBoolean3924
-    }
+    fun isaBoolean3924(): Boolean = aBoolean3924
 
     /**
      * Has action boolean.
@@ -590,9 +548,7 @@ class SceneryDefinition : Definition<Scenery?>() {
      *
      * @return the boolean
      */
-    fun isHasHiddenOptions(): Boolean {
-        return hasHiddenOptions
-    }
+    fun isHasHiddenOptions(): Boolean = hasHiddenOptions
 
     /**
      * Sets has hidden options.
@@ -608,9 +564,7 @@ class SceneryDefinition : Definition<Scenery?>() {
      *
      * @return the int [ ]
      */
-    fun getModelConfiguration(): IntArray? {
-        return modelConfiguration
-    }
+    fun getModelConfiguration(): IntArray? = modelConfiguration
 
     /**
      * Sets model configuration.
@@ -971,9 +925,7 @@ class SceneryDefinition : Definition<Scenery?>() {
         fun setOptionHandler(
             name: String,
             handler: OptionHandler?,
-        ): Boolean {
-            return OPTION_HANDLERS.put(name, handler) != null
-        }
+        ): Boolean = OPTION_HANDLERS.put(name, handler) != null
 
         /**
          * Gets container id.
@@ -981,8 +933,6 @@ class SceneryDefinition : Definition<Scenery?>() {
          * @param id the id
          * @return the container id
          */
-        fun getContainerId(id: Int): Int {
-            return id ushr 8
-        }
+        fun getContainerId(id: Int): Int = id ushr 8
     }
 }
