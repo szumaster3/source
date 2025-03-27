@@ -52,5 +52,5 @@ enum class ComponentType {
     /**
      * Unknown 9 component type.
      */
-    UNKNOWN_9
+    UNKNOWN_9,
 }

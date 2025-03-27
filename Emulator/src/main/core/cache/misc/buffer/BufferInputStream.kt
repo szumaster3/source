@@ -13,13 +13,14 @@ class BufferInputStream
  *
  * @param buffer the buffer
  * @throws IOException the io exception
- */(
+ */
+(
     /**
      * Gets buffer.
      *
      * @return the buffer
      */
-    val buffer: ByteBuffer
+    val buffer: ByteBuffer,
 ) : InputStream() {
     @Throws(IOException::class)
     override fun read(): Int {

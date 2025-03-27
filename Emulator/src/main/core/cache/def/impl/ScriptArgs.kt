@@ -9,7 +9,8 @@ class ScriptArgs
  *
  * @param id   the id
  * @param args the args
- */(
+ */
+(
     /**
      * The Id.
      */
@@ -17,5 +18,5 @@ class ScriptArgs
     /**
      * The Args.
      */
-    var args: Array<Any>
+    var args: Array<Any>,
 )

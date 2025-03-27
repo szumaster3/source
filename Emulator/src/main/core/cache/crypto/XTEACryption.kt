@@ -94,8 +94,8 @@ object XTEACryption {
         buffer: ByteArray,
         index: Int,
     ) = (buffer[index].toInt() and 0xff shl 24) or (buffer[index + 1].toInt() and 0xff shl 16) or
-            (buffer[index + 2].toInt() and 0xff shl 8) or
-            (buffer[index + 3].toInt() and 0xff)
+        (buffer[index + 2].toInt() and 0xff shl 8) or
+        (buffer[index + 3].toInt() and 0xff)
 
     /**
      * Puts a 4-byte integer into the byte array at the specified index.
@@ -173,9 +173,9 @@ object XTEACryption {
         for (i in 0 until NUM_ROUNDS) {
             block[1] -=
                 (
-                        keys[((sum and 0x1933L) ushr 11).toInt()] + sum xor
-                                (block[0] + (block[0] shl 4 xor (block[0] ushr 5))).toLong()
-                        ).toInt()
+                    keys[((sum and 0x1933L) ushr 11).toInt()] + sum xor
+                        (block[0] + (block[0] shl 4 xor (block[0] ushr 5))).toLong()
+                ).toInt()
             sum -= DELTA.toLong()
             block[0] -=
                 (((block[1] shl 4 xor (block[1] ushr 5)) + block[1]).toLong() xor keys[(sum and 0x3L).toInt()] + sum).toInt()
@@ -240,9 +240,9 @@ object XTEACryption {
             sum += DELTA.toLong()
             block[1] +=
                 (
-                        keys[((sum and 0x1933L) ushr 11).toInt()] + sum xor
-                                (block[0] + (block[0] shl 4 xor (block[0] ushr 5))).toLong()
-                        ).toInt()
+                    keys[((sum and 0x1933L) ushr 11).toInt()] + sum xor
+                        (block[0] + (block[0] shl 4 xor (block[0] ushr 5))).toLong()
+                ).toInt()
         }
     }
 }

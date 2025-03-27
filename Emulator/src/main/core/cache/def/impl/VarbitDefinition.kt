@@ -30,6 +30,7 @@ class VarbitDefinition {
      * @return the start bit
      */
     var startBit: Int = 0
+
     /**
      * Gets end bit.
      *
@@ -172,13 +173,19 @@ class VarbitDefinition {
          * @param endBit   the end bit
          */
         @JvmStatic
-        fun create(varpId: Int, varbitId: Int, startBit: Int, endBit: Int) {
-            val def = VarbitDefinition(
-                varpId,
-                varbitId,
-                startBit,
-                endBit
-            )
+        fun create(
+            varpId: Int,
+            varbitId: Int,
+            startBit: Int,
+            endBit: Int,
+        ) {
+            val def =
+                VarbitDefinition(
+                    varpId,
+                    varbitId,
+                    startBit,
+                    endBit,
+                )
             MAPPING[varbitId] = def
         }
 

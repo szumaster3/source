@@ -138,7 +138,10 @@ class IfaceDefinition {
          * @return the iface definition
          */
         @JvmStatic
-        fun forId(id: Int, child: Int): IfaceDefinition? {
+        fun forId(
+            id: Int,
+            child: Int,
+        ): IfaceDefinition? {
             if (defCache.containsKey(child + (id shl 16))) return defCache[child + (id shl 16)]
             val def = forId(id)
             return def!!.children!![child]
@@ -156,7 +159,10 @@ class IfaceDefinition {
             return def
         }
 
-        private fun parseChild(id: Int, childIndex: Int): IfaceDefinition {
+        private fun parseChild(
+            id: Int,
+            childIndex: Int,
+        ): IfaceDefinition {
             val def = IfaceDefinition()
             def.id = childIndex + (id shl 16)
             def.parent = id
@@ -166,14 +172,19 @@ class IfaceDefinition {
 
             val data = IoBuffer(-1, PacketHeader.NORMAL, ByteBuffer.wrap(dataRaw))
 
-            if (dataRaw[0].toInt() == -1) decodeIf3(def, data)
-            else decodeIf1(def, data)
+            if (dataRaw[0].toInt() == -1) {
+                decodeIf3(def, data)
+            } else {
+                decodeIf1(def, data)
+            }
 
             return def
         }
 
-
-        private fun decodeIf1(def: IfaceDefinition, data: IoBuffer) {
+        private fun decodeIf1(
+            def: IfaceDefinition,
+            data: IoBuffer,
+        ) {
             data.g1()
             def.version = 1
             def.type = ComponentType.values()[data.g1()]
@@ -189,8 +200,11 @@ class IfaceDefinition {
             def.xMode = def.yMode
             def.alpha = data.g1()
             def.overlayer = data.g2()
-            if (def.overlayer == 65535) def.overlayer = -1
-            else def.overlayer += def.id and -0x10000
+            if (def.overlayer == 65535) {
+                def.overlayer = -1
+            } else {
+                def.overlayer += def.id and -0x10000
+            }
             def.unknownProp_11 = data.g2()
 
             val unknownLocal_1 = data.g1()
@@ -278,7 +292,10 @@ class IfaceDefinition {
                 def.text = data.jagString
                 def.activeText = data.jagString
             }
-            if (def.type == ComponentType.UNKNOWN_1 || def.type == ComponentType.UNKNOWN_3 || def.type == ComponentType.TEXT) {
+            if (def.type == ComponentType.UNKNOWN_1 ||
+                def.type == ComponentType.UNKNOWN_3 ||
+                def.type == ComponentType.TEXT
+            ) {
                 def.color = data.g4()
             }
             if (def.type == ComponentType.UNKNOWN_3 || def.type == ComponentType.TEXT) {
@@ -355,7 +372,10 @@ class IfaceDefinition {
             }
         }
 
-        private fun decodeIf3(def: IfaceDefinition, data: IoBuffer) {
+        private fun decodeIf3(
+            def: IfaceDefinition,
+            data: IoBuffer,
+        ) {
             data.g1()
             def.version = 3
             var type = data.g1()
@@ -499,7 +519,10 @@ class IfaceDefinition {
             return triggers
         }
 
-        private fun parseIf3Type(def: IfaceDefinition, data: IoBuffer) {
+        private fun parseIf3Type(
+            def: IfaceDefinition,
+            data: IoBuffer,
+        ) {
             when (def.type) {
                 ComponentType.SCROLLABLE -> {
                     def.scrollMaxH = data.g2()
@@ -574,7 +597,11 @@ class IfaceDefinition {
          * @param childId   the child id
          * @param newOption the new option
          */
-        fun addOption(ifaceId: Int, childId: Int, newOption: String?) {
+        fun addOption(
+            ifaceId: Int,
+            childId: Int,
+            newOption: String?,
+        ) {
             val component = forId(ifaceId, childId) ?: return
 
             if (component.ops == null) {
@@ -593,7 +620,11 @@ class IfaceDefinition {
          * @param childId        the child id
          * @param optionToRemove the option to remove
          */
-        fun removeOption(ifaceId: Int, childId: Int, optionToRemove: String) {
+        fun removeOption(
+            ifaceId: Int,
+            childId: Int,
+            optionToRemove: String,
+        ) {
             val component = forId(ifaceId, childId) ?: return
             component.ops = component.ops?.filter { it != optionToRemove }?.toTypedArray()
         }
@@ -605,7 +636,11 @@ class IfaceDefinition {
          * @param childId the child id
          * @param newText the new text
          */
-        fun setText(ifaceId: Int, childId: Int, newText: String?) {
+        fun setText(
+            ifaceId: Int,
+            childId: Int,
+            newText: String?,
+        ) {
             val component = forId(ifaceId, childId)
             if (component != null) {
                 component.text = newText
@@ -619,7 +654,11 @@ class IfaceDefinition {
          * @param childId  the child id
          * @param newColor the new color
          */
-        fun setColor(ifaceId: Int, childId: Int, newColor: Int) {
+        fun setColor(
+            ifaceId: Int,
+            childId: Int,
+            newColor: Int,
+        ) {
             val component = forId(ifaceId, childId)
             if (component != null) {
                 component.color = newColor
@@ -633,7 +672,11 @@ class IfaceDefinition {
          * @param childId the child id
          * @param hidden  the hidden
          */
-        fun setHidden(ifaceId: Int, childId: Int, hidden: Boolean) {
+        fun setHidden(
+            ifaceId: Int,
+            childId: Int,
+            hidden: Boolean,
+        ) {
             val component = forId(ifaceId, childId)
             if (component != null) {
                 component.hidden = hidden
@@ -650,7 +693,14 @@ class IfaceDefinition {
          * @param newWidth  the new width
          * @param newHeight the new height
          */
-        fun updateComponent(ifaceId: Int, childId: Int, newX: Int, newY: Int, newWidth: Int, newHeight: Int) {
+        fun updateComponent(
+            ifaceId: Int,
+            childId: Int,
+            newX: Int,
+            newY: Int,
+            newWidth: Int,
+            newHeight: Int,
+        ) {
             val component = forId(ifaceId, childId)
             if (component != null) {
                 component.baseX = newX

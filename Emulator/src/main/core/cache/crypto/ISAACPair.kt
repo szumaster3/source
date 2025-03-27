@@ -9,7 +9,8 @@ class ISAACPair
  *
  * @param input  the input
  * @param output the output
- */(
+ */
+(
     /**
      * Gets input.
      *
@@ -21,5 +22,5 @@ class ISAACPair
      *
      * @return the output
      */
-    @JvmField val output: ISAACCipher
+    @JvmField val output: ISAACCipher,
 )

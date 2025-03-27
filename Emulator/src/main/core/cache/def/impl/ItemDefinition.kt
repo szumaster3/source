@@ -28,45 +28,85 @@ import kotlin.math.round
  */
 class ItemDefinition : Definition<Item?>() {
     @JvmField var interfaceModelId = 0
+
     @JvmField var modelZoom = 0
+
     @JvmField var modelRotationX = 0
+
     @JvmField var modelRotationY = 0
+
     @JvmField var modelOffset1: Int = 0
+
     @JvmField var modelOffset2: Int = 0
+
     @JvmField var stackable = false
+
     @JvmField var value = 1
+
     @JvmField var membersOnly = false
+
     @JvmField var maleWornModelId1 = -1
+
     @JvmField var femaleWornModelId1 = -1
+
     @JvmField var maleWornModelId2 = -1
+
     @JvmField var femaleWornModelId2 = -1
+
     @JvmField var maleWornModelId3: Int = -1
+
     @JvmField var femaleWornModelId3: Int = -1
+
     @JvmField var maleWornModelId4: Int = -1
+
     @JvmField var femaleWornModelId4: Int = -1
+
     @JvmField var groundOptions: Array<String?>
+
     @JvmField var originalModelColors: ShortArray? = null
+
     @JvmField var modifiedModelColors: ShortArray? = null
+
     @JvmField var textureColour1: ShortArray? = null
+
     @JvmField var textureColour2: ShortArray? = null
+
     @JvmField var unknownArray1: ByteArray? = null
+
     @JvmField var unknownArray2: IntArray? = null
+
     @JvmField val unknownArray3: Array<IntArray>? = null
+
     @JvmField var isUnnoted = true
+
     @JvmField var colourEquip1 = -1
+
     @JvmField var colourEquip2 = 0
+
     @JvmField var noteId = -1
+
     @JvmField var noteTemplateId = -1
+
     @JvmField var stackIds: IntArray? = null
+
     @JvmField var stackAmounts: IntArray? = null
+
     @JvmField var teamId = 0
+
     @JvmField var lendId = -1
+
     @JvmField var lendTemplateId = -1
+
     @JvmField var recolourId: Int = -1
+
     @JvmField var recolourTemplateId: Int = -1
+
     @JvmField var equipId = 0
+
     @JvmField var itemRequirements: HashMap<Int, Int>? = null
+
     @JvmField var clientScriptData: HashMap<Int, Any>? = null
+
     @JvmField var itemType = 0
 
     /**
@@ -75,7 +115,10 @@ class ItemDefinition : Definition<Item?>() {
      * @param reference         the reference
      * @param templateReference the template reference
      */
-    fun transferNoteDefinition(reference: ItemDefinition, templateReference: ItemDefinition) {
+    fun transferNoteDefinition(
+        reference: ItemDefinition,
+        templateReference: ItemDefinition,
+    ) {
         membersOnly = reference.membersOnly
         interfaceModelId = templateReference.interfaceModelId
         originalModelColors = templateReference.originalModelColors
@@ -99,7 +142,10 @@ class ItemDefinition : Definition<Item?>() {
      * @param reference         the reference
      * @param templateReference the template reference
      */
-    fun transferLendDefinition(reference: ItemDefinition, templateReference: ItemDefinition) {
+    fun transferLendDefinition(
+        reference: ItemDefinition,
+        templateReference: ItemDefinition,
+    ) {
         femaleWornModelId1 = reference.femaleWornModelId1
         maleWornModelId2 = reference.maleWornModelId2
         membersOnly = reference.membersOnly
@@ -135,7 +181,10 @@ class ItemDefinition : Definition<Item?>() {
      * @param reference         the reference
      * @param templateReference the template reference
      */
-    fun transferRecolourDefinition(reference: ItemDefinition, templateReference: ItemDefinition) {
+    fun transferRecolourDefinition(
+        reference: ItemDefinition,
+        templateReference: ItemDefinition,
+    ) {
         femaleWornModelId2 = reference.femaleWornModelId2
         options = arrayOfNulls(5)
         modelRotationY = templateReference.modelRotationY
@@ -174,7 +223,11 @@ class ItemDefinition : Definition<Item?>() {
      * @param message the message
      * @return the boolean
      */
-    fun hasRequirement(player: Player, wield: Boolean, message: Boolean): Boolean {
+    fun hasRequirement(
+        player: Player,
+        wield: Boolean,
+        message: Boolean,
+    ): Boolean {
         val requirements = getConfiguration<Map<Int, Int>>(ItemConfigParser.REQUIREMENTS) ?: return true
         for (skill in requirements.keys) {
             if (skill < 0 || skill >= Skills.SKILL_NAME.size) {
@@ -184,7 +237,11 @@ class ItemDefinition : Definition<Item?>() {
             if (player.getSkills().getStaticLevel(skill) < level) {
                 if (message) {
                     val name = Skills.SKILL_NAME[skill]
-                    player.packetDispatch.sendMessage("You need a" + (if (isPlusN(name)) "n " else " ") + name + " level of " + level + " to " + (if (wield) "wear " else "use ") + "this.")
+                    player.packetDispatch.sendMessage(
+                        "You need a" + (if (isPlusN(name)) "n " else " ") + name + " level of " + level + " to " +
+                            (if (wield) "wear " else "use ") +
+                            "this.",
+                    )
                 }
                 return false
             }
@@ -208,7 +265,9 @@ class ItemDefinition : Definition<Item?>() {
             if (equipSlot(getId()) == EquipmentSlot.AMMO) {
                 return true
             }
-            if (getName().lowercase(Locale.getDefault()).startsWith("ring") || getName().lowercase(Locale.getDefault())
+            if (getName().lowercase(Locale.getDefault()).startsWith("ring") ||
+                getName()
+                    .lowercase(Locale.getDefault())
                     .startsWith("amulet")
             ) {
                 return true
@@ -913,9 +972,12 @@ class ItemDefinition : Definition<Item?>() {
             if (action == null) {
                 continue
             }
-            if (action.equals("wield", ignoreCase = true) || action.equals(
-                    "wear", ignoreCase = true
-                ) || action.equals("equip", ignoreCase = true)
+            if (action.equals("wield", ignoreCase = true) ||
+                action.equals(
+                    "wear",
+                    ignoreCase = true,
+                ) ||
+                action.equals("equip", ignoreCase = true)
             ) {
                 return true
             }
@@ -996,6 +1058,7 @@ class ItemDefinition : Definition<Item?>() {
          * @return the item plugin
          */
         get() = getConfiguration<ItemPlugin>("wrapper", null)
+
         /**
          * Sets item plugin.
          *
@@ -1057,7 +1120,7 @@ class ItemDefinition : Definition<Item?>() {
                     log(
                         ItemDefinition::class.java,
                         Log.ERR,
-                        "Could not load item definitions for id $itemId - no definitions found!"
+                        "Could not load item definitions for id $itemId - no definitions found!",
                     )
                     return
                 }
@@ -1088,7 +1151,10 @@ class ItemDefinition : Definition<Item?>() {
          * @param buffer the buffer
          * @return the item definition
          */
-        private fun parseDefinition(itemId: Int, buffer: ByteBuffer): ItemDefinition {
+        private fun parseDefinition(
+            itemId: Int,
+            buffer: ByteBuffer,
+        ): ItemDefinition {
             val def = ItemDefinition()
             def.id = itemId
             while (true) {
@@ -1121,9 +1187,17 @@ class ItemDefinition : Definition<Item?>() {
                 } else if (opcode == 11) {
                     def.stackable = true
                 } else if (opcode == 12) {
-                    def.value = ((buffer.get().toInt() and 0xFF) shl 24) + ((buffer.get()
-                        .toInt() and 0xFF) shl 16) + ((buffer.get().toInt() and 0xFF) shl 8) + (buffer.get()
-                        .toInt() and 0xFF)
+                    def.value = ((buffer.get().toInt() and 0xFF) shl 24) + (
+                        (
+                            buffer
+                                .get()
+                                .toInt() and 0xFF
+                        ) shl 16
+                    ) + ((buffer.get().toInt() and 0xFF) shl 8) + (
+                        buffer
+                            .get()
+                            .toInt() and 0xFF
+                    )
                 } else if (opcode == 16) {
                     def.membersOnly = true
                 } else if (opcode == 23) {
@@ -1288,61 +1362,63 @@ class ItemDefinition : Definition<Item?>() {
             return true
         }
 
-        private val permittedItems = arrayOf(
-            Items.PENANCE_GLOVES_10553,
-            Items.ICE_GLOVES_1580,
-            Items.BOOTS_OF_LIGHTNESS_88,
-            Items.CLIMBING_BOOTS_3105,
-            Items.SPOTTED_CAPE_10069,
-            Items.SPOTTIER_CAPE_10071,
-            Items.SARADOMIN_CAPE_2412,
-            Items.ZAMORAK_CAPE_2414,
-            Items.GUTHIX_CAPE_2413,
-            Items.SARADOMIN_CLOAK_10446,
-            Items.ZAMORAK_CLOAK_10450,
-            Items.GUTHIX_CLOAK_10448,
-            Items.HOLY_BOOK_3840,
-            Items.DAMAGED_BOOK_3839,
-            Items.UNHOLY_BOOK_3842,
-            Items.DAMAGED_BOOK_3841,
-            Items.BOOK_OF_BALANCE_3844,
-            Items.DAMAGED_BOOK_3843,
-            Items.WIZARD_BOOTS_2579,
-            Items.COMBAT_BRACELET1_11124,
-            Items.COMBAT_BRACELET2_11122,
-            Items.COMBAT_BRACELET3_11120,
-            Items.COMBAT_BRACELET4_11118,
-            Items.REGEN_BRACELET_11133,
-            Items.WARLOCK_CLOAK_14081,
-            Items.WARLOCK_LEGS_14077,
-            Items.WARLOCK_TOP_14076,
-            Items.MONKS_ROBE_542,
-            Items.MONKS_ROBE_544,
-            Items.HAM_SHIRT_4298,
-            Items.HAM_ROBE_4300,
-            Items.HAM_HOOD_4302,
-            Items.HAM_CLOAK_4304,
-            Items.HAM_LOGO_4306,
-            Items.GLOVES_4308,
-            Items.BOOTS_4310
-        )
+        private val permittedItems =
+            arrayOf(
+                Items.PENANCE_GLOVES_10553,
+                Items.ICE_GLOVES_1580,
+                Items.BOOTS_OF_LIGHTNESS_88,
+                Items.CLIMBING_BOOTS_3105,
+                Items.SPOTTED_CAPE_10069,
+                Items.SPOTTIER_CAPE_10071,
+                Items.SARADOMIN_CAPE_2412,
+                Items.ZAMORAK_CAPE_2414,
+                Items.GUTHIX_CAPE_2413,
+                Items.SARADOMIN_CLOAK_10446,
+                Items.ZAMORAK_CLOAK_10450,
+                Items.GUTHIX_CLOAK_10448,
+                Items.HOLY_BOOK_3840,
+                Items.DAMAGED_BOOK_3839,
+                Items.UNHOLY_BOOK_3842,
+                Items.DAMAGED_BOOK_3841,
+                Items.BOOK_OF_BALANCE_3844,
+                Items.DAMAGED_BOOK_3843,
+                Items.WIZARD_BOOTS_2579,
+                Items.COMBAT_BRACELET1_11124,
+                Items.COMBAT_BRACELET2_11122,
+                Items.COMBAT_BRACELET3_11120,
+                Items.COMBAT_BRACELET4_11118,
+                Items.REGEN_BRACELET_11133,
+                Items.WARLOCK_CLOAK_14081,
+                Items.WARLOCK_LEGS_14077,
+                Items.WARLOCK_TOP_14076,
+                Items.MONKS_ROBE_542,
+                Items.MONKS_ROBE_544,
+                Items.HAM_SHIRT_4298,
+                Items.HAM_ROBE_4300,
+                Items.HAM_HOOD_4302,
+                Items.HAM_CLOAK_4304,
+                Items.HAM_LOGO_4306,
+                Items.GLOVES_4308,
+                Items.BOOTS_4310,
+            )
 
-        private val forbiddenItems = arrayOf(
-            Items.DWARF_CANNON_SET_11967,
-            Items.CANNON_BARRELS_10,
-            Items.CANNON_BASE_6,
-            Items.CANNON_STAND_8,
-            Items.CANNON_FURNACE_12,
-            Items.COOKING_GAUNTLETS_775,
-            Items.CHAOS_GAUNTLETS_777,
-            Items.GOLDSMITH_GAUNTLETS_776,
-            Items.KARAMJA_GLOVES_1_11136,
-            Items.KARAMJA_GLOVES_2_11138,
-            Items.KARAMJA_GLOVES_3_11140,
-            Items.VYREWATCH_TOP_9634,
-            Items.VYREWATCH_LEGS_9636,
-            Items.VYREWATCH_SHOES_9638
-        )
+        private val forbiddenItems =
+            arrayOf(
+                Items.DWARF_CANNON_SET_11967,
+                Items.CANNON_BARRELS_10,
+                Items.CANNON_BASE_6,
+                Items.CANNON_STAND_8,
+                Items.CANNON_FURNACE_12,
+                Items.COOKING_GAUNTLETS_775,
+                Items.CHAOS_GAUNTLETS_777,
+                Items.GOLDSMITH_GAUNTLETS_776,
+                Items.KARAMJA_GLOVES_1_11136,
+                Items.KARAMJA_GLOVES_2_11138,
+                Items.KARAMJA_GLOVES_3_11140,
+                Items.VYREWATCH_TOP_9634,
+                Items.VYREWATCH_LEGS_9636,
+                Items.VYREWATCH_SHOES_9638,
+            )
 
         /**
          * Gets option handler.
@@ -1352,12 +1428,19 @@ class ItemDefinition : Definition<Item?>() {
          * @return the option handler
          */
         @JvmStatic
-        fun getOptionHandler(nodeId: Int, name: String): OptionHandler? {
+        fun getOptionHandler(
+            nodeId: Int,
+            name: String,
+        ): OptionHandler? {
             val def = forId(nodeId)
             if (def == null) {
-                if (nodeId == 22937) log(
-                    ItemDefinition::class.java, Log.ERR, "[ItemDefinition] No definition for item id $nodeId!"
-                )
+                if (nodeId == 22937) {
+                    log(
+                        ItemDefinition::class.java,
+                        Log.ERR,
+                        "[ItemDefinition] No definition for item id $nodeId!",
+                    )
+                }
                 return null
             }
             val handler = def.getConfiguration<OptionHandler>("option:$name")
@@ -1367,21 +1450,22 @@ class ItemDefinition : Definition<Item?>() {
             return OPTION_HANDLERS[name]
         }
 
-        private val BONUS_NAMES = arrayOf(
-            "Stab: ",
-            "Slash: ",
-            "Crush: ",
-            "Magic: ",
-            "Ranged: ",
-            "Stab: ",
-            "Slash: ",
-            "Crush: ",
-            "Magic: ",
-            "Ranged: ",
-            "Summoning: ",
-            "Strength: ",
-            "Prayer: "
-        )
+        private val BONUS_NAMES =
+            arrayOf(
+                "Stab: ",
+                "Slash: ",
+                "Crush: ",
+                "Magic: ",
+                "Ranged: ",
+                "Stab: ",
+                "Slash: ",
+                "Crush: ",
+                "Magic: ",
+                "Ranged: ",
+                "Summoning: ",
+                "Strength: ",
+                "Prayer: ",
+            )
 
         /**
          * Stats update.
@@ -1413,7 +1497,10 @@ class ItemDefinition : Definition<Item?>() {
          * @return the option handler
          */
         @JvmStatic
-        fun setOptionHandler(name: String, handler: OptionHandler?): Boolean {
+        fun setOptionHandler(
+            name: String,
+            handler: OptionHandler?,
+        ): Boolean {
             return OPTION_HANDLERS.put(name, handler) != null
         }
 

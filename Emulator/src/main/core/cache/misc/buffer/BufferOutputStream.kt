@@ -14,13 +14,14 @@ class BufferOutputStream
  * @param buffer the buffer
  * @throws IOException       the io exception
  * @throws SecurityException the security exception
- */(
+ */
+(
     /**
      * Gets buffer.
      *
      * @return the buffer
      */
-    val buffer: ByteBuffer
+    val buffer: ByteBuffer,
 ) : OutputStream() {
     @Throws(IOException::class)
     override fun write(b: Int) {

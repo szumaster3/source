@@ -5,7 +5,9 @@ package core.cache.crypto
  * This cipher is primarily used for random number generation in cryptographic applications.
  * The class uses a set of internal memory and results to generate pseudo-random numbers.
  */
-class ISAACCipher(seed: IntArray) {
+class ISAACCipher(
+    seed: IntArray,
+) {
     /**
      * The count used to track how many random values have been generated.
      */
@@ -59,7 +61,7 @@ class ISAACCipher(seed: IntArray) {
                 isaac()
                 count = SIZE - 1
             }
-            return 0 //results[count];
+            return 0 // results[count];
         }
 
     /**

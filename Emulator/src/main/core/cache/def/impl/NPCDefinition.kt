@@ -20,60 +20,115 @@ import java.nio.ByteBuffer
 /**
  * The type Npc definition.
  */
-class NPCDefinition(id: Int) : Definition<NPC?>() {
+class NPCDefinition(
+    id: Int,
+) : Definition<NPC?>() {
     @JvmField var size: Int = 1
+
     @JvmField var combatLevel: Int
+
     @JvmField var headIcons: Int
+
     @JvmField var isVisibleOnMap: Boolean
+
     @JvmField var dropTables: NPCDropTables = NPCDropTables(this)
+
     @JvmField var anInt833: Int
+
     @JvmField var anInt836: Int
+
     @JvmField var anInt837: Int
+
     @JvmField var aBoolean841: Boolean
+
     @JvmField var anInt842: Int
+
     @JvmField var configFileId: Int
+
     @JvmField var childNPCIds: IntArray? = null
+
     @JvmField var anInt846: Int
+
     @JvmField var anInt850: Int
+
     @JvmField var aByte851: Byte
+
     @JvmField var aBoolean852: Boolean
+
     @JvmField var anInt853: Int
+
     @JvmField var aByte854: Byte
+
     @JvmField var aBoolean856: Boolean
+
     @JvmField var aBoolean857: Boolean
+
     @JvmField var aShortArray859: ShortArray? = null
+
     @JvmField var aByteArray861: ByteArray? = null
+
     @JvmField var aShort862: Short
+
     @JvmField var aBoolean863: Boolean
+
     @JvmField var anInt864: Int
+
     @JvmField var aShortArray866: ShortArray? = null
+
     @JvmField var anIntArray868: IntArray
+
     @JvmField var anInt869: Int
+
     @JvmField var anInt870: Int
+
     @JvmField var anInt871: Int
+
     @JvmField var anInt872: Int
+
     @JvmField var anInt874: Int
+
     @JvmField var anInt875: Int
+
     @JvmField var anInt876: Int
+
     @JvmField var anInt879: Int
+
     @JvmField var aShortArray880: ShortArray? = null
+
     @JvmField var anInt884: Int
+
     @JvmField var configId: Int
+
     @JvmField var anInt889: Int
+
     @JvmField var anIntArray892: IntArray? = null
+
     @JvmField var aShort894: Short
+
     @JvmField var aShortArray896: ShortArray? = null
+
     @JvmField var anInt897: Int
+
     @JvmField var anInt899: Int
+
     @JvmField var anInt901: Int
+
     @JvmField var standAnimation: Int
+
     @JvmField var walkAnimation: Int
+
     @JvmField var renderAnimationId: Int = 0
+
     @JvmField var combatDistance: Int = 0
+
     @JvmField var combatGraphics: Array<Graphics?> = arrayOfNulls(3)
+
     @JvmField var turnAnimation: Int = 0
+
     @JvmField var turn180Animation: Int = 0
+
     @JvmField var turnCWAnimation: Int = 0
+
     @JvmField var turnCCWAnimation: Int = 0
 
     init {
@@ -160,7 +215,10 @@ class NPCDefinition(id: Int) : Definition<NPC?>() {
         }
     }
 
-    private fun parseOpcode(buffer: ByteBuffer, opcode: Int) {
+    private fun parseOpcode(
+        buffer: ByteBuffer,
+        opcode: Int,
+    ) {
         when (opcode) {
             1 -> {
                 val length = buffer.get().toInt() and 0xFF
@@ -405,19 +463,25 @@ class NPCDefinition(id: Int) : Definition<NPC?>() {
      */
     fun initCombatGraphics(config: Map<String?, Any?>) {
         if (config.containsKey(NPCConfigParser.START_GRAPHIC)) {
-            combatGraphics[0] = Graphics(
-                (config[NPCConfigParser.START_GRAPHIC] as Int?)!!, getConfiguration(NPCConfigParser.START_HEIGHT, 0)
-            )
+            combatGraphics[0] =
+                Graphics(
+                    (config[NPCConfigParser.START_GRAPHIC] as Int?)!!,
+                    getConfiguration(NPCConfigParser.START_HEIGHT, 0),
+                )
         }
         if (config.containsKey(NPCConfigParser.PROJECTILE)) {
-            combatGraphics[1] = Graphics(
-                (config[NPCConfigParser.PROJECTILE] as Int?)!!, getConfiguration(NPCConfigParser.PROJECTILE_HEIGHT, 42)
-            )
+            combatGraphics[1] =
+                Graphics(
+                    (config[NPCConfigParser.PROJECTILE] as Int?)!!,
+                    getConfiguration(NPCConfigParser.PROJECTILE_HEIGHT, 42),
+                )
         }
         if (config.containsKey(NPCConfigParser.END_GRAPHIC)) {
-            combatGraphics[2] = Graphics(
-                (config[NPCConfigParser.END_GRAPHIC] as Int?)!!, getConfiguration(NPCConfigParser.END_HEIGHT, 96)
-            )
+            combatGraphics[2] =
+                Graphics(
+                    (config[NPCConfigParser.END_GRAPHIC] as Int?)!!,
+                    getConfiguration(NPCConfigParser.END_HEIGHT, 96),
+                )
         }
     }
 
@@ -428,14 +492,15 @@ class NPCDefinition(id: Int) : Definition<NPC?>() {
      * @return the combat animation
      */
     fun getCombatAnimation(index: Int): Animation? {
-        val name = when (index) {
-            0 -> NPCConfigParser.MELEE_ANIMATION
-            1 -> NPCConfigParser.MAGIC_ANIMATION
-            2 -> NPCConfigParser.RANGE_ANIMATION
-            3 -> NPCConfigParser.DEFENCE_ANIMATION
-            4 -> NPCConfigParser.DEATH_ANIMATION
-            else -> return null
-        }
+        val name =
+            when (index) {
+                0 -> NPCConfigParser.MELEE_ANIMATION
+                1 -> NPCConfigParser.MAGIC_ANIMATION
+                2 -> NPCConfigParser.RANGE_ANIMATION
+                3 -> NPCConfigParser.DEFENCE_ANIMATION
+                4 -> NPCConfigParser.DEATH_ANIMATION
+                else -> return null
+            }
         return getConfiguration<Animation>(name, null) ?: return null
     }
 
@@ -555,7 +620,9 @@ class NPCDefinition(id: Int) : Definition<NPC?>() {
     fun getConfigId(): Int {
         return if (configFileId != -1) {
             VarbitDefinition.forNpcId(configFileId).varpId
-        } else configFileId
+        } else {
+            configFileId
+        }
     }
 
     val varbitOffset: Int
@@ -649,7 +716,10 @@ class NPCDefinition(id: Int) : Definition<NPC?>() {
          * @return the option handler
          */
         @JvmStatic
-        fun getOptionHandler(nodeId: Int, name: String): OptionHandler? {
+        fun getOptionHandler(
+            nodeId: Int,
+            name: String,
+        ): OptionHandler? {
             val def = forId(nodeId)
             val handler = def.getConfiguration<OptionHandler>("option:$name")
             if (handler != null) {
@@ -666,7 +736,10 @@ class NPCDefinition(id: Int) : Definition<NPC?>() {
          * @return the option handler
          */
         @JvmStatic
-        fun setOptionHandler(name: String, handler: OptionHandler?): Boolean {
+        fun setOptionHandler(
+            name: String,
+            handler: OptionHandler?,
+        ): Boolean {
             return OPTION_HANDLERS.put(name, handler) != null
         }
 
