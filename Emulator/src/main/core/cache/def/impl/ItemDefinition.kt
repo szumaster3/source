@@ -1021,7 +1021,7 @@ class ItemDefinition : Definition<Item?>() {
 
     override fun getExamine(): String {
         examine = super.getExamine()
-        if (isUnnoted) {
+        if (!isUnnoted) {
             examine = "Swap this note at any bank for the equivalent item."
         }
         return examine
