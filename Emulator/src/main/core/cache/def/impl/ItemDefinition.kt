@@ -77,7 +77,7 @@ class ItemDefinition : Definition<Item?>() {
 
     @JvmField val unknownArray3: Array<IntArray>? = null
 
-    @JvmField var isUnnoted = true
+    @JvmField var unnoted = true
 
     @JvmField var colourEquip1 = -1
 
@@ -128,7 +128,7 @@ class ItemDefinition : Definition<Item?>() {
         value = reference.value
         modelRotationY = templateReference.modelRotationY
         stackable = true
-        isUnnoted = false
+        unnoted = false
         modifiedModelColors = templateReference.modifiedModelColors
         modelRotationX = templateReference.modelRotationX
         modelZoom = templateReference.modelZoom
@@ -385,7 +385,7 @@ class ItemDefinition : Definition<Item?>() {
      *
      * @return the boolean
      */
-    fun isStackable(): Boolean = stackable || !this.isUnnoted
+    fun isStackable(): Boolean = stackable || !this.unnoted
 
     /**
      * Sets stackable.
@@ -639,12 +639,21 @@ class ItemDefinition : Definition<Item?>() {
     }
 
     /**
+     * Is unnoted boolean.
+     *
+     * @return the boolean
+     */
+    fun isUnnoted(): Boolean {
+        return unnoted
+    }
+
+    /**
      * Sets isUnnoted.
      *
      * @param unnoted the isUnnoted
      */
     fun setUnnoted(unnoted: Boolean) {
-        this.isUnnoted = unnoted
+        this.unnoted = unnoted
     }
 
     /**
@@ -830,7 +839,7 @@ class ItemDefinition : Definition<Item?>() {
      * @return the alchemy value
      */
     fun getAlchemyValue(highAlchemy: Boolean): Int {
-        if (!isUnnoted && noteId > -1) {
+        if (!isUnnoted() && noteId > -1) {
             return forId(noteId).getAlchemyValue(highAlchemy)
         }
         if (highAlchemy) {
@@ -1021,7 +1030,7 @@ class ItemDefinition : Definition<Item?>() {
 
     override fun getExamine(): String {
         examine = super.getExamine()
-        if (!isUnnoted) {
+        if (!isUnnoted()) {
             examine = "Swap this note at any bank for the equivalent item."
         }
         return examine
@@ -1168,7 +1177,7 @@ class ItemDefinition : Definition<Item?>() {
                     def.unknownArray1 = ByteArray(length)
                     for (index in 0 until length) def.unknownArray1!![index] = buffer.get()
                 } else if (opcode == 65) {
-                    def.isUnnoted = true
+                    def.unnoted = true
                 } else if (opcode == 78) {
                     def.colourEquip1 = buffer.getShort().toInt() and 0xFFFF
                 } else if (opcode == 79) {
