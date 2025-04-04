@@ -221,4 +221,7 @@ internal object GameAttributes {
     const val ATTR_STATE_TALK_LADY = "/save:mc_talked_lady_lake"
     const val ATTR_STATE_TALK_BEGGAR = "/save:mc_talked_beggar"
     const val ATTR_STATE_TALK_CANDLE = "/save:mc_talked_candle_maker"
+
+    // Sea slug quest.
+    const val QUEST_SEA_SLUG_TALK_WITH_KENT = "/save:seaslug:kent-dialogue"
 }
