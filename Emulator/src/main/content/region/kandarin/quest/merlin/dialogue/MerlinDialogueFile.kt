@@ -1,5 +1,6 @@
 package content.region.kandarin.quest.merlin.dialogue
 
+import content.data.GameAttributes
 import content.region.kandarin.quest.merlin.handlers.MerlinUtils
 import core.api.*
 import core.api.quest.setQuestStage
@@ -58,7 +59,7 @@ class MerlinDialogueFile(
             }
 
             4 -> {
-                val merlin = player!!.getAttribute<NPC>(MerlinUtils.TEMP_ATTR_MERLIN, null)
+                val merlin = player!!.getAttribute<NPC>(GameAttributes.TEMP_ATTR_MERLIN, null)
                 merlin?.clear()
 
                 end()
@@ -79,7 +80,7 @@ class MerlinDialogueFile(
         val merlin = NPC.create(NPCs.MERLIN_249, Location.create(2768, 3493, 2))
         merlin.moveStep()
         merlin.init()
-        setAttribute(player!!, MerlinUtils.TEMP_ATTR_MERLIN, merlin)
+        setAttribute(player!!, GameAttributes.TEMP_ATTR_MERLIN, merlin)
 
         queueScript(merlin, 100, QueueStrength.SOFT) { _ ->
 
@@ -88,7 +89,7 @@ class MerlinDialogueFile(
             }
 
             spawnCrystal()
-            removeAttribute(player!!, MerlinUtils.TEMP_ATTR_MERLIN)
+            removeAttribute(player!!, GameAttributes.TEMP_ATTR_MERLIN)
             return@queueScript stopExecuting(merlin)
         }
     }

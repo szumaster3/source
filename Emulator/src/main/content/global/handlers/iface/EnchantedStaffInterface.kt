@@ -22,10 +22,10 @@ class EnchantedStaffInterface : InterfaceListener {
             return@onOpen true
         }
 
-        on(Components.STAFF_ENCHANT_332) { player, _, opcode, buttonID, slot, itemID ->
+        on(Components.STAFF_ENCHANT_332) { player, _, _, buttonID, _, _ ->
             val price = 40000
             val discountPrice = 27000
-            val headbandInEquipment = inEquipment(player, Items.SEERS_HEADBAND_1_14631)
+            val headbandInEquipment = DiaryManager(player).
             val completeDiary = if (!headbandInEquipment) price else discountPrice
 
             if (EnchantedStaff.childToBasic.containsKey(buttonID)) {

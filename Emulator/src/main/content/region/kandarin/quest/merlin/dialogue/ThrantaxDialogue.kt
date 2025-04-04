@@ -1,5 +1,6 @@
 package content.region.kandarin.quest.merlin.dialogue
 
+import content.data.GameAttributes
 import content.region.kandarin.quest.merlin.handlers.MerlinUtils
 import content.region.kandarin.quest.merlin.handlers.ThrantaxNPC
 import core.api.quest.setQuestStage
@@ -122,7 +123,7 @@ class ThrantaxDialogue : DialogueFile() {
     }
 
     fun disappear(player: Player) {
-        val thrantax = player.getAttribute<ThrantaxNPC>(MerlinUtils.TEMP_ATTR_THRANTAX, null)
+        val thrantax = player.getAttribute<ThrantaxNPC>(GameAttributes.TEMP_ATTR_THRANTAX, null)
 
         if (thrantax != null) {
             thrantax.player = null
@@ -130,7 +131,7 @@ class ThrantaxDialogue : DialogueFile() {
     }
 
     fun attackPlayer(player: Player) {
-        val thrantax = player.getAttribute<NPC>(MerlinUtils.TEMP_ATTR_THRANTAX, null)
+        val thrantax = player.getAttribute<NPC>(GameAttributes.TEMP_ATTR_THRANTAX, null)
 
         if (thrantax != null) {
             thrantax.attack(player)
@@ -142,7 +143,7 @@ class ThrantaxDialogue : DialogueFile() {
         checkMissing: Boolean,
     ) {
         if (checkMissing) {
-            val thrantax = player.getAttribute<NPC>(MerlinUtils.TEMP_ATTR_THRANTAX, null)
+            val thrantax = player.getAttribute<NPC>(GameAttributes.TEMP_ATTR_THRANTAX, null)
 
             if (thrantax == null || thrantax != null && !thrantax.isActive) {
                 spawn(player)
@@ -159,7 +160,7 @@ class ThrantaxDialogue : DialogueFile() {
         thrantax.graphics(Graphics.create(86))
         thrantax.init()
         thrantax.isRespawn = false
-        setAttribute(player, MerlinUtils.TEMP_ATTR_THRANTAX, thrantax)
-        setAttribute(thrantax, MerlinUtils.TEMP_ATTR_THRANTAX_OWNER, player.username)
+        setAttribute(player, GameAttributes.TEMP_ATTR_THRANTAX, thrantax)
+        setAttribute(thrantax, GameAttributes.TEMP_ATTR_THRANTAX_OWNER, player.username)
     }
 }

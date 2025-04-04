@@ -1,5 +1,6 @@
 package content.region.kandarin.quest.merlin.handlers
 
+import content.data.GameAttributes
 import core.game.node.entity.npc.AbstractNPC
 import core.game.node.entity.npc.NPC
 import core.game.node.entity.player.Player
@@ -13,7 +14,7 @@ class ThrantaxNPC(
     location: Location? = null,
 ) : AbstractNPC(id, location) {
     var player: Player? = null
-    var spawnedTicks = 0
+    private var spawnedTicks = 0
 
     override fun construct(
         id: Int,
@@ -29,7 +30,7 @@ class ThrantaxNPC(
         }
 
         if (player != null) {
-            val plrThrantax = player!!.getAttribute<NPC>(MerlinUtils.TEMP_ATTR_THRANTAX, null)
+            val plrThrantax = player!!.getAttribute<NPC>(GameAttributes.TEMP_ATTR_THRANTAX, null)
 
             if (plrThrantax != null && plrThrantax.equals(this)) {
                 if (!player!!.interfaceManager.hasChatbox()) {
