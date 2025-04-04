@@ -1,7 +1,6 @@
 package content.region.kandarin.quest.merlin
 
 import content.data.GameAttributes
-import content.region.kandarin.quest.merlin.handlers.MerlinUtils
 import core.api.*
 import core.api.quest.updateQuestTab
 import core.game.node.entity.player.Player

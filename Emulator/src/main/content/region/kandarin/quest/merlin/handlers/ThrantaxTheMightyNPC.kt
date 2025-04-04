@@ -9,7 +9,7 @@ import core.plugin.Initializable
 import org.rs.consts.NPCs
 
 @Initializable
-class ThrantaxNPC(
+class ThrantaxTheMightyNPC(
     id: Int = 0,
     location: Location? = null,
 ) : AbstractNPC(id, location) {
@@ -20,7 +20,7 @@ class ThrantaxNPC(
         id: Int,
         location: Location?,
         vararg objects: Any?,
-    ): AbstractNPC = ThrantaxNPC(id, location)
+    ): AbstractNPC = ThrantaxTheMightyNPC(id, location)
 
     override fun getIds(): IntArray = intArrayOf(NPCs.THRANTAX_THE_MIGHTY_238)
 
@@ -30,11 +30,11 @@ class ThrantaxNPC(
         }
 
         if (player != null) {
-            val plrThrantax = player!!.getAttribute<NPC>(GameAttributes.TEMP_ATTR_THRANTAX, null)
+            val thantraxNPC = player!!.getAttribute<NPC>(GameAttributes.TEMP_ATTR_THRANTAX, null)
 
-            if (plrThrantax != null && plrThrantax.equals(this)) {
+            if (thantraxNPC != null && thantraxNPC.equals(this)) {
                 if (!player!!.interfaceManager.hasChatbox()) {
-                    plrThrantax.locks.unlockMovement()
+                    thantraxNPC.locks.unlockMovement()
                     player = null
                 }
             }

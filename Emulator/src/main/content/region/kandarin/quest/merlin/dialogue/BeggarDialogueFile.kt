@@ -2,7 +2,6 @@ package content.region.kandarin.quest.merlin.dialogue
 
 import content.data.GameAttributes
 import content.region.kandarin.quest.merlin.handlers.BeggarNPC
-import content.region.kandarin.quest.merlin.handlers.MerlinUtils
 import core.api.sendDialogue
 import core.game.dialogue.DialogueFile
 import core.game.dialogue.FaceAnim

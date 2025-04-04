@@ -1,7 +1,6 @@
 package content.region.kandarin.quest.merlin.dialogue
 
 import content.data.GameAttributes
-import content.region.kandarin.quest.merlin.handlers.MerlinUtils
 import core.api.quest.getQuest
 import core.api.removeAttribute
 import core.api.sendDialogue
