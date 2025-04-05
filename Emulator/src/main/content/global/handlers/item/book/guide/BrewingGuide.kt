@@ -12,12 +12,27 @@ import org.rs.consts.Items
 class BrewingGuide : InteractionListener {
 
     /*
-     * [ ] It can be found near the mini-game or
-     * [x] on a Player-owned house bookshelf.
+     * It can be found near the mini-game or
+     * on a Player-owned house bookshelf.
      */
 
     companion object {
         private const val TITLE = "Brewin' guide"
+
+        private const val BOWL_OF_WATER_MODEL = 2367
+        private const val BUCKET_OF_WATER_MODEL = 2504
+        private const val BITTERNUTS_MODEL = 15726
+        private const val SWEETGRUBS_MODEL = 2436
+        private const val SCRAPEY_TREE_BARK_MODEL = 2625
+        private const val LIT_TORCH_MODEL = 2671
+        private const val WATER_PUMP_MODEL = 15725
+        private const val LUMBER_PATCHES_MODEL = 15785
+        private const val BRIDGE_SECTION_MODEL = 15727
+        private const val TRICORN_HAT_MODEL = 15743
+        private const val NAVAL_T_SHIRT_MODEL = 15735
+        private const val NAVAL_PANTS_MODEL = 15736
+        private const val THE_STUFF = 15741
+
         private val CONTENTS = arrayOf(
             PageSet(
                 Page(
@@ -29,17 +44,18 @@ class BrewingGuide : InteractionListener {
                     BookLine("${core.tools.DARK_RED}Chapters", 82),
                     BookLine("", 83),
                     BookLine("Mos Le'Harmless Rum", 84),
-                    BookLine("1: Ingredients", 82),
-                    BookLine("1.1: Water and Coloured Water", 85),
-                    BookLine("1.2: Bitternuts", 86),
-                    BookLine("1.3: Sweetgrubs", 87),
-                    BookLine("1.4: Scrapey Tree Bark", 88),
-                    BookLine("1.5: Boilers", 89),
-                    BookLine("1.6: Brewin'", 90),
-                    BookLine("2: Sabotage and Repair", 91),
-                    BookLine("2.1: Makin' Repair Items", 92),
-                    BookLine("2.2: The Steam Pump", 93),
-                    BookLine("3: Plunder", 94),
+                    BookLine("1:Ingredients", 85),
+                    BookLine("1.1: Water and Coloured", 86),
+                    BookLine("Water", 87),
+                    BookLine("1.2: Bitternuts", 88),
+                    BookLine("1.3: Sweetgrubs", 89),
+                    BookLine("1.4: Scrapey Tree Bark", 90),
+                    BookLine("1.5: Boilers", 91),
+                    BookLine("1.6: Brewin'", 92),
+                    BookLine("2: Sabotage and Repair", 93),
+                    BookLine("2.1: Makin' Repair Items", 94),
+                    BookLine("2.2: The Steam Pump", 95),
+                    BookLine("3: Plunder", 96),
                 ),
             ),
             PageSet(
@@ -62,8 +78,8 @@ class BrewingGuide : InteractionListener {
                 Page(
                     BookLine("Mos Le'Harmless 'rum' is", 82),
                     BookLine("based loosely on the recipe", 83),
-                    BookLine("fer Braindeath 'rum', with", 84),
-                    BookLine("the main exception bein' that it is", 85),
+                    BookLine("fer Braindeath 'rum', with the", 84),
+                    BookLine("main exception bein' that it is", 85),
                     BookLine("brewed from items found", 86),
                     BookLine("locally to the island.", 87)
                 ),
@@ -73,14 +89,18 @@ class BrewingGuide : InteractionListener {
                     BookLine("Water and Coloured Water", 97),
                     BookLine("", 68),
                     BookLine("", 69),
-                    BookLine("", 70),
+                    BookLine("", 70), // MODEL
                     BookLine("", 71),
                     BookLine("", 72),
-                    BookLine("The last two ingredients be", 73),
-                    BookLine("the easiest to plunder; water", 74),
-                    BookLine("from either the lake in the", 75),
-                    BookLine("middle of the brewery", 76),
-                    BookLine("compound, or from one of", 77)
+                    BookLine("", 73), // MODEL
+                    BookLine("", 74),
+                    BookLine("", 75),
+                    BookLine("", 76),
+                    BookLine("The last two ingredients be", 77),
+                    BookLine("the easiest to plunder; water", 78),
+                    BookLine("from either the lake in the", 79),
+                    BookLine("middle of the brewery", 80),
+                    BookLine("compound, or from one of", 81)
                 ),
                 Page(
                     BookLine("the pumps can be put into", 82),
@@ -418,8 +438,8 @@ class BrewingGuide : InteractionListener {
                     BookLine("that yer a little more likely te", 81)
                 ),
                 Page(
-                    BookLine("get a mature ale by the end of it.", 82),
-                    BookLine("", 83),
+                    BookLine("get a mature ale by the end", 82),
+                    BookLine("of it.", 83),
                     BookLine("", 84), // MODEL
                     BookLine("", 85),
                     BookLine("", 86),
@@ -434,13 +454,65 @@ class BrewingGuide : InteractionListener {
         pageNum: Int,
         buttonID: Int,
     ): Boolean {
-        BookInterface.pageSetup(player, BookInterface.FANCY_BOOK_3_49, TITLE, CONTENTS)
+        BookInterface.pageSetup(player, BookInterface.FANCY_BOOK_26, TITLE, CONTENTS)
+        /*
+         * Bowl of water model.
+         */
+        BookInterface.setModelOnPage(player, 2, BOWL_OF_WATER_MODEL, BookInterface.FANCY_BOOK_26, BookInterface.FANCY_BOOK_26_IMAGE_ENABLE_DRAW_IDS[3], BookInterface.FANCY_BOOK_26_IMAGE_DRAW_IDS[3], 600, 100, 0)
+        /*
+         * Bucket of water model.
+         */
+        BookInterface.setModelOnPage(player, 2, BUCKET_OF_WATER_MODEL, BookInterface.FANCY_BOOK_26, BookInterface.FANCY_BOOK_26_IMAGE_ENABLE_DRAW_IDS[6], BookInterface.FANCY_BOOK_26_IMAGE_DRAW_IDS[6], 500, 200, 1800)
+        /*
+         * Bitternut model
+         */
+        BookInterface.setModelOnPage(player, 3, BITTERNUTS_MODEL, BookInterface.FANCY_BOOK_26, BookInterface.FANCY_BOOK_26_IMAGE_ENABLE_DRAW_IDS[2], BookInterface.FANCY_BOOK_26_IMAGE_DRAW_IDS[2], 200, 300, 1800)
+        /*
+         * Sweetgrubs model // TODO
+         */
+        BookInterface.setModelOnPage(player, 4, SWEETGRUBS_MODEL, BookInterface.FANCY_BOOK_26, BookInterface.FANCY_BOOK_26_IMAGE_ENABLE_DRAW_IDS[21], BookInterface.FANCY_BOOK_26_IMAGE_DRAW_IDS[21], 600, 500, 100)
+        /*
+         * Scrapey bark model. // TODO
+         */
+        BookInterface.setModelOnPage(player, 5, SCRAPEY_TREE_BARK_MODEL, BookInterface.FANCY_BOOK_26, BookInterface.FANCY_BOOK_26_IMAGE_ENABLE_DRAW_IDS[21], BookInterface.FANCY_BOOK_26_IMAGE_DRAW_IDS[21], 500, 500, 100)
+        /*
+         * Lit torch model.
+         */
+        BookInterface.setModelOnPage(player, 8, LIT_TORCH_MODEL, BookInterface.FANCY_BOOK_26, BookInterface.FANCY_BOOK_26_IMAGE_ENABLE_DRAW_IDS[27], BookInterface.FANCY_BOOK_26_IMAGE_DRAW_IDS[27], 500, 200, 0)
+        /*
+         * Water pump model
+         */
+        BookInterface.setModelOnPage(player, 9, WATER_PUMP_MODEL, BookInterface.FANCY_BOOK_26, BookInterface.FANCY_BOOK_26_IMAGE_ENABLE_DRAW_IDS[13], BookInterface.FANCY_BOOK_26_IMAGE_DRAW_IDS[13], 700, 200, 1700)
+        /*
+         * Lumber patches model.
+         */
+        BookInterface.setModelOnPage(player, 9, LUMBER_PATCHES_MODEL, BookInterface.FANCY_BOOK_26, BookInterface.FANCY_BOOK_26_IMAGE_ENABLE_DRAW_IDS[23], BookInterface.FANCY_BOOK_26_IMAGE_DRAW_IDS[23], 700, 200, 0)
+        /*
+         * Bridge section model.
+         */
+        BookInterface.setModelOnPage(player, 9, BRIDGE_SECTION_MODEL, BookInterface.FANCY_BOOK_26, BookInterface.FANCY_BOOK_26_IMAGE_ENABLE_DRAW_IDS[26], BookInterface.FANCY_BOOK_26_IMAGE_DRAW_IDS[26], 1100, 200, 300)
+        /*
+         * Tricorn hat model.
+         */
+        BookInterface.setModelOnPage(player, 12, TRICORN_HAT_MODEL, BookInterface.FANCY_BOOK_26, BookInterface.FANCY_BOOK_26_IMAGE_ENABLE_DRAW_IDS[7], BookInterface.FANCY_BOOK_26_IMAGE_DRAW_IDS[7], 300, 200, 200)
+        /*
+         * Naval t shirt model.
+         */
+        BookInterface.setModelOnPage(player, 12, NAVAL_T_SHIRT_MODEL, BookInterface.FANCY_BOOK_26, BookInterface.FANCY_BOOK_26_IMAGE_ENABLE_DRAW_IDS[21], BookInterface.FANCY_BOOK_26_IMAGE_DRAW_IDS[21], 600, 400, 100)
+        /*
+         * Naval pants model.
+         */
+        BookInterface.setModelOnPage(player, 12, NAVAL_PANTS_MODEL, BookInterface.FANCY_BOOK_26, BookInterface.FANCY_BOOK_26_IMAGE_ENABLE_DRAW_IDS[24], BookInterface.FANCY_BOOK_26_IMAGE_DRAW_IDS[24], 800, 400, 800)
+        /*
+         * The stuff model.
+         */
+        BookInterface.setModelOnPage(player, 13, THE_STUFF, BookInterface.FANCY_BOOK_26, BookInterface.FANCY_BOOK_26_IMAGE_ENABLE_DRAW_IDS[20], BookInterface.FANCY_BOOK_26_IMAGE_DRAW_IDS[20], 500, 300, 200)
         return true
     }
 
     override fun defineListeners() {
         on(Items.BREWIN_GUIDE_8989, IntType.ITEM, "read") { player, _ ->
-            BookInterface.openBook(player, BookInterface.FANCY_BOOK_3_49, ::display)
+            BookInterface.openBook(player, BookInterface.FANCY_BOOK_26, ::display)
             return@on true
         }
     }
