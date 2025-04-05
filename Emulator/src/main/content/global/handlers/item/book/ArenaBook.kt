@@ -137,7 +137,7 @@ class ArenaBook : InteractionListener {
                     BookLine("in their training.", 74),
                 ),
                 Page(
-                    BookLine("2) ${core.tools.DARK_BLUE}Telekinetic Theatre</col>", 82),
+                    BookLine("3) ${core.tools.DARK_BLUE}Telekinetic Theatre</col>", 82),
                     BookLine("", 83),
                     BookLine("The ability to use magic to", 84),
                     BookLine("sense the existence of objects", 85),
