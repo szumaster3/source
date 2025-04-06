@@ -12,6 +12,7 @@ import core.game.interaction.IntType
 import core.game.interaction.InteractionListener
 import core.game.interaction.QueueStrength
 import core.game.node.entity.combat.ImpactHandler
+import core.game.node.item.Item
 import core.game.world.map.Location
 import org.rs.consts.*
 
@@ -65,48 +66,66 @@ class PriestInPerilListener : InteractionListener {
         }
 
         val monumentData = mapOf(
-            Scenery.MONUMENT_3496 to Triple("hammer", Items.GOLDEN_HAMMER_2949 to Items.HAMMER_2347, "Saradomin is the hammer that crushes evil everywhere."),
-            Scenery.MONUMENT_3498 to Triple("needle", Items.GOLDEN_NEEDLE_2951 to Items.NEEDLE_1733, "Saradomin is the needle that binds our lives together."),
-            Scenery.MONUMENT_3495 to Triple("pot", Items.GOLDEN_POT_2948 to Items.EMPTY_POT_1931, "Saradomin is the vessel that keeps our lives from harm."),
-            Scenery.MONUMENT_3497 to Triple("feather", Items.GOLDEN_FEATHER_2950 to Items.FEATHER_314, "Saradomin is the delicate touch that brushes us with love."),
-            Scenery.MONUMENT_3494 to Triple("candle", Items.GOLDEN_CANDLE_2947 to Items.CANDLE_36, "Saradomin is the light that shines throughout our lives."),
-            Scenery.MONUMENT_3499 to Triple("key", Items.IRON_KEY_2945 to Items.GOLDEN_KEY_2944, "Saradomin is the key that unlocks the mysteries of life."),
-            Scenery.MONUMENT_3493 to Triple("tinderbox", Items.GOLDEN_TINDERBOX_2946 to Items.TINDERBOX_590, "Saradomin is the spark that lights the fire in our hearts.")
+            Scenery.MONUMENT_3496 to (Items.GOLDEN_HAMMER_2949 to Items.HAMMER_2347),
+            Scenery.MONUMENT_3498 to (Items.GOLDEN_NEEDLE_2951 to Items.NEEDLE_1733),
+            Scenery.MONUMENT_3495 to (Items.GOLDEN_POT_2948 to Items.EMPTY_POT_1931),
+            Scenery.MONUMENT_3497 to (Items.GOLDEN_FEATHER_2950 to Items.FEATHER_314),
+            Scenery.MONUMENT_3494 to (Items.GOLDEN_CANDLE_2947 to Items.CANDLE_36),
+            Scenery.MONUMENT_3499 to (Items.IRON_KEY_2945 to Items.GOLDEN_KEY_2944),
+            Scenery.MONUMENT_3493 to (Items.GOLDEN_TINDERBOX_2946 to Items.TINDERBOX_590)
         )
 
         /*
-         * Handle monument interaction.
+         * Handles sending items on the interface upon interaction.
          */
 
         on(mausoleumMonumentIds, IntType.SCENERY, "study", "take-from") { player, node ->
             val option = getUsedOption(player)
             val data = monumentData[node.id] ?: return@on false
-            val (attribute, items, message) = data
+            val (goldItem, default) = data
+            val hasReplaced = "${GameAttributes.QUEST_PRIEST_IN_PERIL}:$goldItem"
 
             if (option == "take-from") {
                 impact(player, 2, ImpactHandler.HitsplatType.NORMAL)
                 sendMessage(player, "A holy power prevents you stealing from the monument!")
                 return@on true
             }
+
             openInterface(player, MONUMENT_INTERFACE)
-            val item = if (!getAttribute(player, "${GameAttributes.QUEST_PRIEST_IN_PERIL}:$attribute", false)) items.first else items.second
-            sendItemZoomOnInterface(player, MONUMENT_INTERFACE, 4, item, 175)
-            sendAngleOnInterface(player, MONUMENT_INTERFACE, 4, 300, 100, 100)
-            sendString(player, message, MONUMENT_INTERFACE, 17)
+            val item = if (!getAttribute(player, hasReplaced, false)) goldItem else default
+
+            sendItemZoomOnInterface(
+                player = player,
+                iface = MONUMENT_INTERFACE,
+                child = 4,
+                item = item,
+                zoom = if (node.id == 3493) 320 else 512
+            )
+
+            sendAngleOnInterface(
+                player = player,
+                iface = MONUMENT_INTERFACE,
+                child = 4,
+                zoom = if (node.id == 3493) 320 else 512,
+                pitch = if (node.id in 3495..3498) 128 else 256,
+                yaw = 0
+            )
             return@on true
         }
 
         /*
          * Handle item swapping.
          */
+        monumentData.forEach { (sceneryId, items) ->
+            val (goldItem, default) = items
+            val hasReplaced = "${GameAttributes.QUEST_PRIEST_IN_PERIL}:$goldItem"
 
-        monumentData.forEach { (sceneryId, data) ->
-            val (item, items, _) = data
-            onUseWith(IntType.SCENERY, items.second, sceneryId) { player, used, _ ->
-                if (!getAttribute(player, "${GameAttributes.QUEST_PRIEST_IN_PERIL}:$item", false) && removeItem(player, used)) {
-                    addItem(player, items.first)
-                    sendMessage(player, "You swap the $item for the ${if (used.id == Items.GOLDEN_KEY_2944) "iron" else "golden"} $item.")
-                    setAttribute(player, "${GameAttributes.QUEST_PRIEST_IN_PERIL}:$item", true)
+            onUseWith(IntType.SCENERY, default, sceneryId) { player, used, _ ->
+                if (!getAttribute(player, hasReplaced, false) && removeItem(player, Item(used.id, 1), Container.INVENTORY)) {
+                    setAttribute(player, hasReplaced, true)
+                    addItem(player, goldItem, 1)
+                    if (used.id == Items.GOLDEN_KEY_2944)
+                        sendMessage(player, "You swap the Golden key for the Iron key.")
                 }
                 return@onUseWith true
             }
