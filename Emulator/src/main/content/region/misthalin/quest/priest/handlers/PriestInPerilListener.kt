@@ -78,7 +78,7 @@ class PriestInPerilListener : InteractionListener {
                     }
                 }
 
-                if (questStage < 12) {
+                if (option == "open" && questStage < 12) {
                     sendMessage(player, "This door is securely locked from inside.")
                 } else {
                     DoorActionHandler.handleDoor(player, node.asScenery())
