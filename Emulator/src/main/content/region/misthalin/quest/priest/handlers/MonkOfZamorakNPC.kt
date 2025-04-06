@@ -22,10 +22,6 @@ class MonkOfZamorakNPC(
         vararg objects: Any,
     ): AbstractNPC = MonkOfZamorakNPC(id, location)
 
-    override fun tick() {
-        super.tick()
-    }
-
     override fun finalizeDeath(killer: Entity) {
         super.finalizeDeath(killer)
         val p = (killer as Player)
