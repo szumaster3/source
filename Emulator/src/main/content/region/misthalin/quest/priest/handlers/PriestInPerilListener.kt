@@ -32,6 +32,29 @@ class PriestInPerilListener : InteractionListener {
     }
 
     override fun defineListeners() {
+        on(Scenery.GATE_3444, IntType.SCENERY, "open") { player, node ->
+            if (getQuestStage(player, Quests.PRIEST_IN_PERIL) <= 13) {
+                player.dialogueInterpreter.sendDialogues(
+                    player,
+                    FaceAnim.THINKING,
+                    "Hmmm... from the looks of things, it seems as though",
+                    "somebody has been trying to force this door open. It's",
+                    "still securely locked however."
+                )
+                return@on false
+            }
+            DoorActionHandler.handleDoor(player, node.asScenery())
+            return@on true
+        }
+
+        on(Scenery.GATE_3445, IntType.SCENERY, "open") { player, node ->
+            if (getQuestStage(player, Quests.PRIEST_IN_PERIL) < 17) {
+                sendMessage(player, "The door is locked shut.")
+                return@on false
+            }
+            DoorActionHandler.handleDoor(player, node.asScenery())
+            return@on true
+        }
 
         /*
          * Handles Paterdomus Temple doors interactions.
@@ -210,7 +233,16 @@ class PriestInPerilListener : InteractionListener {
         }
 
         /*
-         * Handles using the quest key to pass through mausoleum cell doors.
+         * Handles using the golden key on the cell door:
+         */
+
+        onUseWith(IntType.SCENERY, Items.GOLDEN_KEY_2944, Scenery.CELL_DOOR_3463) { player, _, _ ->
+            sendMessage(player, "The key is a similar size to the lock, but does not fit.")
+            return@onUseWith true
+        }
+
+        /*
+         * Handles using key on cell doors.
          */
 
         onUseWith(IntType.SCENERY, Items.IRON_KEY_2945, Scenery.CELL_DOOR_3463) { player, used, _ ->
@@ -219,7 +251,7 @@ class PriestInPerilListener : InteractionListener {
             }
             setQuestStage(player, Quests.PRIEST_IN_PERIL, 15)
             sendNPCDialogue(player, NPCs.DREZEL_7690, "Oh! Thank you! You have found the key!", FaceAnim.HALF_GUILTY)
-            sendMessage(player, "You have unlocked the cell door.")
+            sendMessage(player, "You unlock the cell door.")
             return@onUseWith true
         }
 
