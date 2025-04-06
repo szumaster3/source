@@ -1,6 +1,7 @@
 package content.region.misthalin.quest.priest.handlers
 
 import content.data.GameAttributes
+import content.region.misthalin.quest.priest.dialogue.MysteriousVoiceDialogue
 import core.api.*
 import core.api.quest.getQuestStage
 import core.api.quest.isQuestComplete
@@ -39,20 +40,26 @@ class PriestInPerilListener : InteractionListener {
             on(id, IntType.SCENERY, "open", "knock-at") { player, node ->
                 val option = getUsedOption(player)
                 val questStage = getQuestStage(player, Quests.PRIEST_IN_PERIL)
+
                 if (option != "open") {
-                    when (questStage) {
-                        10, 12, 13 -> openDialogue(player, 54584, node)
-                        0 -> {
-                            sendMessage(player, "You knock at the door...")
-                            sendMessageWithDelay(player, "...but nothing interesting happens.", 1)
-                        }
+                    if (player.location.x == 3407) {
+                        sendMessage(player, "You'd feel pretty strange knocking on the door from inside the building.")
+                        return@on true
+                    }
+
+                    if (questStage in 10..13) {
+                        openDialogue(player, MysteriousVoiceDialogue(node.asScenery()))
+                    } else {
+                        sendMessages(player, "You knock at the door...", "...but nothing interesting happens.")
                     }
                 }
+
                 if (questStage < 12) {
                     sendMessage(player, "This door is securely locked from inside.")
                 } else {
                     DoorActionHandler.handleDoor(player, node.asScenery())
                 }
+
                 return@on true
             }
         }
@@ -83,8 +90,8 @@ class PriestInPerilListener : InteractionListener {
             }
             openInterface(player, MONUMENT_INTERFACE)
             val item = if (!getAttribute(player, "${GameAttributes.QUEST_PRIEST_IN_PERIL}:$attribute", false)) items.first else items.second
-            sendItemZoomOnInterface(player, MONUMENT_INTERFACE, 4, item)
-            sendAngleOnInterface(player, MONUMENT_INTERFACE, 4, 300, 200, 100)
+            sendItemZoomOnInterface(player, MONUMENT_INTERFACE, 4, item, 175)
+            sendAngleOnInterface(player, MONUMENT_INTERFACE, 4, 300, 100, 100)
             sendString(player, message, MONUMENT_INTERFACE, 17)
             return@on true
         }
@@ -95,11 +102,10 @@ class PriestInPerilListener : InteractionListener {
 
         monumentData.forEach { (sceneryId, data) ->
             val (item, items, _) = data
-            onUseWith(IntType.SCENERY, items.first, sceneryId) { player, used, _ ->
+            onUseWith(IntType.SCENERY, items.second, sceneryId) { player, used, _ ->
                 if (!getAttribute(player, "${GameAttributes.QUEST_PRIEST_IN_PERIL}:$item", false) && removeItem(player, used)) {
-                    addItem(player, items.second)
-                    val name = item.replaceFirstChar { it.uppercaseChar() }
-                    sendMessage(player, "You swap the $item for the ${if (name == "Key" && used.id == Items.GOLDEN_KEY_2944) "iron" else "golden"} $item.")
+                    addItem(player, items.first)
+                    sendMessage(player, "You swap the $item for the ${if (used.id == Items.GOLDEN_KEY_2944) "iron" else "golden"} $item.")
                     setAttribute(player, "${GameAttributes.QUEST_PRIEST_IN_PERIL}:$item", true)
                 }
                 return@onUseWith true
@@ -163,7 +169,11 @@ class PriestInPerilListener : InteractionListener {
          */
 
         on(Scenery.WELL_3485, IntType.SCENERY, "search") { player, _ ->
-            sendDialogueLines(player, "You look down the well and see the filthy polluted water of the river", "Salve moving slowly along.")
+            sendDialogueLines(
+                player,
+                "You look down the well and see the filthy polluted water of the river",
+                "Salve moving slowly along."
+            )
             return@on true
         }
 
