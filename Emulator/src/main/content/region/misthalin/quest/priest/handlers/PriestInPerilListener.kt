@@ -57,39 +57,53 @@ class PriestInPerilListener : InteractionListener {
             }
         }
 
+        val monumentData = mapOf(
+            Scenery.MONUMENT_3496 to Triple("hammer", Items.GOLDEN_HAMMER_2949 to Items.HAMMER_2347, "Saradomin is the hammer that crushes evil everywhere."),
+            Scenery.MONUMENT_3498 to Triple("needle", Items.GOLDEN_NEEDLE_2951 to Items.NEEDLE_1733, "Saradomin is the needle that binds our lives together."),
+            Scenery.MONUMENT_3495 to Triple("pot", Items.GOLDEN_POT_2948 to Items.EMPTY_POT_1931, "Saradomin is the vessel that keeps our lives from harm."),
+            Scenery.MONUMENT_3497 to Triple("feather", Items.GOLDEN_FEATHER_2950 to Items.FEATHER_314, "Saradomin is the delicate touch that brushes us with love."),
+            Scenery.MONUMENT_3494 to Triple("candle", Items.GOLDEN_CANDLE_2947 to Items.CANDLE_36, "Saradomin is the light that shines throughout our lives."),
+            Scenery.MONUMENT_3499 to Triple("key", Items.IRON_KEY_2945 to Items.GOLDEN_KEY_2944, "Saradomin is the key that unlocks the mysteries of life."),
+            Scenery.MONUMENT_3493 to Triple("tinderbox", Items.GOLDEN_TINDERBOX_2946 to Items.TINDERBOX_590, "Saradomin is the spark that lights the fire in our hearts.")
+        )
+
         /*
-         * Handle interaction with monuments at paterdomus dungeon.
+         * Handle monument interaction.
          */
 
         on(mausoleumMonumentIds, IntType.SCENERY, "study", "take-from") { player, node ->
             val option = getUsedOption(player)
-            val prefix = "Saradomin is the"
+            val data = monumentData[node.id] ?: return@on false
+            val (attribute, items, message) = data
 
-            if(option == "take-from") {
+            if (option == "take-from") {
                 impact(player, 2, ImpactHandler.HitsplatType.NORMAL)
                 sendMessage(player, "A holy power prevents you stealing from the monument!")
                 return@on true
             }
-
             openInterface(player, MONUMENT_INTERFACE)
-
-            val monumentComponents = mapOf(
-                Scenery.MONUMENT_3496 to Triple("hammer", Items.GOLDEN_HAMMER_2949 to Items.HAMMER_2347, "$prefix hammer that crushes evil everywhere."),
-                Scenery.MONUMENT_3498 to Triple("needle", Items.GOLDEN_NEEDLE_2951 to Items.NEEDLE_1733, "$prefix needle that binds our lives together."),
-                Scenery.MONUMENT_3495 to Triple("pot", Items.GOLDEN_POT_2948 to Items.EMPTY_POT_1931, "$prefix vessel that keeps our lives from harm."),
-                Scenery.MONUMENT_3497 to Triple("feather", Items.GOLDEN_FEATHER_2950 to Items.FEATHER_314, "$prefix delicate touch that brushes us with love."),
-                Scenery.MONUMENT_3494 to Triple("candle", Items.GOLDEN_CANDLE_2947 to Items.CANDLE_36, "$prefix light that shines throughout our lives."),
-                Scenery.MONUMENT_3499 to Triple("key", Items.IRON_KEY_2945 to Items.GOLDEN_KEY_2944, "$prefix key that unlocks the mysteries of life."),
-                Scenery.MONUMENT_3493 to Triple("tinderbox", Items.GOLDEN_TINDERBOX_2946 to Items.TINDERBOX_590, "$prefix spark that lights the fire in our hearts.")
-            )
-            val data = monumentComponents[node.id] ?: return@on false
-            val (attrKey, items, message) = data
-            val item = if (!getAttribute(player, "${GameAttributes.QUEST_PRIEST_IN_PERIL}:$attrKey", false)) items.first else items.second
-
+            val item = if (!getAttribute(player, "${GameAttributes.QUEST_PRIEST_IN_PERIL}:$attribute", false)) items.first else items.second
             sendItemZoomOnInterface(player, MONUMENT_INTERFACE, 4, item)
             sendAngleOnInterface(player, MONUMENT_INTERFACE, 4, 300, 200, 100)
             sendString(player, message, MONUMENT_INTERFACE, 17)
             return@on true
+        }
+
+        /*
+         * Handle item swapping.
+         */
+
+        monumentData.forEach { (sceneryId, data) ->
+            val (item, items, _) = data
+            onUseWith(IntType.SCENERY, items.first, sceneryId) { player, used, _ ->
+                if (!getAttribute(player, "${GameAttributes.QUEST_PRIEST_IN_PERIL}:$item", false) && removeItem(player, used)) {
+                    addItem(player, items.second)
+                    val name = item.replaceFirstChar { it.uppercaseChar() }
+                    sendMessage(player, "You swap the $item for the ${if (name == "Key" && used.id == Items.GOLDEN_KEY_2944) "iron" else "golden"} $item.")
+                    setAttribute(player, "${GameAttributes.QUEST_PRIEST_IN_PERIL}:$item", true)
+                }
+                return@onUseWith true
+            }
         }
 
         /*
@@ -142,33 +156,6 @@ class PriestInPerilListener : InteractionListener {
                 teleport(player, Location(3405, 3506, 0))
             }
             return@on true
-        }
-
-        /*
-         * Handles item swapping (Normal to Golden and).
-         */
-
-        val normalToGoldItemsSwap = listOf(
-            Triple(Scenery.MONUMENT_3493, Items.TINDERBOX_590, Items.GOLDEN_TINDERBOX_2946) to "tinderbox",
-            Triple(Scenery.MONUMENT_3494, Items.CANDLE_36, Items.GOLDEN_CANDLE_2947)        to "candle",
-            Triple(Scenery.MONUMENT_3495, Items.EMPTY_POT_1931, Items.GOLDEN_POT_2948)      to "pot",
-            Triple(Scenery.MONUMENT_3496, Items.HAMMER_2347, Items.GOLDEN_HAMMER_2949)      to "hammer",
-            Triple(Scenery.MONUMENT_3497, Items.FEATHER_314, Items.GOLDEN_FEATHER_2950)     to "feather",
-            Triple(Scenery.MONUMENT_3498, Items.NEEDLE_1733, Items.GOLDEN_NEEDLE_2951)      to "needle",
-            Triple(Scenery.MONUMENT_3499, Items.GOLDEN_KEY_2944, Items.IRON_KEY_2945)       to "key"
-        )
-
-        for ((triple, item) in normalToGoldItemsSwap) {
-            val (sceneryId, usedItem, reward) = triple
-            onUseWith(IntType.SCENERY, usedItem, sceneryId) { player, used, _ ->
-                if (!getAttribute(player, "${GameAttributes.QUEST_PRIEST_IN_PERIL}:$item", false) && removeItem(player, used)) {
-                    addItem(player, reward)
-                    val name = item.replaceFirstChar { it.uppercaseChar() }
-                    sendMessage(player, "You swap the $item for the ${if (name == "Key" && used.id == Items.GOLDEN_KEY_2944) "iron" else "golden"} $item.")
-                    setAttribute(player, "${GameAttributes.QUEST_PRIEST_IN_PERIL}:$item", true)
-                }
-                return@onUseWith true
-            }
         }
 
         /*
