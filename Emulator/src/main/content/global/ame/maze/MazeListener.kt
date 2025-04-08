@@ -10,6 +10,8 @@ import core.game.global.action.DoorActionHandler
 import core.game.interaction.IntType
 import core.game.interaction.InteractionListener
 import core.game.node.entity.player.Player
+import core.game.node.entity.player.link.TeleportManager
+import core.game.system.timer.impl.AntiMacro
 import core.game.world.map.Location
 import org.rs.consts.Animations
 import org.rs.consts.Items
@@ -54,7 +56,13 @@ class MazeListener : InteractionListener {
         on(Scenery.WALL_3628, IntType.SCENERY, "open") { player, node ->
             val end = DoorActionHandler.getEndLocation(player, node.asScenery())
             DoorActionHandler.open(node.asScenery(), node.asScenery(), Scenery.WALL_3628, 3626, true, 3, false)
-            forceWalk(player, end, "")
+            /*
+             * End.
+             */
+            if(node.location == Location(2910, 4576))
+                forceMove(player, player.location, end, 0, 90)
+             else
+                forceWalk(player, end, "")
             return@on true
         }
 
@@ -62,7 +70,8 @@ class MazeListener : InteractionListener {
          * Handles door lock.
          */
 
-        on(Scenery.WALL_3626, IntType.SCENERY, "open") { _, _ ->
+        on(Scenery.WALL_3626, IntType.SCENERY, "open") { player, _ ->
+            sendMessage(player, "That bit doesn't open.")
             return@on false
         }
 
@@ -86,7 +95,7 @@ class MazeListener : InteractionListener {
          * Handles the interaction with the chest in the maze.
          */
 
-        on(Scenery.CHEST_3635, IntType.SCENERY, "open") { player, _ ->
+        on(Scenery.CHEST_3635, IntType.SCENERY, "open") { player, node ->
             val ticksLeft = getAttribute(player, GameAttributes.MAZE_ATTRIBUTE_TICKS_LEFT, 0)
             val chestsOpened = getAttribute(player, GameAttributes.MAZE_ATTRIBUTE_CHESTS_OPEN, 0)
 
@@ -100,10 +109,18 @@ class MazeListener : InteractionListener {
                     Items.DEFENCE_POTION2_135 -> "You've found a defence potion!"
                     else -> "You've found some $rewardName!"
                 }
-                addItemOrBank(player, reward.id)
+                replaceScenery(node.asScenery(), node.id + 1, -1)
+                addItemOrBank(player, reward.id, reward.amount)
                 sendItemDialogue(player, reward.id, message)
                 player.incrementAttribute(GameAttributes.MAZE_ATTRIBUTE_CHESTS_OPEN, 1)
             } else {
+                sendMessage(player, "You find nothing of interest.")
+            }
+            return@on true
+        }
+
+        on(Scenery.CHEST_3636, IntType.SCENERY, "search") { player, node ->
+            if(player.viewport.region.id == 11591) {
                 sendMessage(player, "You find nothing of interest.")
             }
             return@on true
@@ -125,7 +142,9 @@ class MazeListener : InteractionListener {
                     GameAttributes.MAZE_ATTRIBUTE_TICKS_LEFT,
                     GameAttributes.MAZE_ATTRIBUTE_CHESTS_OPEN
                 )
-                player.properties.teleportLocation = getAttribute(player, RandomEvent.save(), null)
+                val playerLastLocation = getAttribute(player, RandomEvent.save(), player.location)
+                teleport(player, playerLastLocation, TeleportManager.TeleportType.NORMAL)
+                AntiMacro.terminateEventNpc(player)
                 closeOverlay(player)
             }
             return@on true

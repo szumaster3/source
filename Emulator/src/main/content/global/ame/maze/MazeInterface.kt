@@ -8,6 +8,7 @@ import core.game.event.TickEvent
 import core.game.interaction.InteractionListener
 import core.game.node.entity.Entity
 import core.game.node.entity.player.Player
+import core.game.system.timer.impl.AntiMacro
 import core.game.world.map.Location
 import core.game.world.map.zone.ZoneBorders
 import core.game.world.map.zone.ZoneRestriction
@@ -50,10 +51,15 @@ class MazeInterface : InteractionListener, EventHook<TickEvent>, MapArea {
             closeOverlay(player)
             restoreTabs(player)
             player.unhook(this)
+            AntiMacro.terminateEventNpc(player)
         }
     }
 
     override fun entityStep(entity: Entity, location: Location, lastLocation: Location) {
+        // Unlimited run - 25 February 2009 update.
+        if(entity is Player) if (entity.settings.runEnergy < 100.0) {
+            entity.settings.updateRunEnergy(-100.0)
+        }
     }
 
     override fun process(entity: Entity, event: TickEvent) {
