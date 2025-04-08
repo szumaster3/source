@@ -79,7 +79,7 @@ class MazeListener : InteractionListener {
          * Handles one-way passages in the maze.
          */
 
-        on(oneWayPassageIDs, IntType.SCENERY, "open") { player, node ->
+        on(oneWayPassageIDs, IntType.SCENERY, "open") { player, _ ->
             sendNPCDialogueLines(
                 player,
                 NPCs.MYSTERIOUS_OLD_MAN_410,
@@ -119,7 +119,7 @@ class MazeListener : InteractionListener {
             return@on true
         }
 
-        on(Scenery.CHEST_3636, IntType.SCENERY, "search") { player, node ->
+        on(Scenery.CHEST_3636, IntType.SCENERY, "search") { player, _ ->
             if(player.viewport.region.id == 11591) {
                 sendMessage(player, "You find nothing of interest.")
             }
@@ -143,7 +143,6 @@ class MazeListener : InteractionListener {
                     GameAttributes.MAZE_ATTRIBUTE_CHESTS_OPEN
                 )
                 player.properties.teleportLocation = getAttribute(player, RandomEvent.save(), null)
-                AntiMacro.terminateEventNpc(player)
                 closeOverlay(player)
             }
             return@on true

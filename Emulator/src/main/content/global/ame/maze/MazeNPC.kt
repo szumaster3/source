@@ -22,12 +22,12 @@ class MazeNPC(override var loot: WeightBasedTable? = null) : RandomEventNPC(NPCs
             registerLogoutListener(player, RandomEvent.logout()) { p ->
                 p.location = getAttribute(p, RandomEvent.save(), player.location)
             }
-            teleport(player, MazeInterface.STARTING_POINTS.random(), TeleportManager.TeleportType.NORMAL)
+            teleport(player, Maze.STARTING_POINTS.random(), TeleportManager.TeleportType.NORMAL)
             runTask(player, 6) {
                 teleport(npc!!.asNpc(), player.location, TeleportManager.TeleportType.INSTANT)
                 openOverlay(player, Components.MAZETIMER_209)
                 setAttribute(player, GameAttributes.MAZE_ATTRIBUTE_TICKS_LEFT, 300)
-                setVarp(player, MazeInterface.MAZE_TIMER_VARP, (getAttribute(player, GameAttributes.MAZE_ATTRIBUTE_TICKS_LEFT, 0) / 3), false)
+                setVarp(player, Maze.MAZE_TIMER_VARP, (getAttribute(player, GameAttributes.MAZE_ATTRIBUTE_TICKS_LEFT, 0) / 3), false)
                 sendNPCDialogue(player, NPCs.MYSTERIOUS_OLD_MAN_410, "You need to reach the maze center, then you'll be returned to where you were.")
                 sendMessage(player, "Head for the center of the maze.")
             }

@@ -5,7 +5,6 @@ import core.api.*
 import core.api.ui.restoreTabs
 import core.game.event.EventHook
 import core.game.event.TickEvent
-import core.game.interaction.InteractionListener
 import core.game.node.entity.Entity
 import core.game.node.entity.player.Player
 import core.game.system.timer.impl.AntiMacro
@@ -14,29 +13,25 @@ import core.game.world.map.zone.ZoneBorders
 import core.game.world.map.zone.ZoneRestriction
 
 /**
- * Maze interface.
+ * Maze.
  *
  * Author: [Ovenbread](https://gitlab.com/ovenbreado)
  */
-class MazeInterface : InteractionListener, EventHook<TickEvent>, MapArea {
-    companion object {
-        const val MAZE_TIMER_VARP = 531
-
-        val STARTING_POINTS = arrayOf(
-            Location(2928, 4553, 0),
-            Location(2917, 4553, 0),
-            Location(2908, 4555, 0),
-            Location(2891, 4589, 0),
-            Location(2891, 4595, 0),
-            Location(2891, 4595, 0),
-            Location(2926, 4597, 0),
-            Location(2931, 4597, 0),
-        )
-    }
-
+class Maze : EventHook<TickEvent>, MapArea {
     override fun defineAreaBorders(): Array<ZoneBorders> = arrayOf(getRegionBorders(11591))
-    override fun getRestrictions(): Array<ZoneRestriction> =
-        arrayOf(ZoneRestriction.RANDOM_EVENTS, ZoneRestriction.FOLLOWERS, ZoneRestriction.TELEPORT)
+    override fun getRestrictions(): Array<ZoneRestriction> = arrayOf(ZoneRestriction.RANDOM_EVENTS, ZoneRestriction.FOLLOWERS, ZoneRestriction.TELEPORT)
+
+    override fun process(entity: Entity, event: TickEvent) {
+        if (entity is Player) {
+            val player = entity.asPlayer()
+            var ticks = getAttribute(player, GameAttributes.MAZE_ATTRIBUTE_TICKS_LEFT, 0)
+            if (ticks > 0) {
+                ticks--
+                setAttribute(player, GameAttributes.MAZE_ATTRIBUTE_TICKS_LEFT, ticks)
+            }
+            setVarp(player, MAZE_TIMER_VARP, ticks / 3, false)
+        }
+    }
 
     override fun areaEnter(entity: Entity) {
         if (entity is Player) {
@@ -62,15 +57,18 @@ class MazeInterface : InteractionListener, EventHook<TickEvent>, MapArea {
         }
     }
 
-    override fun process(entity: Entity, event: TickEvent) {
-        if (entity is Player) {
-            val player = entity.asPlayer()
-            var ticks = getAttribute(player, GameAttributes.MAZE_ATTRIBUTE_TICKS_LEFT, 0)
-            if (ticks > 0) {
-                ticks--
-                setAttribute(player, GameAttributes.MAZE_ATTRIBUTE_TICKS_LEFT, ticks)
-            }
-            setVarp(player, MAZE_TIMER_VARP, ticks / 3, false)
-        }
+    companion object {
+        const val MAZE_TIMER_VARP = 531
+
+        val STARTING_POINTS = arrayOf(
+            Location(2928, 4553, 0),
+            Location(2917, 4553, 0),
+            Location(2908, 4555, 0),
+            Location(2891, 4589, 0),
+            Location(2891, 4595, 0),
+            Location(2891, 4595, 0),
+            Location(2926, 4597, 0),
+            Location(2931, 4597, 0),
+        )
     }
 }
