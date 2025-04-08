@@ -10,6 +10,7 @@ import core.tools.END_DIALOGUE
 import org.rs.consts.NPCs
 
 /**
+ * Represents the mysterious old man dialogue (Maze random event).
  * TODO find full dialogue.
  */
 class MazeDialogue : DialogueFile() {
@@ -21,6 +22,7 @@ class MazeDialogue : DialogueFile() {
                 end()
                 setTitle(player!!, 4)
                 sendDialogueOptions(player!!, "What would you like to say?", "What I meant to be doing?", "I want to bank my stuff.", "I give up! Can I leave now?", "No, I'm alright.")
+                stage++
             }
             2 -> when(buttonID) {
                 1 -> player("What I meant to be doing?").also { stage++ }

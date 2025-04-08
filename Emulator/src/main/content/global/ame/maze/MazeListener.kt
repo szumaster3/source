@@ -142,8 +142,7 @@ class MazeListener : InteractionListener {
                     GameAttributes.MAZE_ATTRIBUTE_TICKS_LEFT,
                     GameAttributes.MAZE_ATTRIBUTE_CHESTS_OPEN
                 )
-                val playerLastLocation = getAttribute(player, RandomEvent.save(), player.location)
-                teleport(player, playerLastLocation, TeleportManager.TeleportType.NORMAL)
+                player.properties.teleportLocation = getAttribute(player, RandomEvent.save(), null)
                 AntiMacro.terminateEventNpc(player)
                 closeOverlay(player)
             }
