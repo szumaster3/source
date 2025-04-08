@@ -1,6 +1,5 @@
 package content.global.ame.maze
 
-import core.api.interaction.openDepositBox
 import core.api.sendDialogueOptions
 import core.api.setTitle
 import core.game.dialogue.DialogueFile
@@ -25,7 +24,7 @@ class MazeDialogue : DialogueFile() {
             }
             2 -> when(buttonID) {
                 1 -> player("What I meant to be doing?").also { stage++ }
-                2 -> end().also { openDepositBox(player!!) }
+                2 -> end()//.also { openDepositBox(player!!) } // TODO: Need good implementation.
                 3 -> player("I give up! Can I leave now?").also { stage++ }
                 4 -> player("No, I'm alright.").also { stage = END_DIALOGUE }
             }
