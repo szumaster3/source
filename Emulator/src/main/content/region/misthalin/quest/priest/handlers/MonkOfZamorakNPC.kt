@@ -22,8 +22,7 @@ class MonkOfZamorakNPC(
         vararg objects: Any,
     ): AbstractNPC = MonkOfZamorakNPC(id, location)
 
-    override fun finalizeDeath(killer: Entity) {
-        super.finalizeDeath(killer)
+    override fun finalizeDeath(killer: Entity?) {
         if (killer is Player) {
             val player = killer.asPlayer()
             val quest = player.getQuestRepository().getQuest(Quests.PRIEST_IN_PERIL)
@@ -31,6 +30,7 @@ class MonkOfZamorakNPC(
                 GroundItemManager.create(Item(Items.GOLDEN_KEY_2944, 1), getLocation(), player)
             }
         }
+        super.finalizeDeath(killer)
     }
 
     override fun getIds(): IntArray =
