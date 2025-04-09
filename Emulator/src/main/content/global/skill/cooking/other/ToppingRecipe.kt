@@ -24,7 +24,7 @@ class ToppingRecipe : InteractionListener {
          * Ticks: 2 (1.2 seconds)
          */
 
-        onUseWith(IntType.ITEM, Items.SPICY_SAUCE_7072, Items.MINCED_MEAT_7070, Items.COOKED_MEAT_2143) { player, used, ingredient ->
+        onUseWith(IntType.ITEM, Items.SPICY_SAUCE_7072, Items.MINCED_MEAT_7070, Items.COOKED_MEAT_2142) { player, used, ingredient ->
             if (getStatLevel(player, Skills.COOKING) < 9) {
                 sendMessage(player, "You need a Cooking level of 9 to make that.")
                 return@onUseWith false

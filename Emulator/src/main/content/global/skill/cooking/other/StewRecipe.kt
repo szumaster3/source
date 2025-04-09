@@ -14,7 +14,7 @@ class StewRecipe : InteractionListener {
     private val incompleteStew = intArrayOf(Items.INCOMPLETE_STEW_1997, Items.INCOMPLETE_STEW_1999)
 
     override fun defineListeners() {
-        onUseWith(IntType.ITEM, Items.BOWL_OF_WATER_1921, Items.POTATO_1942, Items.COOKED_MEAT_2143) { player, used, ingredient ->
+        onUseWith(IntType.ITEM, Items.BOWL_OF_WATER_1921, Items.POTATO_1942, Items.COOKED_MEAT_2142) { player, used, ingredient ->
             if (getStatLevel(player, Skills.COOKING) < 25) {
                 sendMessage(player, "You need a Cooking level of 25 to make that.")
                 return@onUseWith false
@@ -22,7 +22,7 @@ class StewRecipe : InteractionListener {
 
             val stew = when (ingredient.id) {
                 Items.POTATO_1942 -> Items.INCOMPLETE_STEW_1997
-                Items.COOKED_MEAT_2143 -> Items.INCOMPLETE_STEW_1999
+                Items.COOKED_MEAT_2142 -> Items.INCOMPLETE_STEW_1999
                 else -> return@onUseWith false
             }
 
@@ -59,7 +59,7 @@ class StewRecipe : InteractionListener {
             return@onUseWith true
         }
 
-        onUseWith(IntType.ITEM, incompleteStew, Items.COOKED_MEAT_2143, Items.POTATO_1942) { player, used, ingredient ->
+        onUseWith(IntType.ITEM, incompleteStew, Items.COOKED_MEAT_2142, Items.POTATO_1942) { player, used, ingredient ->
             if (getStatLevel(player, Skills.COOKING) < 25) {
                 sendMessage(player, "You need a Cooking level of 25 to make that.")
                 return@onUseWith false
