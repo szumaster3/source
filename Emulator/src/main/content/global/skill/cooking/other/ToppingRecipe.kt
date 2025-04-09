@@ -254,19 +254,19 @@ class ToppingRecipe : InteractionListener {
          */
 
         onUseWith(IntType.ITEM, Items.FRIED_MUSHROOMS_7082, Items.FRIED_ONIONS_7084) { player, used, with ->
-            if (getStatLevel(player, Skills.COOKING) < 40) {
-                sendMessage(player, "You need a Cooking level of 40 to make that.")
+            if (getStatLevel(player, Skills.COOKING) < 57) {
+                sendMessage(player, "You need a Cooking level of 57 to make that.")
                 return@onUseWith false
             }
 
-            fun makeKebab(): Boolean {
+            fun makeDish(): Boolean {
                 if (removeItem(player, Item(used.id, 1), Container.INVENTORY) &&
                     removeItem(player, Item(with.id, 1), Container.INVENTORY)
                 ) {
                     addItem(player, Items.BOWL_1923, 1, Container.INVENTORY)
-                    addItem(player, Items.UGTHANKI_KEBAB_1885, 1, Container.INVENTORY)
-                    rewardXP(player, Skills.COOKING, 40.0)
-                    sendMessage(player, "You mix the ingredients to make ugthanki kebab.")
+                    addItem(player, Items.MUSHROOM_AND_ONION_7066, 1, Container.INVENTORY)
+                    rewardXP(player, Skills.COOKING, 120.0)
+                    sendMessage(player, "You mix the fried onions and mushrooms.")
                     return true
                 }
                 return false
@@ -276,14 +276,14 @@ class ToppingRecipe : InteractionListener {
             val amountWith = amountInInventory(player, with.id)
 
             if (amountUsed == 1 || amountWith == 1) {
-                return@onUseWith makeKebab()
+                return@onUseWith makeDish()
             }
 
             sendSkillDialogue(player) {
-                withItems(Items.UGTHANKI_KEBAB_1885)
+                withItems(Items.MUSHROOM_AND_ONION_7066)
                 create { _, amount ->
                     runTask(player, 2, amount) {
-                        if (amount > 0) makeKebab()
+                        if (amount > 0) makeDish()
                     }
                 }
                 calculateMaxAmount {
