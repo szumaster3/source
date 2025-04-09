@@ -20866,6 +20866,7 @@
     "id": "1996"
   },
   {
+    "examine": "I need to add some meat too.",
     "ge_buy_limit": "200",
     "grand_exchange_price": "177",
     "durability": null,
@@ -20883,6 +20884,7 @@
     "id": "1998"
   },
   {
+    "examine": "I need to add some potato too.",
     "ge_buy_limit": "200",
     "grand_exchange_price": "210",
     "durability": null,
