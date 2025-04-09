@@ -1,12 +1,15 @@
 package content.global.ame.maze
 
 import content.data.GameAttributes
+import content.data.RandomEvent
 import core.api.*
 import core.api.ui.restoreTabs
 import core.game.event.EventHook
 import core.game.event.TickEvent
 import core.game.node.entity.Entity
 import core.game.node.entity.player.Player
+import core.game.node.scenery.Scenery
+import core.game.node.scenery.SceneryBuilder
 import core.game.system.timer.impl.AntiMacro
 import core.game.world.map.Location
 import core.game.world.map.zone.ZoneBorders
@@ -37,6 +40,17 @@ class Maze : EventHook<TickEvent>, MapArea {
         if (entity is Player) {
             val player = entity.asPlayer()
             player.hook(Event.Tick, this)
+            /*
+             * Temporary solution while finding the var that is responsible for the chest swap.
+             * For best results, it needs to match: https://pastebin.com/cJNvkdUa
+             */
+            for (i in CHEST_LOCATIONS) {
+                SceneryBuilder.replace(
+                    Scenery(org.rs.consts.Scenery.WALL_3626, i),
+                    Scenery(org.rs.consts.Scenery.CHEST_3635, i),
+                    -1
+                )
+            }
         }
     }
 
@@ -46,6 +60,7 @@ class Maze : EventHook<TickEvent>, MapArea {
             closeOverlay(player)
             restoreTabs(player)
             player.unhook(this)
+            clearLogoutListener(player, RandomEvent.logout())
             AntiMacro.terminateEventNpc(player)
         }
     }
@@ -69,6 +84,19 @@ class Maze : EventHook<TickEvent>, MapArea {
             Location(2891, 4595, 0),
             Location(2926, 4597, 0),
             Location(2931, 4597, 0),
+        )
+        private val CHEST_LOCATIONS = arrayOf(
+            Location.create(2925, 4573),
+            Location.create(2917, 4590),
+            Location.create(2918, 4590),
+            Location.create(2899, 4579),
+            Location.create(2895, 4592),
+            Location.create(2896, 4591),
+            Location.create(2900, 4578),
+            Location.create(2890, 4599),
+            Location.create(2901, 4560),
+            Location.create(2930, 4595),
+            Location.create(2924, 4572)
         )
     }
 }

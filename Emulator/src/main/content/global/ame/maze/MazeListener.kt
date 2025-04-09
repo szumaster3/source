@@ -61,7 +61,7 @@ class MazeListener : InteractionListener {
             DoorActionHandler.open(node.asScenery(), node.asScenery(), Scenery.WALL_3628, 3626, true, 3, false)
 
             if (node.location == Location(2910, 4576)) // Doors leading to the strange shrine.
-                forceMove(player, player.location, end, 0, 39)
+                forceMove(player, player.location, end, 0, 30)
             else
                 forceWalk(player, end, "")
             return@on true
