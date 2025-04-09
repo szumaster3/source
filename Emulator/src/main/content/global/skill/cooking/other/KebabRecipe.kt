@@ -169,7 +169,7 @@ class KebabRecipe : InteractionListener {
             val product = if(with.id == Items.ONION_1957) Items.UGTHANKI_AND_ONION_1877 else Items.UGTHANKI_AND_TOMATO_1879
 
             if (!inInventory(player, Items.KNIFE_946)) {
-                sendMessage(player, "You need a knife to slice up the meat.")
+                sendMessage(player, "You need a knife to slice up the ${with.name.lowercase()}.")
                 return@onUseWith false
             }
 
