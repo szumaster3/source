@@ -91,13 +91,6 @@ enum class Recipe(
         message = { "You prepare a mud pie." },
         singular = false,
     ),
-    REDBERRY_PIE(
-        base = Item(Items.PIE_SHELL_2315),
-        product = Item(Items.UNCOOKED_BERRY_PIE_2321),
-        ingredients = arrayOf(Item(Items.REDBERRIES_1951)),
-        parts = emptyArray(),
-        message = { "You fill the pie with redberries." },
-    ),
     SUMMER_PIE(
         base = Item(Items.PIE_SHELL_2315),
         product = Item(Items.RAW_SUMMER_PIE_7216),
@@ -125,14 +118,5 @@ enum class Recipe(
             ),
         message = { "You prepare a wild pie." },
         singular = false,
-    ),
-    MUSHROOM_AND_ONION(
-        base = Item(Items.FRIED_MUSHROOMS_7082),
-        product = Item(Items.MUSHROOM_AND_ONION_7066),
-        ingredients = arrayOf(Item(Items.FRIED_ONIONS_7084)),
-        parts = emptyArray(),
-        message = { "You mix the fried onions and mushrooms." },
-        level = 57,
-        experience = 120.0,
     );
 }

@@ -545,6 +545,10 @@ public enum Consumables {
      */
     BLACK_MUSHROOM(new FakeConsumable(Items.BLACK_MUSHROOM_4620, new String[]{"Eugh! It tastes horrible, and stains your fingers black."})),
     /**
+     * The chopped tomato.
+     */
+    CHOPPED_TOMATO(new Food(new int[]{Items.CHOPPED_TOMATO_1869, Items.BOWL_1923}, new HealingEffect(2))),
+    /**
      * The Onion and tomato.
      */
     ONION_AND_TOMATO(new Food(new int[]{Items.ONION_AND_TOMATO_1875, Items.BOWL_1923}, new HealingEffect(2))),
