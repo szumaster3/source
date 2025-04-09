@@ -9,17 +9,17 @@ import core.game.system.task.Pulse
 import org.rs.consts.Animations
 import org.rs.consts.Items
 
-class ChoppingRecipes : InteractionListener {
+class ChoppingRecipe : InteractionListener {
 
     override fun defineListeners() {
 
         /*
          * Handles cutting ingredients with a knife.
          * Products:
-         *  - Calquat keg
-         *  - Chocolate dust
+         *  - Calquat Keg
+         *  - Chocolate Dust
          *
-         * Ticks: 4 (2.4s)
+         * Ticks: 4 (2.4 seconds)
          */
 
         onUseWith(IntType.ITEM, Items.KNIFE_946, Items.CALQUAT_FRUIT_5980, Items.CHOCOLATE_BAR_1973) { player, _, items ->
@@ -48,13 +48,14 @@ class ChoppingRecipes : InteractionListener {
 
         /*
          * Handles chopping ingredients into a bowl using a knife.
-         * Products:
-         *  - Chopped tuna
-         *  - Chopped onion
-         *  - Sliced mushrooms
-         *  - Minced meat
          *
-         * Ticks: 2 (1.2s)
+         * Products:
+         *  - Chopped Tuna
+         *  - Chopped Onion
+         *  - Sliced Mushrooms
+         *  - Minced Meat
+         *
+         * Ticks: 2 (1.2 seconds)
          */
 
         onUseWith(
@@ -98,7 +99,11 @@ class ChoppingRecipes : InteractionListener {
         }
 
         /*
-         * Handles creating uncooked egg.
+         * Handles creating uncooked egg from an egg and a bowl.
+         *
+         * Product:
+         *  - Uncooked Egg.
+         *
          */
 
         onUseWith(IntType.ITEM, Items.BOWL_1923, Items.EGG_1944) { player, used, with ->

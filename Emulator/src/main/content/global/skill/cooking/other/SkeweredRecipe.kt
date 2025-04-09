@@ -9,12 +9,20 @@ import org.rs.consts.Animations
 import org.rs.consts.Items
 import org.rs.consts.Sounds
 
-class SkeweredRecipes : InteractionListener {
+class SkeweredRecipe : InteractionListener {
 
     override fun defineListeners() {
 
         /*
-         * Handles creating skewered food.
+         * Handles creating skewered food with a spit.
+         *
+         * Products:
+         *  - Skewered Bird Meat    (Required: Level 11 Cooking)
+         *  - Skewered Rabbit:      (Required: Level 16 Cooking)
+         *  - Skewered Beast Meat:  (Required: Level 21 Cooking)
+         *  - Skewered Chompy:      (Required: Level 30 Cooking)
+         *
+         * Ticks: 2 (1.2 seconds)
          */
 
         onUseWith(
@@ -46,9 +54,12 @@ class SkeweredRecipes : InteractionListener {
             return@onUseWith true
         }
 
-
         /*
-         * Handles creating a spider on a stick.
+         * Handles creating a spider on a stick using a skewer stick and a spider carcass.
+         *
+         * Product:
+         *  - Spider on a Stick.
+         *
          */
 
         onUseWith(IntType.ITEM, Items.SKEWER_STICK_6305, Items.SPIDER_CARCASS_6291) { player, used, with ->
@@ -62,7 +73,11 @@ class SkeweredRecipes : InteractionListener {
         }
 
         /*
-         * Handles creating a spider on a shaft.
+         * Handles creating a spider on a shaft using an arrow shaft and a spider carcass.
+         *
+         * Product:
+         *  - Spider on a Shaft.
+         *
          */
 
         onUseWith(IntType.ITEM, Items.ARROW_SHAFT_52, Items.SPIDER_CARCASS_6291) { player, used, with ->

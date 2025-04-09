@@ -9,7 +9,7 @@ import core.game.interaction.InteractionListener
 import core.game.node.item.Item
 import org.rs.consts.Items
 
-class NettleTeaRecipes : InteractionListener {
+class NettleTeaRecipe : InteractionListener {
 
     override fun defineListeners() {
 

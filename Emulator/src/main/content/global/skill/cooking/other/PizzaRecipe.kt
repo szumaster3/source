@@ -8,7 +8,7 @@ import core.game.node.item.Item
 import core.game.system.task.Pulse
 import org.rs.consts.Items
 
-class PizzaRecipes : InteractionListener {
+class PizzaRecipe : InteractionListener {
 
     override fun defineListeners() {
 

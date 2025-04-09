@@ -8,7 +8,7 @@ import core.game.interaction.InteractionListener
 import core.game.node.item.Item
 import org.rs.consts.Items
 
-class KebabRecipes : InteractionListener {
+class KebabRecipe : InteractionListener {
 
     override fun defineListeners() {
 

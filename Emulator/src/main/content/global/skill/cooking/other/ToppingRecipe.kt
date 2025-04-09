@@ -9,11 +9,18 @@ import core.game.node.item.Item
 import org.rs.consts.Items
 import kotlin.math.min
 
-class ToppingRecipes : InteractionListener {
+class ToppingRecipe : InteractionListener {
 
     override fun defineListeners() {
         /*
-         * Handles creating Chilli con carne.
+         * Handles creating Chilli con carne (first variant) using Spicy Sauce and Cooked Meat.
+         *
+         * Requirements:
+         *  - Cooking Level 9
+         *  - Items: Spicy Sauce and Cooked Meat.
+         *  - Result: Chilli con Carne (25 XP).
+         *
+         * Ticks: 2 (1.2 seconds)
          */
 
         onUseWith(IntType.ITEM, Items.SPICY_SAUCE_7072, Items.COOKED_MEAT_2143) { player, used, with ->
@@ -53,7 +60,14 @@ class ToppingRecipes : InteractionListener {
         }
 
         /*
-         * Handles creating Chilli con carne (second variant).
+         * Handles creating Chilli con carne (second variant) using Spicy Sauce and Minced Meat.
+         *
+         * Requirements:
+         *  - Cooking Level 9
+         *  - Items: Spicy Sauce and Minced Meat.
+         *  - Result: Chilli con Carne (25 XP) with Bowl.
+         *
+         * Ticks: 2 (1.2 seconds)
          */
 
         onUseWith(IntType.ITEM, Items.SPICY_SAUCE_7072, Items.MINCED_MEAT_7070) { player, used, with ->
@@ -98,8 +112,14 @@ class ToppingRecipes : InteractionListener {
         }
 
         /*
-         * Handles creating Tuna and corn.
-         * Ticks: 2 (1.2s)
+         * Handles creating Tuna and Corn topping.
+         *
+         * Requirements:
+         *  - Cooking Level 67
+         *  - Items: Cooked Sweetcorn and Chopped Tuna.
+         *  - Result: Tuna and Corn topping (204 XP).
+         *
+         * Ticks: 2 (1.2 seconds)
          */
 
         onUseWith(IntType.ITEM, Items.COOKED_SWEETCORN_5988, Items.CHOPPED_TUNA_7086) { player, used, with ->

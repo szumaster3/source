@@ -128,51 +128,6 @@ enum class Recipe(
         message = { "You prepare a wild pie." },
         singular = false,
     ),
-    BUTTER_POTATO(
-        base = Item(Items.BAKED_POTATO_6701),
-        product = Item(Items.POTATO_WITH_BUTTER_6703),
-        ingredients = arrayOf(Item(Items.PAT_OF_BUTTER_6697)),
-        parts = emptyArray(),
-        message = { "You add the butter to the potato." },
-        level = 39,
-        experience = 40.5,
-    ),
-    CHILLI_POTATO(
-        base = Item(Items.POTATO_WITH_BUTTER_6703),
-        product = Item(Items.CHILLI_POTATO_7054),
-        ingredients = arrayOf(Item(Items.CHILLI_CON_CARNE_7062)),
-        parts = emptyArray(),
-        message = { "You add the topping to the potato." },
-        level = 41,
-        experience = 10.0,
-    ),
-    CHEESE_POTATO(
-        base = Item(Items.POTATO_WITH_BUTTER_6703),
-        product = Item(Items.POTATO_WITH_CHEESE_6705),
-        ingredients = arrayOf(Item(Items.CHEESE_1985)),
-        parts = emptyArray(),
-        message = { "You add the cheese to the potato." },
-        level = 47,
-        experience = 10.0,
-    ),
-    EGG_POTATO(
-        base = Item(Items.POTATO_WITH_BUTTER_6703),
-        product = Item(Items.EGG_POTATO_7056),
-        ingredients = arrayOf(Item(Items.EGG_AND_TOMATO_7064)),
-        parts = emptyArray(),
-        message = { "You add the topping to the potato." },
-        level = 51,
-        experience = 10.0,
-    ),
-    MUSHROOM_POTATO(
-        base = Item(Items.POTATO_WITH_BUTTER_6703),
-        product = Item(Items.MUSHROOM_POTATO_7058),
-        ingredients = arrayOf(Item(Items.MUSHROOM_AND_ONION_7066)),
-        parts = emptyArray(),
-        message = { "You add the mushroom to the potato." },
-        level = 64,
-        experience = 10.0,
-    ),
     SPICY_SAUCE(
         base = Item(Items.BOWL_1923),
         product = Item(Items.SPICY_SAUCE_7072),
@@ -181,20 +136,6 @@ enum class Recipe(
         message = { "You prepare the spicy sauce." },
         level = 9,
         experience = 25.0,
-    ),
-    CHILLI_CON_CARNE(
-        base = Item(Items.SPICY_SAUCE_7072),
-        product = Item(Items.CHILLI_CON_CARNE_7062),
-        ingredients = arrayOf(Item(Items.COOKED_MEAT_2142)),
-        parts = emptyArray(),
-        message = { "You put the cut up meat into the bowl." },
-        level = 9,
-        experience = 25.0,
-        event = { player, _ ->
-            if (!inInventory(player, Items.KNIFE_946)) {
-                sendMessage(player, "You need a knife to slice up the onion.")
-            }
-        },
     ),
     MUSHROOM_AND_ONION(
         base = Item(Items.FRIED_MUSHROOMS_7082),

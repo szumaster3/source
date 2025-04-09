@@ -10,12 +10,18 @@ import core.game.node.item.Item
 import org.rs.consts.Items
 import kotlin.math.min
 
-class CakeRecipes : InteractionListener {
+class CakeRecipe : InteractionListener {
 
     override fun defineListeners() {
         /*
-         * Handles creating an uncooked cake.
-         * Ticks: 2 (1.2s)
+         * Handles creating an Uncooked Cake by combining flour, milk, egg, and a cake tin.
+         *
+         * Requirements:
+         *  - Level 40 Cooking
+         *  - Items: Pot of flour, Bucket of milk, Egg, Cake tin
+         *  - Produces: Uncooked cake, Empty bucket, and Empty pot
+         *
+         * Ticks: 2 (1.2 seconds)
          */
 
         onUseWith(IntType.ITEM, Items.CAKE_TIN_1887, Items.POT_OF_FLOUR_1933, Items.BUCKET_OF_MILK_1927, Items.EGG_1944) { player, used, with ->
@@ -56,7 +62,13 @@ class CakeRecipes : InteractionListener {
         }
 
         /*
-         * Handles making a chocolate cake.
+         * Handles creating a Chocolate Cake by combining a Cake with either a Chocolate bar or Chocolate dust.
+         *
+         * Requirements:
+         *  - Level 50 Cooking
+         *  - Items: Cake + (Chocolate bar or Chocolate dust)
+         *  - Produces: Chocolate Cake
+         *  - XP Gained: 30.0 Cooking XP
          */
 
         onUseWith(IntType.ITEM, Items.CAKE_1891, Items.CHOCOLATE_BAR_1973, Items.CHOCOLATE_DUST_1975) { player, used, with ->
