@@ -14,101 +14,63 @@ class ToppingRecipe : InteractionListener {
     override fun defineListeners() {
 
         /*
-         * Handles creating Chilli con carne (first variant) using Spicy Sauce and Cooked Meat.
-         *
-         * Requirements:
-         *  - Cooking Level 9
-         *  - Items: Spicy Sauce and Cooked Meat.
-         *  - Result: Chilli con Carne (25 XP).
-         *
-         * Ticks: 2 (1.2 seconds)
-         */
-
-        onUseWith(IntType.ITEM, Items.SPICY_SAUCE_7072, Items.COOKED_MEAT_2143) { player, used, with ->
-            if (getStatLevel(player, Skills.COOKING) < 9) {
-                sendMessage(player, "You need a Cooking level of 9 to make that.")
-                return@onUseWith false
-            }
-
-            if (amountInInventory(player, used.id) == 1 || amountInInventory(player, with.id) == 1) {
-                if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(player, Item(with.id, 1), Container.INVENTORY)) {
-                    rewardXP(player, Skills.COOKING, 25.0)
-                    addItem(player, Items.CHILLI_CON_CARNE_7062, 1)
-                    sendMessage(player, "You put the cut up meat into the bowl.")
-                }
-                return@onUseWith true
-            }
-
-            sendSkillDialogue(player) {
-                withItems(Items.CHILLI_CON_CARNE_7062)
-                create { _, amount ->
-                    runTask(player, 2, amount) {
-                        if (amount < 1) return@runTask
-                        if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(player, Item(with.id, 1), Container.INVENTORY)) {
-                            rewardXP(player, Skills.COOKING, 25.0)
-                            addItem(player, Items.CHILLI_CON_CARNE_7062, 1, Container.INVENTORY)
-                            sendMessage(player, "You put the cut up meat into the bowl.")
-                        }
-                    }
-                }
-
-                calculateMaxAmount { _ ->
-                    min(amountInInventory(player, with.id), amountInInventory(player, used.id))
-                }
-            }
-
-            return@onUseWith true
-        }
-
-        /*
-         * Handles creating Chilli con carne (second variant) using Spicy Sauce and Minced Meat.
+         * Handles creating Chilli con carne (both variants).
          *
          * Requirements:
          *  - Cooking Level 9
          *  - Items: Spicy Sauce and Minced Meat.
-         *  - Result: Chilli con Carne (25 XP) with Bowl.
+         *  - Result: Chilli con Carne (25 XP)
          *
          * Ticks: 2 (1.2 seconds)
          */
 
-        onUseWith(IntType.ITEM, Items.SPICY_SAUCE_7072, Items.MINCED_MEAT_7070) { player, used, with ->
+        onUseWith(IntType.ITEM, Items.SPICY_SAUCE_7072, Items.MINCED_MEAT_7070, Items.COOKED_MEAT_2143) { player, used, ingredient ->
             if (getStatLevel(player, Skills.COOKING) < 9) {
                 sendMessage(player, "You need a Cooking level of 9 to make that.")
                 return@onUseWith false
             }
 
-            if (freeSlots(player) < 1) {
+            if (ingredient.id == Items.MINCED_MEAT_7070 && freeSlots(player) < 1) {
                 sendMessage(player, "Not enough space in your inventory.")
                 return@onUseWith false
             }
 
-            if (amountInInventory(player, used.id) == 1 || amountInInventory(player, with.id) == 1) {
-                if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(player, Item(with.id, 1), Container.INVENTORY)) {
+            fun makeDish(): Boolean {
+                if (removeItem(player, Item(used.id, 1), Container.INVENTORY) &&
+                    removeItem(player, Item(ingredient.id, 1), Container.INVENTORY)
+                ) {
+                    if (ingredient.id == Items.MINCED_MEAT_7070) {
+                        addItem(player, Items.BOWL_1923, 1)
+                    }
                     rewardXP(player, Skills.COOKING, 25.0)
-                    addItem(player, Items.BOWL_1923, 1)
-                    addItem(player, Items.CHILLI_CON_CARNE_7062, 1)
+                    sendMessage(
+                        player,
+                        if (ingredient.id == Items.MINCED_MEAT_7070) "You mix the ingredients to make the topping." else "You put the cut up meat into the bowl."
+                    )
+                    addItem(player, Items.CHILLI_CON_CARNE_7062, 1, Container.INVENTORY)
+                    return true
                 }
-                return@onUseWith true
+                return false
+            }
+
+            val amountUsed = amountInInventory(player, used.id)
+            val amountWith = amountInInventory(player, ingredient.id)
+
+            if (amountUsed == 1 || amountWith == 1) {
+                return@onUseWith makeDish()
             }
 
             sendSkillDialogue(player) {
                 withItems(Items.CHILLI_CON_CARNE_7062)
                 create { _, amount ->
                     runTask(player, 2, amount) {
-                        if (amount < 1) return@runTask
-                        if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(player, Item(with.id, 1), Container.INVENTORY)) {
-                            rewardXP(player, Skills.COOKING, 25.0)
-                            addItem(player, Items.BOWL_1923, 1)
-                            addItem(player, Items.CHILLI_CON_CARNE_7062, 1)
-                        }
+                        if (amount > 0) makeDish()
                     }
                 }
-
-                calculateMaxAmount { _ ->
-                    min(amountInInventory(player, with.id), amountInInventory(player, used.id))
+                calculateMaxAmount {
+                    min(amountWith, amountUsed)
                 }
             }
-
             return@onUseWith true
         }
 
@@ -129,30 +91,34 @@ class ToppingRecipe : InteractionListener {
                 return@onUseWith false
             }
 
-            if (amountInInventory(player, used.id) == 1 || amountInInventory(player, with.id) == 1) {
-                if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(player, Item(with.id, 1), Container.INVENTORY)) {
+            fun makeDish(): Boolean {
+                if (removeItem(player, Item(used.id, 1), Container.INVENTORY) &&
+                    removeItem(player, Item(with.id, 1), Container.INVENTORY)
+                ) {
                     rewardXP(player, Skills.COOKING, 204.0)
                     addItem(player, Items.TUNA_AND_CORN_7068, 1, Container.INVENTORY)
                     sendMessage(player, "You mix the ingredients to make the topping.")
+                    return true
                 }
-                return@onUseWith true
+                return false
+            }
+
+            val amountUsed = amountInInventory(player, used.id)
+            val amountWith = amountInInventory(player, with.id)
+
+            if (amountUsed == 1 || amountWith == 1) {
+                return@onUseWith makeDish()
             }
 
             sendSkillDialogue(player) {
                 withItems(Items.TUNA_AND_CORN_7068)
                 create { _, amount ->
                     runTask(player, 2, amount) {
-                        if (amount < 1) return@runTask
-                        if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(player, Item(with.id, 1), Container.INVENTORY)) {
-                            rewardXP(player, Skills.COOKING, 204.0)
-                            addItem(player, Items.TUNA_AND_CORN_7068, 1, Container.INVENTORY)
-                            sendMessage(player, "You mix the ingredients to make the topping.")
-                        }
+                        if (amount > 0) makeDish()
                     }
                 }
-
-                calculateMaxAmount { _ ->
-                    min(amountInInventory(player, with.id), amountInInventory(player, used.id))
+                calculateMaxAmount {
+                    min(amountWith, amountUsed)
                 }
             }
 
@@ -168,36 +134,39 @@ class ToppingRecipe : InteractionListener {
          * Ticks: 2 (1.2 seconds)
          */
 
-        onUseWith(IntType.ITEM, Items.TOMATO_1982, Items.SCRAMBLED_EGG_7078) { player, used, with ->
+        onUseWith(IntType.ITEM, Items.SCRAMBLED_EGG_7078, Items.TOMATO_1982) { player, used, with ->
             if (getStatLevel(player, Skills.COOKING) < 23) {
                 sendMessage(player, "You need a Cooking level of 23 to make that.")
                 return@onUseWith false
             }
-
-            if (amountInInventory(player, used.id) == 1 || amountInInventory(player, with.id) == 1) {
-                if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(player, Item(with.id, 1), Container.INVENTORY)) {
+            fun makeDish(): Boolean {
+                if (removeItem(player, Item(used.id, 1), Container.INVENTORY) &&
+                    removeItem(player, Item(with.id, 1), Container.INVENTORY)
+                ) {
                     addItem(player, Items.EGG_AND_TOMATO_7064, 1, Container.INVENTORY)
                     rewardXP(player, Skills.COOKING, 50.0)
                     sendMessage(player, "You mix the scrambled egg with the tomato.")
+                    return true
                 }
-                return@onUseWith true
+                return false
+            }
+
+            val amountUsed = amountInInventory(player, used.id)
+            val amountWith = amountInInventory(player, with.id)
+
+            if (amountUsed == 1 || amountWith == 1) {
+                return@onUseWith makeDish()
             }
 
             sendSkillDialogue(player) {
-                withItems(Items.POTATO_WITH_BUTTER_6703)
+                withItems(Items.EGG_AND_TOMATO_7064)
                 create { _, amount ->
                     runTask(player, 2, amount) {
-                        if (amount < 1) return@runTask
-                        if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(player, Item(with.id, 1), Container.INVENTORY)) {
-                            addItem(player, Items.EGG_AND_TOMATO_7064, 1, Container.INVENTORY)
-                            rewardXP(player, Skills.COOKING, 50.0)
-                            sendMessage(player, "You mix the scrambled egg with the tomato.")
-                        }
+                        if (amount > 0) makeDish()
                     }
                 }
-
-                calculateMaxAmount { _ ->
-                    min(amountInInventory(player, with.id), amountInInventory(player, used.id))
+                calculateMaxAmount {
+                    min(amountWith, amountUsed)
                 }
             }
 
@@ -219,30 +188,34 @@ class ToppingRecipe : InteractionListener {
                 return@onUseWith false
             }
 
-            if (amountInInventory(player, used.id) == 1 || amountInInventory(player, with.id) == 1) {
-                if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(player, Item(with.id, 1), Container.INVENTORY)) {
+            fun makeDish(): Boolean {
+                if (removeItem(player, Item(used.id, 1), Container.INVENTORY) &&
+                    removeItem(player, Item(with.id, 1), Container.INVENTORY)
+                ) {
                     addItem(player, Items.WRAPPED_OOMLIE_2341, 1, Container.INVENTORY)
-                    rewardXP(player, Skills.COOKING, 50.0)
+                    rewardXP(player, Skills.COOKING, 10.0)
                     sendMessage(player, "You wrap the raw oomlie in the palm leaf.")
+                    return true
                 }
-                return@onUseWith true
+                return false
+            }
+
+            val amountUsed = amountInInventory(player, used.id)
+            val amountWith = amountInInventory(player, with.id)
+
+            if (amountUsed == 1 || amountWith == 1) {
+                return@onUseWith makeDish()
             }
 
             sendSkillDialogue(player) {
-                withItems(Items.POTATO_WITH_BUTTER_6703)
+                withItems(Items.WRAPPED_OOMLIE_2341)
                 create { _, amount ->
-                    runTask(player, 1, amount) {
-                        if (amount < 1) return@runTask
-                        if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(player, Item(with.id, 1), Container.INVENTORY)) {
-                            addItem(player, Items.WRAPPED_OOMLIE_2341, 1, Container.INVENTORY)
-                            rewardXP(player, Skills.COOKING, 50.0)
-                            sendMessage(player, "You wrap the raw oomlie in the palm leaf.")
-                        }
+                    runTask(player, 2, amount) {
+                        if (amount > 0) makeDish()
                     }
                 }
-
-                calculateMaxAmount { _ ->
-                    min(amountInInventory(player, with.id), amountInInventory(player, used.id))
+                calculateMaxAmount {
+                    min(amountWith, amountUsed)
                 }
             }
 
