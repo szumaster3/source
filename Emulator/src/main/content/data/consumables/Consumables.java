@@ -130,6 +130,11 @@ public enum Consumables {
      * The Chopped tuna.
      */
     CHOPPED_TUNA(new Food(new int[]{Items.CHOPPED_TUNA_7086, Items.BOWL_1923}, new HealingEffect(10))),
+
+    /**
+     * The Chopped onion.
+     */
+    CHOPPED_ONION(new Food(new int[]{Items.CHOPPED_ONION_1871, Items.BOWL_1923}, new HealingEffect(1), "It's sad to see a grown man/woman cry.")),
     /**
      * The Cooked karambwan.
      */
@@ -246,6 +251,10 @@ public enum Consumables {
      * The Redberry pie.
      */
     REDBERRY_PIE(new HalfableFood(new int[]{Items.REDBERRY_PIE_2325, Items.HALF_A_REDBERRY_PIE_2333, Items.PIE_DISH_2313}, new HealingEffect(5))),
+    /**
+     * The Chopped onion.
+     */
+    MINCED_MEAT(new Food(new int[]{Items.MINCED_MEAT_7070, Items.BOWL_1923}, new HealingEffect(2))),
     /**
      * The Meat pie.
      */

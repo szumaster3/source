@@ -18,17 +18,6 @@ enum class Recipe(
     val experience: Double = 0.0,
     val event: ((Player, NodeUsageEvent) -> Unit)? = null,
 ) {
-    CHOCOLATE_CAKE(
-        base = Item(Items.CAKE_1891),
-        product = Item(Items.CHOCOLATE_CAKE_1897),
-        ingredients = arrayOf(Item(Items.CHOCOLATE_BAR_1973)),
-        parts = emptyArray(),
-        message = { "You add chocolate to the cake." },
-        singular = true,
-        level = 50,
-        experience = 30.0,
-    ),
-
     ADMIRAL_PIE(
         base = Item(Items.PIE_SHELL_2315),
         product = Item(Items.RAW_ADMIRAL_PIE_7196),
@@ -154,34 +143,6 @@ enum class Recipe(
         singular = false,
         level = 35,
     ),
-    MEAT_PIZZA(
-        base = Item(Items.PLAIN_PIZZA_2289),
-        product = Item(Items.MEAT_PIZZA_2293),
-        ingredients = arrayOf(Item(Items.COOKED_MEAT_2142), Item(Items.COOKED_CHICKEN_2140)),
-        parts = emptyArray(),
-        message = { "You add meat to the pizza." },
-        level = 45,
-        experience = 26.0,
-    ),
-    ANCHOVY_PIZZA(
-        base = Item(Items.PLAIN_PIZZA_2289),
-        product = Item(Items.ANCHOVY_PIZZA_2297),
-        ingredients = arrayOf(Item(Items.ANCHOVIES_319)),
-        parts = emptyArray(),
-        message = { "You add anchovies to the pizza." },
-        level = 55,
-        experience = 39.0,
-    ),
-    PINEAPPLE_PIZZA(
-        base = Item(Items.PLAIN_PIZZA_2289),
-        product = Item(Items.PINEAPPLE_PIZZA_2301),
-        ingredients = arrayOf(Item(Items.PINEAPPLE_CHUNKS_2116), Item(Items.PINEAPPLE_RING_2118)),
-        parts = emptyArray(),
-        message = { event -> "You add the ${event.baseItem.name.lowercase()} to the pizza." },
-        level = 65,
-        experience = 52.0,
-    ),
-
     BUTTER_POTATO(
         base = Item(Items.BAKED_POTATO_6701),
         product = Item(Items.POTATO_WITH_BUTTER_6703),
@@ -246,49 +207,6 @@ enum class Recipe(
         level = 1,
         experience = 1.0,
     ),
-    SLICED_MUSHROOM(
-        base = Item(Items.MUSHROOM_6004),
-        product = Item(Items.SLICED_MUSHROOMS_7080),
-        ingredients = arrayOf(Item(Items.MUSHROOM_6004)),
-        parts = emptyArray(),
-        message = { "You slice the mushrooms." },
-        level = 1,
-        experience = 0.0,
-        event = { player, _ ->
-            if (!inInventory(player, Items.KNIFE_946)) {
-                sendMessage(player, "You need a knife to slice up the mushrooms.")
-            }
-        },
-    ),
-    CHOPPED_ONION(
-        base = Item(Items.ONION_1957),
-        product = Item(Items.CHOPPED_ONION_1871),
-        ingredients = arrayOf(Item(Items.ONION_1957)),
-        parts = emptyArray(),
-        message = { "You chop the onion into small pieces." },
-        level = 1,
-        experience = 0.0,
-        event = { player, _ ->
-            if (!inInventory(player, Items.KNIFE_946)) {
-                core.api.sendMessage(player, "You need a knife to slice up the onion.")
-            }
-        },
-    ),
-    CHOPPED_TUNA(
-        base = Item(Items.BOWL_1923),
-        product = Item(Items.CHOPPED_TUNA_7086),
-        ingredients = arrayOf(Item(Items.TUNA_361)),
-        parts = emptyArray(),
-        message = { "You chop the tuna into the bowl." },
-        level = 1,
-        experience = 1.0,
-        event = { player, _ ->
-            if (!inInventory(player, Items.KNIFE_946)) {
-                sendMessage(player, "You need a knife to slice up the tuna.")
-            }
-        },
-    ),
-
     TUNA_AND_CORN(
         base = Item(Items.CHOPPED_TUNA_7086),
         product = Item(Items.TUNA_AND_CORN_7068),
@@ -348,51 +266,5 @@ enum class Recipe(
         singular = true,
         level = 50,
         experience = 30.0,
-    ),
-    ;
-
-    fun mix(
-        player: Player,
-        event: NodeUsageEvent,
-    ) {
-        if (ingredients.size == 1) {
-            singleMix(player, event)
-        } else {
-            multipleMix(player, event)
-        }
-    }
-
-    private fun singleMix(
-        player: Player,
-        event: NodeUsageEvent,
-    ) {
-        if (player.inventory.remove(event.baseItem) && player.inventory.remove(event.usedItem)) {
-            player.inventory.add(product)
-            val message = message(event)
-            if (message!!.isNotBlank()) {
-                player.packetDispatch.sendMessage(message)
-            }
-        }
-    }
-
-    private fun multipleMix(
-        player: Player,
-        event: NodeUsageEvent,
-    ) {
-        val matchingIngredient = ingredients.firstOrNull { it.id == event.usedItem.id || it.id == event.baseItem.id }
-        if (matchingIngredient != null) {
-            if (player.inventory.remove(event.baseItem) && player.inventory.remove(event.usedItem)) {
-                val partIndex = ingredients.indexOf(matchingIngredient) + 1
-                if (parts.isNotEmpty() && partIndex < parts.size) {
-                    player.inventory.add(parts[partIndex])
-                } else {
-                    player.inventory.add(product)
-                }
-                val message = message(event)
-                if (message!!.isNotBlank()) {
-                    player.packetDispatch.sendMessage(message)
-                }
-            }
-        }
-    }
+    );
 }

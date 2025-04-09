@@ -1,0 +1,70 @@
+package content.global.skill.cooking.other
+
+import core.api.*
+import core.game.interaction.IntType
+import core.game.interaction.InteractionListener
+import core.game.node.entity.skill.Skills
+import core.game.node.item.Item
+import core.game.system.task.Pulse
+import org.rs.consts.Items
+
+class PlainPizzaRecipes : InteractionListener {
+
+    override fun defineListeners() {
+
+        /*
+         * Handles combining a plain pizza with additional ingredients to create specialty pizzas.
+         *
+         * Requirements:
+         *  - Meat Pizza:      Level 45 Cooking, +26.0 XP (using Cooked meat or Cooked chicken)
+         *  - Anchovy Pizza:   Level 55 Cooking, +39.0 XP (using Anchovies)
+         *  - Pineapple Pizza: Level 65 Cooking, +52.0 XP (using Pineapple chunks or Pineapple rings)
+         *
+         * Ticks: 3 (1.8 seconds)
+         */
+
+        onUseWith(
+            IntType.ITEM,
+            Items.PLAIN_PIZZA_2289,
+            // Ingredients.
+            Items.COOKED_CHICKEN_2140,
+            Items.COOKED_MEAT_2142,
+            Items.PINEAPPLE_CHUNKS_2116,
+            Items.PINEAPPLE_RING_2118,
+            Items.ANCHOVIES_319
+        ) { player, used, with ->
+
+            val pizzaMap = mapOf(
+                Items.COOKED_MEAT_2142 to Triple(Items.MEAT_PIZZA_2293, 45, 26.0),
+                Items.COOKED_CHICKEN_2140 to Triple(Items.MEAT_PIZZA_2293, 45, 26.0),
+                Items.ANCHOVIES_319 to Triple(Items.ANCHOVY_PIZZA_2297, 55, 39.0),
+                Items.PINEAPPLE_CHUNKS_2116 to Triple(Items.PINEAPPLE_PIZZA_2301, 65, 52.0),
+                Items.PINEAPPLE_RING_2118 to Triple(Items.PINEAPPLE_PIZZA_2301, 65, 52.0)
+            )
+
+            val (product, requirements, experience) = pizzaMap[with.id] ?: return@onUseWith false
+
+            if (getStatLevel(player, Skills.COOKING) < requirements) {
+                sendMessage(player, "You need a Cooking level of $requirements to make that.")
+                return@onUseWith true
+            }
+
+            player.pulseManager.run(object : Pulse(1) {
+                override fun pulse(): Boolean {
+                    super.setDelay(3)
+                    val amount = amountInInventory(player, with.id)
+                    if (amount > 0) {
+                        if (removeItem(player, Item(used.id, 1), Container.INVENTORY)) {
+                            addItem(player, product, 1, Container.INVENTORY)
+                            rewardXP(player, Skills.COOKING, experience)
+                            val base = getItemName(used.id).lowercase()
+                            sendMessage(player, "You add the $base to the pizza.")
+                        }
+                    }
+                    return amount <= 0
+                }
+            })
+            return@onUseWith true
+        }
+    }
+}
