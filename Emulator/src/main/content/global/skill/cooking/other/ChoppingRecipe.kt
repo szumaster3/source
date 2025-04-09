@@ -15,6 +15,7 @@ class ChoppingRecipe : InteractionListener {
 
         /*
          * Handles cutting ingredients with a knife.
+         *
          * Products:
          *  - Calquat Keg
          *  - Chocolate Dust
@@ -58,15 +59,7 @@ class ChoppingRecipe : InteractionListener {
          * Ticks: 2 (1.2 seconds)
          */
 
-        onUseWith(
-            IntType.ITEM,
-            Items.BOWL_1923,
-            // Ingredients:
-            Items.TUNA_361,
-            Items.ONION_1957,
-            Items.MUSHROOM_6004,
-            Items.COOKED_MEAT_2142
-        ) { player, used, ingredients ->
+        onUseWith(IntType.ITEM, Items.BOWL_1923, Items.TUNA_361, Items.ONION_1957, Items.MUSHROOM_6004, Items.COOKED_MEAT_2142) { player, used, ingredients ->
             if (!inInventory(player, Items.KNIFE_946)) {
                 sendMessage(player, "You need a knife to slice up the ${ingredients.name.lowercase()}.")
                 return@onUseWith false
@@ -101,9 +94,7 @@ class ChoppingRecipe : InteractionListener {
         /*
          * Handles creating uncooked egg from an egg and a bowl.
          *
-         * Product:
-         *  - Uncooked Egg.
-         *
+         * Product: Uncooked Egg.
          */
 
         onUseWith(IntType.ITEM, Items.BOWL_1923, Items.EGG_1944) { player, used, with ->

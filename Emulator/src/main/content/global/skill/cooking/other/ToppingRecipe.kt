@@ -12,6 +12,7 @@ import kotlin.math.min
 class ToppingRecipe : InteractionListener {
 
     override fun defineListeners() {
+
         /*
          * Handles creating Chilli con carne (first variant) using Spicy Sauce and Cooked Meat.
          *
