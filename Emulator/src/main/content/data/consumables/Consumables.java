@@ -82,7 +82,7 @@ public enum Consumables {
     /**
      * The Thin snail meat.
      */
-    THIN_SNAIL_MEAT(new Food(new int[]{Items.THIN_SNAIL_MEAT_3369}, new RandomEnergyEffect(5, 7))),
+    THIN_SNAIL_MEAT(new Food(new int[]{Items.THIN_SNAIL_MEAT_3369}, new RandomHealthEffect(5, 7))),
     /**
      * The Trout.
      */
@@ -102,7 +102,7 @@ public enum Consumables {
     /**
      * The Lean snail meat.
      */
-    LEAN_SNAIL_MEAT(new Food(new int[]{Items.LEAN_SNAIL_MEAT_3371}, new RandomEnergyEffect(6, 8))),
+    LEAN_SNAIL_MEAT(new Food(new int[]{Items.LEAN_SNAIL_MEAT_3371}, new RandomHealthEffect(6, 8))),
     /**
      * The Cod.
      */
@@ -122,7 +122,7 @@ public enum Consumables {
     /**
      * The Fat snail.
      */
-    FAT_SNAIL(new Food(new int[]{Items.FAT_SNAIL_MEAT_3373}, new RandomEnergyEffect(7, 9))),
+    FAT_SNAIL(new Food(new int[]{Items.FAT_SNAIL_MEAT_3373}, new RandomHealthEffect(7, 9))),
     /**
      * The Salmon.
      */
@@ -130,7 +130,7 @@ public enum Consumables {
     /**
      * The Slimy eel.
      */
-    SLIMY_EEL(new Food(new int[]{Items.COOKED_SLIMY_EEL_3381}, new RandomEnergyEffect(7, 9))),
+    SLIMY_EEL(new Food(new int[]{Items.COOKED_SLIMY_EEL_3381}, new RandomHealthEffect(7, 9))),
     /**
      * The Tuna.
      */
@@ -163,7 +163,7 @@ public enum Consumables {
     /**
      * The Cave eel.
      */
-    CAVE_EEL(new Food(new int[]{Items.CAVE_EEL_5003}, new RandomEnergyEffect(8, 10))),
+    CAVE_EEL(new Food(new int[]{Items.CAVE_EEL_5003}, new RandomHealthEffect(8, 10))),
     /**
      * The Caviar.
      */
@@ -187,7 +187,7 @@ public enum Consumables {
     /**
      * The Lava eel.
      */
-    LAVA_EEL(new Food(new int[]{Items.LAVA_EEL_2149}, new RandomEnergyEffect(9, 11))),
+    LAVA_EEL(new Food(new int[]{Items.LAVA_EEL_2149}, new RandomHealthEffect(9, 11))),
     /**
      * The Monkfish.
      */
@@ -303,7 +303,7 @@ public enum Consumables {
     /**
      * The White tree fruit.
      */
-    WHITE_TREE_FRUIT(new Food(new int[]{Items.WHITE_TREE_FRUIT_6469}, new MultiEffect(new RandomEnergyEffect(5, 10), new HealingEffect(3)))),
+    WHITE_TREE_FRUIT(new Food(new int[]{Items.WHITE_TREE_FRUIT_6469}, new MultiEffect(new RandomEnergyEffect(5, 10), new HealingEffect(2)))),
     /**
      * The Strange fruit.
      */
