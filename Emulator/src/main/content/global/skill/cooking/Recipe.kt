@@ -128,21 +128,6 @@ enum class Recipe(
         message = { "You prepare a wild pie." },
         singular = false,
     ),
-
-    PLAIN_PIZZA(
-        base = Item(Items.PIZZA_BASE_2283),
-        product = Item(Items.UNCOOKED_PIZZA_2287),
-        ingredients = arrayOf(Item(Items.TOMATO_1982), Item(Items.CHEESE_1985)),
-        parts =
-            arrayOf(
-                Item(Items.PIZZA_BASE_2283),
-                Item(Items.INCOMPLETE_PIZZA_2285),
-                Item(Items.UNCOOKED_PIZZA_2287),
-            ),
-        message = { event -> "You add the ${event.baseItem.name.lowercase()} to the pizza." },
-        singular = false,
-        level = 35,
-    ),
     BUTTER_POTATO(
         base = Item(Items.BAKED_POTATO_6701),
         product = Item(Items.POTATO_WITH_BUTTER_6703),

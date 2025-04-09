@@ -90,11 +90,11 @@ public enum Consumables {
     /**
      * The Spider on stick.
      */
-    SPIDER_ON_STICK(new Food(new int[]{Items.SPIDER_ON_STICK_6297, Items.SKEWER_STICK_6305}, new HealingEffect(7), "You eat the spider. The meat has a silky texture with a delicate web of flavours.")),
+    SPIDER_ON_STICK(new Food(new int[]{Items.SPIDER_ON_STICK_6297, Items.SKEWER_STICK_6305}, new RandomHealthEffect(7, 10), "You eat the spider. The meat has a silky texture with a delicate web of flavours.")),
     /**
      * The Spider on shaft.
      */
-    SPIDER_ON_SHAFT(new Food(new int[]{Items.SPIDER_ON_SHAFT_6299}, new HealingEffect(7))),
+    SPIDER_ON_SHAFT(new Food(new int[]{Items.SPIDER_ON_SHAFT_6299}, new RandomHealthEffect(7, 10))),
     /**
      * The Roast rabbit.
      */

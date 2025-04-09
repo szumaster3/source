@@ -52,15 +52,25 @@ class SkeweredRecipes : InteractionListener {
          */
 
         onUseWith(IntType.ITEM, Items.SKEWER_STICK_6305, Items.SPIDER_CARCASS_6291) { player, used, with ->
-            // if (getStatLevel(player, Skills.COOKING) < 16) {
-            //     sendMessage(player, "You need a Cooking level of 16 to make that.")
-            //     return@onUseWith false
-            // }
             if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(player, Item(with.id, 1), Container.INVENTORY)) {
                 animate(player, Animations.CRAFT_ITEM_1309)
                 playAudio(player, Sounds.TBCU_SPIDER_STICK_1280)
                 addItem(player, Items.SPIDER_ON_STICK_6293, 1, Container.INVENTORY)
                 sendMessage(player, "You pierce the spider carcass with the skewer stick.")
+            }
+            return@onUseWith true
+        }
+
+        /*
+         * Handles creating a spider on a shaft.
+         */
+
+        onUseWith(IntType.ITEM, Items.ARROW_SHAFT_52, Items.SPIDER_CARCASS_6291) { player, used, with ->
+            if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(player, Item(with.id, 1), Container.INVENTORY)) {
+                animate(player, Animations.CRAFT_ITEM_1309)
+                playAudio(player, Sounds.TBCU_SPIDER_1279)
+                addItem(player, Items.SPIDER_ON_SHAFT_6295, 1, Container.INVENTORY)
+                sendMessage(player, "You pierce the spider carcass with the arrow shaft.")
             }
             return@onUseWith true
         }
