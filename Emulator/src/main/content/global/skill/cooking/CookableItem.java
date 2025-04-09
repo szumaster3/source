@@ -10,23 +10,23 @@ import java.util.HashMap;
  */
 public enum CookableItem {
     /**
-     * Chicken cookable item.
+     * Chicken.
      */
-    CHICKEN(2140, 2138, 2144, 1, 30.0, 128, 512, 128, 512),
+    CHICKEN(Items.COOKED_CHICKEN_2140, Items.RAW_CHICKEN_2138, Items.BURNT_CHICKEN_2144, 1, 30.0, 128, 512, 128, 512),
     /**
-     * Ugthanki cookable item.
+     * Ugthanki meat.
      */
-    UGTHANKI(2140, 2138, 2144, 1, 40.0, 40, 252, 30, 253),
+    UGTHANKI(Items.UGTHANKI_MEAT_1861, Items.RAW_UGTHANKI_MEAT_1859, Items.BURNT_MEAT_2146, 1, 40.0, 40, 252, 30, 253),
     /**
-     * Turkey drumstick cookable item.
+     * Turkey drumstick.
      */
     TURKEY_DRUMSTICK(Items.COOKED_TURKEY_DRUMSTICK_14543, Items.RAW_TURKEY_DRUMSTICK_14542, Items.BURNT_TURKEY_DRUMSTICK_14544, 1, 30.0, 128, 512, 128, 512),
     /**
-     * Turkey cookable item.
+     * Turkey.
      */
     TURKEY(Items.COOKED_TURKEY_14540, Items.RAW_TURKEY_14539, Items.BURNT_TURKEY_14541, 1, 30.0, 128, 512, 128, 512),
     /**
-     * Rabbit cookable item.
+     * Rabbit.
      */
     RABBIT(3228, 3226, 7222, 1, 30.0, 128, 512, 128, 512),
     /**

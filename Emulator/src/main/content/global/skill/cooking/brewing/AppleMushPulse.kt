@@ -1,4 +1,4 @@
-package content.global.skill.cooking
+package content.global.skill.cooking.brewing
 
 import core.api.forceWalk
 import core.api.getStatLevel
@@ -38,7 +38,7 @@ class AppleMushPulse(
     override fun start() {
         super.start()
         if (player.location != START_LOCATION) {
-            return forceWalk(player, START_LOCATION, "smart")
+            return forceWalk(player, START_LOCATION, "")
         }
     }
 

@@ -1,4 +1,4 @@
-package content.global.skill.cooking
+package content.global.skill.cooking.brewing
 
 import core.api.*
 import core.game.interaction.IntType

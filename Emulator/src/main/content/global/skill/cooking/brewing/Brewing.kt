@@ -1,4 +1,4 @@
-package content.global.skill.cooking
+package content.global.skill.cooking.brewing
 
 import core.game.node.item.Item
 import org.rs.consts.Items

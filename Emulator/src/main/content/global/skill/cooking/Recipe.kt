@@ -1,7 +1,5 @@
 package content.global.skill.cooking
 
-import core.api.inInventory
-import core.api.sendMessage
 import core.game.interaction.NodeUsageEvent
 import core.game.node.entity.player.Player
 import core.game.node.item.Item
@@ -145,15 +143,5 @@ enum class Recipe(
         message = { "You mix the fried onions and mushrooms." },
         level = 57,
         experience = 120.0,
-    ),
-    OOMLIE_WRAP(
-        base = Item(Items.RAW_OOMLIE_2337),
-        product = Item(Items.WRAPPED_OOMLIE_2341),
-        ingredients = arrayOf(Item(Items.PALM_LEAF_2339)),
-        parts = emptyArray(),
-        message = { "You wrap the raw oomlie in the palm leaf." },
-        singular = true,
-        level = 50,
-        experience = 30.0,
     );
 }
