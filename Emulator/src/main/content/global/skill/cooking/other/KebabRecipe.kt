@@ -166,6 +166,8 @@ class KebabRecipe : InteractionListener {
          */
 
         onUseWith(IntType.ITEM, Items.UGTHANKI_MEAT_1861, Items.ONION_1957, Items.TOMATO_1982) { player, used, with ->
+            val product = if(with.id == Items.ONION_1957) Items.UGTHANKI_AND_ONION_1877 else Items.UGTHANKI_AND_TOMATO_1879
+
             if (!inInventory(player, Items.KNIFE_946)) {
                 sendMessage(player, "You need a knife to slice up the meat.")
                 return@onUseWith false
@@ -175,7 +177,7 @@ class KebabRecipe : InteractionListener {
                 if (removeItem(player, Item(used.id, 1), Container.INVENTORY) &&
                     removeItem(player, Item(with.id, 1), Container.INVENTORY)
                 ) {
-                    addItem(player, if(with.id == Items.ONION_1957) Items.UGTHANKI_AND_ONION_1877 else Items.UGTHANKI_AND_TOMATO_1879)
+                    addItem(player, product, 1, Container.INVENTORY)
                     rewardXP(player, Skills.COOKING, 1.0)
                     sendMessage(player, "You mix the ${used.name.lowercase()} with ${with.name.lowercase()}.")
                     return true
@@ -191,7 +193,7 @@ class KebabRecipe : InteractionListener {
             }
 
             sendSkillDialogue(player) {
-                withItems(Items.KEBAB_MIX_1881)
+                withItems(product)
                 create { _, amount ->
                     runTask(player, 2, amount) {
                         if (amount > 0) makeDish()
