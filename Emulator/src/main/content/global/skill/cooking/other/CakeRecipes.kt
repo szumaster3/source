@@ -25,6 +25,7 @@ class CakeRecipes : InteractionListener {
             }
 
             if (anyInInventory(player, Items.POT_OF_FLOUR_1933, Items.BUCKET_OF_MILK_1927, Items.EGG_1944) && !allInInventory(player, Items.POT_OF_FLOUR_1933, Items.BUCKET_OF_MILK_1927, Items.EGG_1944)) {
+                sendMessage(player, "You don't have the required items to make a cake.")
                 return@onUseWith false
             }
 
@@ -65,6 +66,7 @@ class CakeRecipes : InteractionListener {
             }
             if(removeItem(player, Item(used.id, 1)) && removeItem(player, Item(with.id, 1))) {
                 addItem(player, Items.CHOCOLATE_CAKE_1897, 1, Container.INVENTORY)
+                rewardXP(player, Skills.COOKING, 30.0)
                 sendMessage(player, "You add chocolate to the cake.")
             }
             return@onUseWith true
