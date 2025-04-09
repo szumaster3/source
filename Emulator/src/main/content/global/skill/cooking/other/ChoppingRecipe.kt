@@ -57,13 +57,14 @@ class ChoppingRecipe : InteractionListener {
          *  - Chopped Onion
          *  - Chopped Garlic
          *  - Chopped Tomato
+         *  - Chopped Ugthanki
          *  - Sliced Mushrooms
          *  - Minced Meat
          *
          * Ticks: 2 (1.2 seconds)
          */
 
-        onUseWith(IntType.ITEM, Items.BOWL_1923, Items.TUNA_361, Items.ONION_1957, Items.GARLIC_1550, Items.TOMATO_1982, Items.MUSHROOM_6004, Items.COOKED_MEAT_2142) { player, used, ingredients ->
+        onUseWith(IntType.ITEM, Items.BOWL_1923, Items.TUNA_361, Items.ONION_1957, Items.GARLIC_1550, Items.TOMATO_1982, Items.UGTHANKI_MEAT_1861, Items.MUSHROOM_6004, Items.COOKED_MEAT_2142) { player, used, ingredients ->
             if (!inInventory(player, Items.KNIFE_946)) {
                 sendMessage(player, "You need a knife to slice up the ${ingredients.name.lowercase()}.")
                 return@onUseWith false
@@ -74,6 +75,7 @@ class ChoppingRecipe : InteractionListener {
                 Items.ONION_1957 -> Items.CHOPPED_ONION_1871 to "You chop the onion into small pieces."
                 Items.GARLIC_1550 -> Items.CHOPPED_GARLIC_7074 to "You chop the garlic into the bowl."
                 Items.TOMATO_1982 -> Items.CHOPPED_TOMATO_1869 to "You chop the tomato into the bowl."
+                Items.UGTHANKI_MEAT_1861 -> Items.CHOPPED_UGTHANKI_1873 to "You chop the meat into the bowl."
                 Items.MUSHROOM_6004 -> Items.SLICED_MUSHROOMS_7080 to "You slice the mushrooms."
                 Items.COOKED_MEAT_2142 -> Items.MINCED_MEAT_7070 to "You chop the meat into the bowl."
                 else -> return@onUseWith false
