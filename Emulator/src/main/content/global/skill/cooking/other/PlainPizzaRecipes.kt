@@ -13,13 +13,35 @@ class PlainPizzaRecipes : InteractionListener {
     override fun defineListeners() {
 
         /*
+         * Handles creating a incomplete pizza.
+         */
+
+        onUseWith(IntType.ITEM, Items.TOMATO_1982, Items.PIZZA_BASE_2283) { player, used, with ->
+            if (getStatLevel(player, Skills.COOKING) < 35) {
+                sendMessage(player, "You need a Cooking level of 35 to make that.")
+                return@onUseWith true
+            }
+
+            if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(player, Item(with.id, 1), Container.INVENTORY)) {
+                addItem(player, Items.INCOMPLETE_PIZZA_2285, 1, Container.INVENTORY)
+                sendMessage(player, "You add the tomato to the pizza base.")
+            }
+            return@onUseWith true
+        }
+
+        /*
          * Handles creating a uncooked pizza.
          */
 
-        onUseWith(IntType.ITEM, Items.PIZZA_BASE_2283, Items.TOMATO_1982, Items.CHEESE_1985) { player, used, _ ->
-            if (removeItem(player, used.asItem()) && player.inventory.remove(Item(Items.TOMATO_1982, 1), Item(Items.CHEESE_1985, 1))) {
+        onUseWith(IntType.ITEM, Items.CHEESE_1985, Items.INCOMPLETE_PIZZA_2285) { player, used, with ->
+            if (getStatLevel(player, Skills.COOKING) < 35) {
+                sendMessage(player, "You need a Cooking level of 35 to make that.")
+                return@onUseWith true
+            }
+
+            if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(player, Item(with.id, 1), Container.INVENTORY)) {
                 addItem(player, Items.UNCOOKED_PIZZA_2287, 1, Container.INVENTORY)
-                sendMessage(player, "You add the ${used.name.lowercase()} to the pizza.")
+                sendMessage(player, "You add the cheese to the incomplete pizza.")
             }
             return@onUseWith true
         }
