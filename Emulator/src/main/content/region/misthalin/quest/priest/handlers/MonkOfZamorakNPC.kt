@@ -26,7 +26,7 @@ class MonkOfZamorakNPC(
         super.finalizeDeath(killer)
         val p = (killer as Player)
         val quest = p.getQuestRepository().getQuest(Quests.PRIEST_IN_PERIL)
-        if (quest.isStarted(p) && p.viewport.region.regionId == 13662) {
+        if (quest.isStarted(p)) {
             GroundItemManager.create(Item(Items.GOLDEN_KEY_2944, 1), getLocation(), p)
         }
     }
