@@ -17,23 +17,7 @@ class CookingListeners : InteractionListener {
         Scenery.POTTERY_OVEN_34802
     )
 
-    private val kebabId = intArrayOf(
-        Items.KEBAB_1971,
-        Items.UGTHANKI_KEBAB_1883,
-        Items.UGTHANKI_KEBAB_1885
-    )
-
     override fun defineListeners() {
-        /*
-         * Handles creating a super kebab from a kebab and red-hot sauce.
-         */
-
-        onUseWith(IntType.ITEM, Items.RED_HOT_SAUCE_4610, Items.KEBAB_1971, Items.UGTHANKI_KEBAB_1883, Items.UGTHANKI_KEBAB_1885) { player, used, with ->
-            if (removeItem(player, used.asItem()) && removeItem(player, with.asItem())) {
-                addItemOrDrop(player, Items.SUPER_KEBAB_4608)
-            }
-            return@onUseWith true
-        }
 
         /*
          * Handles creating a pie shell from pastry dough and a pie dish.

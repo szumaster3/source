@@ -13,8 +13,8 @@ class ToppingRecipes : InteractionListener {
 
     override fun defineListeners() {
         /*
-       * Handles creating Chilli con carne.
-       */
+         * Handles creating Chilli con carne.
+         */
 
         onUseWith(IntType.ITEM, Items.SPICY_SAUCE_7072, Items.COOKED_MEAT_2143) { player, used, with ->
             if (getStatLevel(player, Skills.COOKING) < 9) {
@@ -26,6 +26,7 @@ class ToppingRecipes : InteractionListener {
                 if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(player, Item(with.id, 1), Container.INVENTORY)) {
                     rewardXP(player, Skills.COOKING, 25.0)
                     addItem(player, Items.CHILLI_CON_CARNE_7062, 1)
+                    sendMessage(player, "You put the cut up meat into the bowl.")
                 }
                 return@onUseWith true
             }
@@ -38,6 +39,7 @@ class ToppingRecipes : InteractionListener {
                         if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(player, Item(with.id, 1), Container.INVENTORY)) {
                             rewardXP(player, Skills.COOKING, 25.0)
                             addItem(player, Items.CHILLI_CON_CARNE_7062, 1, Container.INVENTORY)
+                            sendMessage(player, "You put the cut up meat into the bowl.")
                         }
                     }
                 }
@@ -51,7 +53,7 @@ class ToppingRecipes : InteractionListener {
         }
 
         /*
-         *  Handles creating Chilli con carne (second variant).
+         * Handles creating Chilli con carne (second variant).
          */
 
         onUseWith(IntType.ITEM, Items.SPICY_SAUCE_7072, Items.MINCED_MEAT_7070) { player, used, with ->

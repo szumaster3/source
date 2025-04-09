@@ -38,6 +38,7 @@ class PotatoRecipes : InteractionListener {
                     addItem(player, Items.TUNA_POTATO_7060, 1)
                     addItem(player, Items.BOWL_1923, 1)
                     rewardXP(player, Skills.COOKING, 10.0)
+                    sendMessage(player, "You add the topping to the potato.")
                 }
                 return@onUseWith true
             }

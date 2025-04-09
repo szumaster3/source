@@ -137,15 +137,6 @@ enum class Recipe(
         level = 39,
         experience = 40.5,
     ),
-    TUNA_POTATO(
-        base = Item(Items.POTATO_WITH_BUTTER_6703),
-        product = Item(Items.TUNA_POTATO_7060),
-        ingredients = arrayOf(Item(Items.TUNA_AND_CORN_7068)),
-        parts = emptyArray(),
-        message = { "You add the topping to the potato." },
-        level = 68,
-        experience = 10.0,
-    ),
     CHILLI_POTATO(
         base = Item(Items.POTATO_WITH_BUTTER_6703),
         product = Item(Items.CHILLI_POTATO_7054),
@@ -181,25 +172,6 @@ enum class Recipe(
         message = { "You add the mushroom to the potato." },
         level = 64,
         experience = 10.0,
-    ),
-
-    UNCOOKED_EGG(
-        base = Item(Items.BOWL_1923),
-        product = Item(Items.UNCOOKED_EGG_7076),
-        ingredients = arrayOf(Item(Items.EGG_1944)),
-        parts = emptyArray(),
-        message = { "You prepare an uncooked egg." },
-        level = 1,
-        experience = 1.0,
-    ),
-    TUNA_AND_CORN(
-        base = Item(Items.CHOPPED_TUNA_7086),
-        product = Item(Items.TUNA_AND_CORN_7068),
-        ingredients = arrayOf(Item(Items.COOKED_SWEETCORN_5988)),
-        parts = emptyArray(),
-        message = { "You mix the ingredients to make the topping." },
-        level = 67,
-        experience = 204.0,
     ),
     SPICY_SAUCE(
         base = Item(Items.BOWL_1923),
