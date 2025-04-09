@@ -5,10 +5,8 @@ import core.game.interaction.IntType
 import core.game.interaction.InteractionListener
 import core.game.node.entity.skill.Skills
 import core.game.node.item.Item
-import org.rs.consts.Animations
 import org.rs.consts.Items
 import org.rs.consts.Scenery
-import org.rs.consts.Sounds
 
 class CookingListeners : InteractionListener {
 
@@ -23,13 +21,6 @@ class CookingListeners : InteractionListener {
         Items.KEBAB_1971,
         Items.UGTHANKI_KEBAB_1883,
         Items.UGTHANKI_KEBAB_1885
-    )
-
-    private val meatId = intArrayOf(
-        Items.RAW_CHOMPY_2876,
-        Items.RAW_RABBIT_3226,
-        Items.RAW_BIRD_MEAT_9978,
-        Items.RAW_BEAST_MEAT_9986
     )
 
     override fun defineListeners() {
@@ -53,51 +44,6 @@ class CookingListeners : InteractionListener {
             if (removeItem(player, Item(used.id, 1))) {
                 replaceSlot(player, pieDish, Item(Items.PIE_SHELL_2315, 1))
                 sendMessage(player, "You put the pastry dough into the pie dish to make a pie shell.")
-            }
-            return@onUseWith true
-        }
-
-        /*
-         * Handles cooking meat on an iron spit.
-         */
-
-        onUseWith(IntType.ITEM, Items.IRON_SPIT_7225, *meatId) { player, used, with ->
-            if (getStatLevel(player, Skills.FIREMAKING) < 20) {
-                sendDialogue(player, "You need a firemaking level of at least 20 in order to do this.")
-                return@onUseWith false
-            }
-
-            val productId =
-                when (used.id) {
-                    Items.RAW_CHOMPY_2876 -> Items.SKEWERED_CHOMPY_7230
-                    Items.RAW_RABBIT_3226 -> Items.SKEWERED_RABBIT_7224
-                    Items.RAW_BIRD_MEAT_9978 -> Items.SKEWERED_BIRD_MEAT_9984
-                    Items.RAW_BEAST_MEAT_9986 -> Items.SKEWERED_BEAST_9992
-                    else -> null
-                }
-
-            if (productId != null) {
-                if (removeItem(player, used.asItem()) && removeItem(player, with.asItem())) {
-                    addItem(player, productId)
-                }
-            } else {
-                sendDialogue(player, "This item cannot be cooked on the spit.")
-            }
-
-            return@onUseWith true
-        }
-
-        /*
-         * Handles creating a spider on a stick.
-         */
-
-        onUseWith(IntType.ITEM, Items.SKEWER_STICK_6305, Items.SPIDER_CARCASS_6291) { player, used, with ->
-            val itemSlot = used.asItem().slot
-            if (removeItem(player, used.asItem()) && removeItem(player, with.asItem())) {
-                animate(player, Animations.CRAFT_ITEM_1309)
-                playAudio(player, Sounds.TBCU_SPIDER_STICK_1280)
-                replaceSlot(player, itemSlot, Item(Items.SPIDER_ON_STICK_6293, 1))
-                sendMessage(player, "You pierce the spider carcass with the skewer stick.")
             }
             return@onUseWith true
         }

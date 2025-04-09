@@ -38,7 +38,7 @@ public enum Consumables {
     /**
      * The Cooked turkey drumstick.
      */
-    COOKED_TURKEY_DRUMSTICK(new Food(new int[]{Items.COOKED_TURKEY_DRUMSTICK_14543}, new HealingEffect(10))),
+    COOKED_TURKEY_DRUMSTICK(new Food(new int[]{Items.COOKED_TURKEY_DRUMSTICK_14543}, new HealingEffect(10), "You eat the turkey drumstick.")),
     /**
      * The Shrimps.
      */
@@ -90,7 +90,7 @@ public enum Consumables {
     /**
      * The Spider on stick.
      */
-    SPIDER_ON_STICK(new Food(new int[]{Items.SPIDER_ON_STICK_6297}, new HealingEffect(7))),
+    SPIDER_ON_STICK(new Food(new int[]{Items.SPIDER_ON_STICK_6297, Items.SKEWER_STICK_6305}, new HealingEffect(7), "You eat the spider. The meat has a silky texture with a delicate web of flavours.")),
     /**
      * The Spider on shaft.
      */
