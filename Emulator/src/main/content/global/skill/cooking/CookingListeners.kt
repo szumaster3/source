@@ -33,33 +33,6 @@ class CookingListeners : InteractionListener {
     )
 
     override fun defineListeners() {
-
-        /*
-         * Handles creating an uncooked cake.
-         */
-
-        onUseWith(IntType.ITEM, Items.CAKE_TIN_1887, Items.POT_OF_FLOUR_1933) { player, used, _ ->
-            val itemSlot = used.asItem().slot
-
-            if (!anyInInventory(player, Items.POT_OF_FLOUR_1933, Items.BUCKET_OF_MILK_1927, Items.EGG_1944)) {
-                return@onUseWith false
-            }
-
-            if (player.inventory.remove(
-                    Item(Items.BUCKET_OF_MILK_1927, 1),
-                    Item(Items.EGG_1944, 1),
-                    Item(Items.CAKE_TIN_1887, 1),
-                    Item(Items.POT_OF_FLOUR_1933, 1),
-                )
-            ) {
-                replaceSlot(player, itemSlot, Item(Items.UNCOOKED_CAKE_1889, 1))
-                sendMessage(player, "You mix the milk, flour, and egg together to make a raw cake mix.")
-                return@onUseWith true
-            }
-
-            return@onUseWith false
-        }
-
         /*
          * Handles creating a super kebab from a kebab and red-hot sauce.
          */
@@ -81,79 +54,6 @@ class CookingListeners : InteractionListener {
                 replaceSlot(player, pieDish, Item(Items.PIE_SHELL_2315, 1))
                 sendMessage(player, "You put the pastry dough into the pie dish to make a pie shell.")
             }
-            return@onUseWith true
-        }
-
-        /*
-         * Handles putting nettles into a bowl of water.
-         * WORK
-         */
-
-        onUseWith(IntType.ITEM, Items.NETTLES_4241, Items.BOWL_OF_WATER_1921) { player, used, with ->
-            if (removeItem(player, Item(used.id, 1))) {
-                replaceSlot(player, with.asItem().slot, Item(Items.NETTLE_WATER_4237))
-                sendMessage(player, "You place the nettles into the bowl of water.")
-            }
-            return@onUseWith true
-        }
-
-        /*
-         * Handles creating nettle tea (Milk).
-         */
-
-        onUseWith(IntType.ITEM, Items.BUCKET_OF_MILK_1927, Items.NETTLE_TEA_4239) { player, used, with ->
-            replaceSlot(player, used.asItem().slot, Item(Items.BUCKET_1925))
-            replaceSlot(player, with.asItem().slot, Item(Items.NETTLE_TEA_4240))
-            return@onUseWith true
-        }
-
-        /*
-         * Handles adding milk to cup of tea.
-         */
-
-        onUseWith(IntType.ITEM, Items.BUCKET_OF_MILK_1927, Items.CUP_OF_TEA_4245) { player, used, with ->
-            replaceSlot(player, used.asItem().slot, Item(Items.BUCKET_1925))
-            replaceSlot(player, with.asItem().slot, Item(Items.CUP_OF_TEA_4246))
-            return@onUseWith true
-        }
-
-        /*
-         * Handles filling an empty cup with nettle tea.
-         */
-
-        onUseWith(IntType.ITEM, Items.NETTLE_TEA_4239, Items.EMPTY_CUP_1980) { player, used, with ->
-            replaceSlot(player, used.asItem().slot, Item(Items.BOWL_1923))
-            replaceSlot(player, with.asItem().slot, Item(Items.CUP_OF_TEA_4242))
-            return@onUseWith true
-        }
-
-        /*
-         * Handles filling an empty porcelain cup with nettle tea.
-         */
-
-        onUseWith(IntType.ITEM, Items.NETTLE_TEA_4240, Items.EMPTY_CUP_1980) { player, used, with ->
-            replaceSlot(player, used.asItem().slot, Item(Items.BOWL_1923))
-            replaceSlot(player, with.asItem().slot, Item(Items.CUP_OF_TEA_4243))
-            return@onUseWith true
-        }
-
-        /*
-         * Handles filling a porcelain cup with nettle tea.
-         */
-
-        onUseWith(IntType.ITEM, Items.NETTLE_TEA_4239, Items.PORCELAIN_CUP_4244) { player, used, with ->
-            replaceSlot(player, used.asItem().slot, Item(Items.BOWL_1923))
-            replaceSlot(player, with.asItem().slot, Item(Items.CUP_OF_TEA_4245))
-            return@onUseWith true
-        }
-
-        /*
-         * Handles filling a porcelain cup with nettle tea.
-         */
-
-        onUseWith(IntType.ITEM, Items.NETTLE_TEA_4240, Items.PORCELAIN_CUP_4244) { player, used, with ->
-            replaceSlot(player, used.asItem().slot, Item(Items.BOWL_1923))
-            replaceSlot(player, with.asItem().slot, Item(Items.CUP_OF_TEA_4246))
             return@onUseWith true
         }
 

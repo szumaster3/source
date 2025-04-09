@@ -13,6 +13,19 @@ class PlainPizzaRecipes : InteractionListener {
     override fun defineListeners() {
 
         /*
+         * Handles creating a uncooked pizza.
+         */
+
+        onUseWith(IntType.ITEM, Items.PIZZA_BASE_2283, Items.TOMATO_1982, Items.CHEESE_1985) { player, used, _ ->
+            if (removeItem(player, used.asItem()) && player.inventory.remove(Item(Items.TOMATO_1982, 1), Item(Items.CHEESE_1985, 1))) {
+                addItem(player, Items.UNCOOKED_PIZZA_2287, 1, Container.INVENTORY)
+                sendMessage(player, "You add the ${used.name.lowercase()} to the pizza.")
+            }
+            return@onUseWith true
+        }
+
+
+        /*
          * Handles combining a plain pizza with additional ingredients to create specialty pizzas.
          *
          * Requirements:
@@ -26,7 +39,7 @@ class PlainPizzaRecipes : InteractionListener {
         onUseWith(
             IntType.ITEM,
             Items.PLAIN_PIZZA_2289,
-            // Ingredients.
+            // Ingredients:
             Items.COOKED_CHICKEN_2140,
             Items.COOKED_MEAT_2142,
             Items.PINEAPPLE_CHUNKS_2116,
@@ -57,7 +70,7 @@ class PlainPizzaRecipes : InteractionListener {
                         if (removeItem(player, Item(used.id, 1), Container.INVENTORY)) {
                             addItem(player, product, 1, Container.INVENTORY)
                             rewardXP(player, Skills.COOKING, experience)
-                            val base = getItemName(used.id).lowercase()
+                            val base = used.name.lowercase()
                             sendMessage(player, "You add the $base to the pizza.")
                         }
                     }
