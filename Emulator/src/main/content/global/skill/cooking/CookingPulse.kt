@@ -190,6 +190,8 @@ open class CookingPulse(
             product.id == Items.SODA_ASH_1781 && (food.id == Items.SEAWEED_401 || food.id == Items.SWAMP_WEED_10978) -> "You burn the ${food.name.lowercase()} into soda ash."
             food.id == Items.RAW_SWAMP_PASTE_1940 -> "You warm the paste over the fire. It thickens into a sticky goo."
             product.id == Items.BURNT_PIE_2329 && burned -> "You accidentally burn the pie."
+            product.id == Items.BURNT_CHOMPY_7226 && burned -> "You accidentally burn the skewered chompy."
+            product.id == Items.RUINED_CHOMPY_2880 && burned -> "You accidentally burn the chompy."
             product.id == Items.NETTLE_TEA_4239 && !burned -> "You boil the water and make nettle tea."
             product.id == Items.BAKED_POTATO_6701 && !burned -> "You successfully bake a potato."
             product.id == Items.REDBERRY_PIE_2325 && !burned -> "You successfully bake a delicious redberry pie."

@@ -65729,7 +65729,7 @@
   {
     "shop_price": "130",
     "ge_buy_limit": "1000",
-    "examine": "It might look delicious to an ogre.Roasted chompy bird.",
+    "examine": "Roasted chompy bird.",
     "grand_exchange_price": "164",
     "durability": null,
     "name": "Cooked chompy",

@@ -182,6 +182,10 @@ public enum CookableItem {
      */
     SKEWER_CHOMPY(2878, 7230, 2880, 30, 100.0, 200, 255, 200, 255),
     /**
+     * Roasted chompy cookable item.
+     */
+    ROASTED_CHOMPY(Items.COOKED_CHOMPY_7228, Items.COOKED_CHOMPY_7229, Items.BURNT_CHOMPY_7226, 30, 100.0, 200, 255, 200, 255),
+    /**
      * Skewer roast rabbit cookable item.
      */
     SKEWER_ROAST_RABBIT(7223, 7224, 7222, 16, 72.0, 160, 255, 160, 255),
