@@ -46,15 +46,6 @@ package content.global.skill.cooking.other
         return@onUseWith true
     }
 
-    // Redberry Pie Recipe
-    onUseWith(IntType.ITEM, Items.PIE_SHELL_2315, Items.REDBERRIES_1951) { player, used, with ->
-        if (removeItem(player, used.asItem()) && removeItem(player, with.asItem())) {
-            addItem(player, Items.UNCOOKED_BERRY_PIE_2321)
-            sendMessage(player, "You fill the pie with redberries.")
-        }
-        return@onUseWith true
-    }
-
     // Summer Pie Recipe
     onUseWith(IntType.ITEM, Items.PIE_SHELL_2315, *arrayOf(Items.STRAWBERRY_5504, Items.WATERMELON_5982, Items.COOKING_APPLE_1955)) { player, used, with ->
         if (removeItem(player, used.asItem()) && removeItem(player, with.asItem())) {

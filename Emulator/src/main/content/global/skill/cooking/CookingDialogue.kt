@@ -10,15 +10,50 @@ import org.rs.consts.Items
 
 /**
  * Represents the cooking dialogue.
+ *
+ * @param args Arguments required for initialization:
+ * - [Int]: Initial item id (raw item).
+ * - [Scenery]: Object used for cooking (e.g., fire, range).
+ *
+ * **Optionally includes**:
+ *   - [Int]: Product item id (used for sinew flow).
+ *   - [Boolean]: Whether it's sinew.
+ *   - [Scenery]: Cooking object again.
+ *   - [Int]: Item id.
  */
 class CookingDialogue(vararg val args: Any) : DialogueFile() {
 
+    /**
+     * Represents the raw item used for cooking.
+     */
     var initial = 0
+
+    /**
+     * Represents the product item (e.g., cooked food or sinew).
+     */
     var product = 0
+
+    /**
+     * Represents the scenery (object) used for cooking, like a fire or a stove.
+     */
     var scenery: Scenery? = null
+
+    /**
+     * Whether the sinew drying option is enabled.
+     */
     private var isSinew = false
+
+    /**
+     * Optional item ID, used when sinew cooking is triggered.
+     */
     var itemId = 0
 
+    /**
+     * Handles interaction logic for the dialogue interface.
+     *
+     * @param componentID The id of the component.
+     * @param buttonID The id of the button clicked by the player.
+     */
     override fun handle(componentID: Int, buttonID: Int) {
         when (stage) {
             START_DIALOGUE -> {
@@ -26,14 +61,10 @@ class CookingDialogue(vararg val args: Any) : DialogueFile() {
                     2 -> {
                         initial = args[0] as Int
                         if (CookableItem.intentionalBurn(initial)) {
-                            /*
-                             * checks intentional burning.
-                             */
-                            product =
-                                CookableItem.getIntentionalBurn(initial).id
+                            // Intentional burning case
+                            product = CookableItem.getIntentionalBurn(initial).id
                         } else {
-                            product =
-                                CookableItem.forId(initial)!!.cooked
+                            product = CookableItem.forId(initial)!!.cooked
                         }
                         scenery = args[1] as Scenery
                     }
@@ -58,11 +89,8 @@ class CookingDialogue(vararg val args: Any) : DialogueFile() {
                 end()
                 when (val amount = getAmount(buttonID)) {
                     -1 -> sendInputDialogue(player!!, true, "Enter the amount:") { value ->
-                        if (value is String) {
-                            CookingRewrite.cook(player!!, scenery, initial, product, value.toInt())
-                        } else {
-                            CookingRewrite.cook(player!!, scenery, initial, product, value as Int)
-                        }
+                        val count = if (value is String) value.toInt() else value as Int
+                        CookingRewrite.cook(player!!, scenery, initial, product, count)
                     }
 
                     else -> {
@@ -95,32 +123,38 @@ class CookingDialogue(vararg val args: Any) : DialogueFile() {
 
                     2 -> {
                         end()
-                        CookingRewrite.cook(
-                            player!!,
-                            scenery,
-                            initial,
-                            CookableItem.forId(initial)!!.cooked,
-                            1
-                        )
+                        CookingRewrite.cook(player!!, scenery, initial, CookableItem.forId(initial)!!.cooked, 1)
                     }
                 }
             }
         }
     }
 
+    /**
+     * Maps the button id to the corresponding cooking amount.
+     *
+     * @param buttonId id of the button clicked.
+     * @return Amount of items to cook or -1 if custom amount.
+     */
     private fun getAmount(buttonId: Int): Int {
-        when (buttonId) {
-            5 -> return 1
-            4 -> return 5
-            3 -> return -1
-            2 -> return amountInInventory(player!!, initial)
+        return when (buttonId) {
+            5 -> 1
+            4 -> 5
+            3 -> -1
+            2 -> amountInInventory(player!!, initial)
+            else -> -1
         }
-        return -1
     }
 
+    /**
+     * Displays the cooking interface, showing the item and repositioning components.
+     */
     fun display() {
+        repositionChild(player!!, Components.SKILL_COOKMANY_307, 2, 215, 27)
         sendItemZoomOnInterface(player!!, Components.SKILL_COOKMANY_307, 2, initial, 160)
-        sendString(player!!, "<br><br><br><br>${getItemName(initial)}", Components.SKILL_COOKMANY_307, 6)
+
+        val item = getItemName(initial)
+        sendString(player!!, "<br><br><br><br>    $item", Components.SKILL_COOKMANY_307, 6)
 
         /*
          * Swords sprite.
