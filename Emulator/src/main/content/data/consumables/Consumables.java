@@ -31,6 +31,15 @@ public enum Consumables {
      */
     COOKED_MEAT(new Food(new int[]{Items.COOKED_MEAT_2142}, new HealingEffect(3))),
     /**
+     * The Cooked turkey.
+     */
+    COOKED_TURKEY(new Food(new int[]{Items.COOKED_TURKEY_14540}, new HealingEffect(2))),
+
+    /**
+     * The Cooked turkey drumstick.
+     */
+    COOKED_TURKEY_DRUMSTICK(new Food(new int[]{Items.COOKED_TURKEY_DRUMSTICK_14543}, new HealingEffect(10))),
+    /**
      * The Shrimps.
      */
     SHRIMPS(new Food(new int[]{Items.SHRIMPS_315}, new HealingEffect(3))),

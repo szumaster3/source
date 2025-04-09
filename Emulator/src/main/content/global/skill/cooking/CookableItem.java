@@ -18,6 +18,14 @@ public enum CookableItem {
      */
     UGTHANKI(2140, 2138, 2144, 1, 40.0, 40, 252, 30, 253),
     /**
+     * Turkey drumstick cookable item.
+     */
+    TURKEY_DRUMSTICK(Items.COOKED_TURKEY_DRUMSTICK_14543, Items.RAW_TURKEY_DRUMSTICK_14542, Items.BURNT_TURKEY_DRUMSTICK_14544, 1, 30.0, 128, 512, 128, 512),
+    /**
+     * Turkey cookable item.
+     */
+    TURKEY(Items.COOKED_TURKEY_14540, Items.RAW_TURKEY_14539, Items.BURNT_TURKEY_14541, 1, 30.0, 128, 512, 128, 512),
+    /**
      * Rabbit cookable item.
      */
     RABBIT(3228, 3226, 7222, 1, 30.0, 128, 512, 128, 512),
@@ -313,25 +321,32 @@ public enum CookableItem {
     /**
      * The Cooked.
      */
-    public final int cooked, /**
+    public final int cooked,
+    /**
      * Raw cookable item.
      */
-    raw, /**
+    raw,
+    /**
      * Burnt cookable item.
      */
-    burnt, /**
+    burnt,
+    /**
      * Level cookable item.
      */
-    level, /**
+    level,
+    /**
      * Low cookable item.
      */
-    low, /**
+    low,
+    /**
      * High cookable item.
      */
-    high, /**
+    high,
+    /**
      * Low range cookable item.
      */
-    lowRange, /**
+    lowRange,
+    /**
      * High range cookable item.
      */
     highRange;
