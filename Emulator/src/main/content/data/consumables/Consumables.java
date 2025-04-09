@@ -151,7 +151,11 @@ public enum Consumables {
     /**
      * The Cooked chompy.
      */
-    COOKED_CHOMPY(new Food(new int[]{Items.COOKED_CHOMPY_2878}, new HealingEffect(10))),
+    COOKED_CHOMPY(new Food(new int[]{Items.COOKED_CHOMPY_2878}, new HealingEffect(7))),
+    /**
+     * The Cooked roasted chompy (was never made available in-game).
+     */
+    ROASTED_CHOMPY(new Food(new int[]{Items.COOKED_CHOMPY_7228}, new HealingEffect(7))),
     /**
      * The Rainbow fish.
      */
