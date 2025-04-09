@@ -240,7 +240,7 @@ public enum CookableItem {
     /**
      * Bowl stew.
      */
-    BOWL_STEW(2003, 2001, 2005, 25, 117.0, 68, 392, 68, 392),
+    BOWL_STEW(Items.STEW_2003, Items.UNCOOKED_STEW_2001, Items.BURNT_STEW_2005, 25, 117.0, 68, 392, 68, 392),
     /**
      * Bowl curry.
      */
