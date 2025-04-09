@@ -248,5 +248,51 @@ class ToppingRecipe : InteractionListener {
 
             return@onUseWith true
         }
+
+        /*
+         * Handles creating Mushroom & onion.
+         */
+
+        onUseWith(IntType.ITEM, Items.FRIED_MUSHROOMS_7082, Items.FRIED_ONIONS_7084) { player, used, with ->
+            if (getStatLevel(player, Skills.COOKING) < 40) {
+                sendMessage(player, "You need a Cooking level of 40 to make that.")
+                return@onUseWith false
+            }
+
+            fun makeKebab(): Boolean {
+                if (removeItem(player, Item(used.id, 1), Container.INVENTORY) &&
+                    removeItem(player, Item(with.id, 1), Container.INVENTORY)
+                ) {
+                    addItem(player, Items.BOWL_1923, 1, Container.INVENTORY)
+                    addItem(player, Items.UGTHANKI_KEBAB_1885, 1, Container.INVENTORY)
+                    rewardXP(player, Skills.COOKING, 40.0)
+                    sendMessage(player, "You mix the ingredients to make ugthanki kebab.")
+                    return true
+                }
+                return false
+            }
+
+            val amountUsed = amountInInventory(player, used.id)
+            val amountWith = amountInInventory(player, with.id)
+
+            if (amountUsed == 1 || amountWith == 1) {
+                return@onUseWith makeKebab()
+            }
+
+            sendSkillDialogue(player) {
+                withItems(Items.UGTHANKI_KEBAB_1885)
+                create { _, amount ->
+                    runTask(player, 2, amount) {
+                        if (amount > 0) makeKebab()
+                    }
+                }
+                calculateMaxAmount {
+                    min(amountWith, amountUsed)
+                }
+            }
+
+            return@onUseWith true
+        }
+
     }
 }

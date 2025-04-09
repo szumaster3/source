@@ -126,15 +126,6 @@ enum class Recipe(
         message = { "You prepare a wild pie." },
         singular = false,
     ),
-    SPICY_SAUCE(
-        base = Item(Items.BOWL_1923),
-        product = Item(Items.SPICY_SAUCE_7072),
-        ingredients = arrayOf(Item(Items.GARLIC_1550), Item(Items.GNOME_SPICE_2169)),
-        parts = arrayOf(Item(Items.BOWL_1923), Item(Items.CHOPPED_GARLIC_7074), Item(Items.SPICY_SAUCE_7072)),
-        message = { "You prepare the spicy sauce." },
-        level = 9,
-        experience = 25.0,
-    ),
     MUSHROOM_AND_ONION(
         base = Item(Items.FRIED_MUSHROOMS_7082),
         product = Item(Items.MUSHROOM_AND_ONION_7066),

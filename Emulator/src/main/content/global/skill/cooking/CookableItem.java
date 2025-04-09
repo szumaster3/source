@@ -28,298 +28,297 @@ public enum CookableItem {
     /**
      * Rabbit.
      */
-    RABBIT(3228, 3226, 7222, 1, 30.0, 128, 512, 128, 512),
+    RABBIT(Items.COOKED_RABBIT_3228, Items.RAW_RABBIT_3226, Items.BURNT_RABBIT_7222, 1, 30.0, 128, 512, 128, 512),
     /**
-     * Crab cookable item.
+     * Crab.
      */
     CRAB(7521, 7518, 7520, 21, 100.0, 57, 377, 57, 377),
     /**
-     * Chompy cookable item.
+     * Chompy.
      */
     CHOMPY(2878, 2876, 2880, 30, 100.0, 200, 255, 200, 255),
     /**
-     * Jubbly cookable item.
+     * Jubbly.
      */
     JUBBLY(7568, 7566, 7570, 41, 160.0, 195, 250, 195, 250),
     /**
-     * Crayfish cookable item.
+     * Crayfish.
      */
     CRAYFISH(13433, 13435, 13437, 1, 30.0, 128, 512, 128, 512),
     /**
-     * Shrimp cookable item.
+     * Shrimp.
      */
     SHRIMP(315, 317, 7954, 1, 30.0, 128, 512, 128, 512),
     /**
-     * Karambwanji cookable item.
+     * Karambwanji.
      */
     KARAMBWANJI(3151, 3150, 592, 1, 10.0, 200, 400, 200, 400),
     /**
-     * Sardine cookable item.
+     * Sardine.
      */
     SARDINE(325, 327, 369, 1, 40.0, 118, 492, 118, 492),
     /**
-     * Anchovies cookable item.
+     * Anchovies.
      */
     ANCHOVIES(319, 321, 323, 1, 30.0, 128, 512, 128, 512),
     /**
-     * Herring cookable item.
+     * Herring.
      */
     HERRING(347, 345, 357, 5, 50.0, 108, 472, 108, 472),
     /**
-     * Mackerel cookable item.
+     * Mackerel.
      */
     MACKEREL(355, 353, 357, 10, 60.0, 98, 452, 98, 452),
     /**
-     * Trout cookable item.
+     * Trout.
      */
     TROUT(333, 335, 343, 15, 70.0, 88, 432, 88, 432),
     /**
-     * Cod cookable item.
+     * Cod.
      */
     COD(339, 341, 343, 18, 75.0, 83, 422, 88, 432),
     /**
-     * Pike cookable item.
+     * Pike.
      */
     PIKE(351, 349, 343, 20, 80.0, 78, 412, 78, 412),
     /**
-     * Salmon cookable item.
+     * Salmon.
      */
     SALMON(329, 331, 343, 25, 90.0, 68, 392, 68, 392),
     /**
-     * Slimy eel cookable item.
+     * Slimy eel.
      */
     SLIMY_EEL(3381, 3379, 3383, 28, 95.0, 63, 382, 63, 382),
     /**
-     * Tuna cookable item.
+     * Tuna.
      */
     TUNA(361, 359, 367, 30, 100.0, 58, 372, 58, 372),
     /**
-     * Rainbow fish cookable item.
+     * Rainbow fish.
      */
     RAINBOW_FISH(10136, 10138, 10140, 35, 110.0, 56, 370, 56, 370),
     /**
-     * Cave eel cookable item.
+     * Cave eel.
      */
     CAVE_EEL(5003, 5001, 5002, 38, 115.0, 38, 332, 38, 332),
     /**
-     * Lobster cookable item.
+     * Lobster.
      */
     LOBSTER(379, 377, 381, 40, 120.0, 38, 332, 38, 332),
     /**
-     * Bass cookable item.
+     * Bass.
      */
     BASS(365, 363, 367, 43, 130.0, 33, 312, 33, 312),
     /**
-     * Swordfish cookable item.
+     * Swordfish.
      */
     SWORDFISH(373, 371, 375, 45, 140.0, 18, 292, 30, 310),
     /**
-     * Lava eel cookable item.
+     * Lava eel.
      */
     LAVA_EEL(2149, 2148, 3383, 53, 30.0, 256, 256, 256, 256),
     /**
-     * Monkfish cookable item.
+     * Monkfish.
      */
     MONKFISH(7946, 7944, 7948, 62, 150.0, 11, 275, 13, 280),
     /**
-     * Shark cookable item.
+     * Shark.
      */
     SHARK(385, 383, 387, 80, 210.0, 1, 202, 1, 232),
     /**
-     * Sea turtle cookable item.
+     * Sea turtle.
      */
     SEA_TURTLE(397, 395, 399, 82, 212.0, 1, 202, 1, 222),
     /**
-     * Manta ray cookable item.
+     * Manta ray.
      */
     MANTA_RAY(391, 389, 393, 91, 216.0, 1, 202, 1, 222),
     /**
-     * Karambwan cookable item.
+     * Karambwan.
      */
     KARAMBWAN(3144, 3142, 3146, 30, 190.0, 70, 255, 70, 255),
     /**
-     * Thin snail cookable item.
+     * Thin snail.
      */
     THIN_SNAIL(3369, 3363, 3375, 12, 70.0, 93, 444, 93, 444),
     /**
-     * Lean snail cookable item.
+     * Lean snail.
      */
     LEAN_SNAIL(3371, 3365, 3375, 17, 80.0, 85, 428, 93, 444),
     /**
-     * Fat snail cookable item.
+     * Fat snail.
      */
     FAT_SNAIL(3373, 3367, 3375, 22, 95.0, 73, 402, 73, 402),
     /**
-     * Bread cookable item.
+     * Bread.
      */
     BREAD(2309, 2307, 2311, 1, 40.0, 118, 492, 118, 492),
     /**
-     * Pitta bread cookable item.
+     * Pitta bread.
      */
     PITTA_BREAD(1865, 1863, 1867, 58, 40.0, 118, 492, 118, 492),
     /**
-     * Cake cookable item.
+     * Cake.
      */
     CAKE(1891, 1889, 1903, 40, 180.0, 0, 0, 38, 332),
     /**
-     * Beef cookable item.
+     * Beef.
      */
     BEEF(2142, 2132, 2146, 1, 30.0, 128, 512, 128, 512),
     /**
-     * Rat meat cookable item.
+     * Rat meat.
      */
     RAT_MEAT(2142, 2134, 2146, 1, 30.0, 128, 512, 128, 512),
     /**
-     * Bear meat cookable item.
+     * Bear meat.
      */
     BEAR_MEAT(2142, 2136, 2146, 1, 30.0, 128, 512, 128, 512),
     /**
-     * Yak meat cookable item.
+     * Yak meat.
      */
     YAK_MEAT(2142, 10816, 2146, 1, 30.0, 128, 512, 128, 512),
     /**
-     * Skewer chompy cookable item.
+     * Skewer chompy.
      */
     SKEWER_CHOMPY(2878, 7230, 2880, 30, 100.0, 200, 255, 200, 255),
     /**
-     * Roasted chompy cookable item.
+     * Roasted chompy.
      */
     ROASTED_CHOMPY(Items.COOKED_CHOMPY_7228, Items.COOKED_CHOMPY_7229, Items.BURNT_CHOMPY_7226, 30, 100.0, 200, 255, 200, 255),
     /**
-     * Skewer roast rabbit cookable item.
+     * Skewer roast rabbit.
      */
     SKEWER_ROAST_RABBIT(7223, 7224, 7222, 16, 72.0, 160, 255, 160, 255),
     /**
-     * Skewer roast bird cookable item.
+     * Skewer roast bird.
      */
     SKEWER_ROAST_BIRD(9980, 9984, 9982, 11, 62.0, 155, 255, 155, 255),
     /**
-     * Skewer roast beast cookable item.
+     * Skewer roast beast.
      */
     SKEWER_ROAST_BEAST(9988, 9992, 9990, 21, 82.5, 180, 255, 180, 255),
     /**
-     * Redberry pie cookable item.
+     * Redberry pie.
      */
     REDBERRY_PIE(2325, 2321, 2329, 10, 78.0, 0, 0, 98, 452),
     /**
-     * Meat pie cookable item.
+     * Meat pie.
      */
     MEAT_PIE(2327, 2319, 2329, 20, 110.0, 0, 0, 78, 412),
     /**
-     * Mud pie cookable item.
+     * Mud pie.
      */
     MUD_PIE(7170, 7168, 2329, 29, 128.0, 0, 0, 58, 372),
     /**
-     * Apple pie cookable item.
+     * Apple pie.
      */
     APPLE_PIE(2323, 2317, 2329, 30, 130.0, 0, 0, 58, 372),
     /**
-     * Garden pie cookable item.
+     * Garden pie.
      */
     GARDEN_PIE(7178, 7176, 2329, 34, 138.0, 0, 0, 48, 352),
     /**
-     * Fish pie cookable item.
+     * Fish pie.
      */
     FISH_PIE(7188, 7186, 2329, 47, 164.0, 0, 0, 38, 332),
     /**
-     * Admiral pie cookable item.
+     * Admiral pie.
      */
     ADMIRAL_PIE(7198, 7196, 2329, 70, 210.0, 0, 0, 15, 270),
     /**
-     * Wild pie cookable item.
+     * Wild pie.
      */
     WILD_PIE(7208, 7206, 2329, 85, 240.0, 0, 0, 1, 222),
     /**
-     * Summer pie cookable item.
+     * Summer pie.
      */
     SUMMER_PIE(7218, 7216, 2329, 95, 260.0, 0, 0, 1, 212),
     /**
-     * Pizza plain cookable item.
+     * Pizza plain.
      */
     PIZZA_PLAIN(2289, 2287, 2305, 35, 143.0, 0, 0, 48, 352),
     /**
-     * Bowl stew cookable item.
+     * Bowl stew.
      */
     BOWL_STEW(2003, 2001, 2005, 25, 117.0, 68, 392, 68, 392),
     /**
-     * Bowl curry cookable item.
+     * Bowl curry.
      */
     BOWL_CURRY(2011, 2009, 2013, 60, 280.0, 38, 332, 38, 332),
     /**
-     * Bowl nettle cookable item.
+     * Bowl nettle.
      */
     BOWL_NETTLE(4239, 4237, 1923, 20, 52.0, 78, 412, 78, 412),
     /**
-     * Bowl of hot water cookable item.
+     * Bowl of hot water.
      */
     BOWL_OF_HOT_WATER(4456, 1921, 1923, 0, 0.0, 128, 512, 128, 512),
     /**
-     * Bowl egg cookable item.
+     * Bowl egg.
      */
     BOWL_EGG(7078, 7076, 7090, 13, 50.0, 0, 0, 90, 438),
     /**
-     * Bowl onion cookable item.
+     * Bowl onion.
      */
     BOWL_ONION(7084, 1871, 7092, 43, 60.0, 36, 322, 36, 322),
     /**
-     * Bowl mushroom cookable item.
+     * Bowl mushroom.
      */
-    BOWL_MUSHROOM(7082, 7080, 7094, 46, 60.0, 16, 282, 16, 282),
+    BOWL_MUSHROOM(Items.FRIED_MUSHROOMS_7082, Items.SLICED_MUSHROOMS_7080, Items.BURNT_MUSHROOM_7094, 46, 60.0, 16, 282, 16, 282),
     /**
-     * Baked potato cookable item.
+     * Baked potato.
      */
     BAKED_POTATO(6701, 1942, 6699, 7, 15.0, 0, 0, 108, 472),
     /**
-     * Cup of hot water cookable item.
+     * Cup of hot water.
      */
     CUP_OF_HOT_WATER(4460, 4458, 1980, 0, 0.0, 128, 512, 128, 512),
     /**
-     * Sweetcorn cookable item.
+     * Sweetcorn.
      */
     SWEETCORN(5988, 5986, 5990, 28, 104.0, 78, 412, 78, 412),
     /**
-     * Barley malt cookable item.
+     * Barley malt.
      */
     BARLEY_MALT(6008, 6006, 6008, 1, 1.0, 0, 0, 0, 0),
     /**
-     * Raw oomlie cookable item.
+     * Raw oomlie.
      */
     RAW_OOMLIE(2337, 0, 2426, 50, 0.0, 0, 0, 0, 0),
     /**
-     * Oomlie wrap cookable item.
+     * Oomlie wrap.
      */
     OOMLIE_WRAP(2343, 2341, 2345, 50, 30.0, 106, 450, 112, 476),
     /**
-     * Seaweed cookable item.
+     * Seaweed.
      */
     SEAWEED(401, 0, 1781, 0, 0.0, 0, 0, 0, 0),
     /**
-     * Sinew cookable item.
+     * Sinew.
      */
     SINEW(9436, 2132, 9436, 0, 3.0, 0, 0, 0, 0),
     /**
-     * Swamp paste cookable item.
+     * Swamp paste.
      */
     SWAMP_PASTE(1941, 1940, 1941, 0, 2.0, 0, 0, 0, 0),
     /**
-     * Swamp weed cookable item.
+     * Swamp weed.
      */
     SWAMP_WEED(1781, 10978, 1781, 0, 3.0, 0, 0, 0, 0);
-
     /**
-     * The constant cookingMap.
+     * The cooking map.
      */
     public final static HashMap<Integer, CookableItem> cookingMap = new HashMap<>();
     /**
-     * The constant intentionalBurnMap.
+     * The intentional burn.
      */
     public final static HashMap<Integer, CookableItem> intentionalBurnMap = new HashMap<>();
     /**
-     * The constant gauntletValues.
+     * The gauntlet values.
      */
     public final static HashMap<Integer, int[]> gauntletValues = new HashMap<>();
     /**
-     * The constant lumbridgeRangeValues.
+     * The lumbridge range values.
      */
     public final static HashMap<Integer, int[]> lumbridgeRangeValues = new HashMap<>();
     /**

@@ -42,7 +42,7 @@ class KebabRecipe : InteractionListener {
                     addItem(player, Items.BOWL_1923, 1, Container.INVENTORY)
                     addItem(player, Items.UGTHANKI_KEBAB_1885, 1, Container.INVENTORY)
                     rewardXP(player, Skills.COOKING, 40.0)
-                    sendMessage(player, "You put the pitta bread into the kebab mix.")
+                    sendMessage(player, "You mix the ingredients to make ugthanki kebab.")
                     return true
                 }
                 return false
