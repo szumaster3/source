@@ -32,6 +32,7 @@ class KebabRecipe : InteractionListener {
         onUseWith(IntType.ITEM, Items.PITTA_BREAD_1865, Items.KEBAB_MIX_1881) { player, used, with ->
             if (amountInInventory(player, used.id) == 1 || amountInInventory(player, with.id) == 1) {
                 if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(player, Item(with.id, 1), Container.INVENTORY)) {
+                    addItem(player, Items.BOWL_1923, 1, Container.INVENTORY)
                     addItem(player, Items.UGTHANKI_KEBAB_1885, 1, Container.INVENTORY)
                     rewardXP(player, Skills.COOKING, 40.0)
                     sendMessage(player, "You put the pitta bread into the kebab mix.")
@@ -45,6 +46,7 @@ class KebabRecipe : InteractionListener {
                     runTask(player, 2, amount) {
                         if (amount < 1) return@runTask
                         if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(player, Item(with.id, 1), Container.INVENTORY)) {
+                            addItem(player, Items.BOWL_1923, 1, Container.INVENTORY)
                             addItem(player, Items.UGTHANKI_KEBAB_1885, 1, Container.INVENTORY)
                             rewardXP(player, Skills.COOKING, 40.0)
                             sendMessage(player, "You put the pitta bread into the kebab mix.")
