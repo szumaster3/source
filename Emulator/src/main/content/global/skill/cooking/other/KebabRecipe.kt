@@ -30,32 +30,40 @@ class KebabRecipe : InteractionListener {
          */
 
         onUseWith(IntType.ITEM, Items.PITTA_BREAD_1865, Items.KEBAB_MIX_1881) { player, used, with ->
-            if (amountInInventory(player, used.id) == 1 || amountInInventory(player, with.id) == 1) {
-                if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(player, Item(with.id, 1), Container.INVENTORY)) {
+            if (getStatLevel(player, Skills.COOKING) < 40) {
+                sendMessage(player, "You need a Cooking level of 40 to make that.")
+                return@onUseWith false
+            }
+
+            fun makeKebab(): Boolean {
+                if (removeItem(player, Item(used.id, 1), Container.INVENTORY) &&
+                    removeItem(player, Item(with.id, 1), Container.INVENTORY)
+                ) {
                     addItem(player, Items.BOWL_1923, 1, Container.INVENTORY)
                     addItem(player, Items.UGTHANKI_KEBAB_1885, 1, Container.INVENTORY)
                     rewardXP(player, Skills.COOKING, 40.0)
                     sendMessage(player, "You put the pitta bread into the kebab mix.")
+                    return true
                 }
-                return@onUseWith true
+                return false
+            }
+
+            val amountUsed = amountInInventory(player, used.id)
+            val amountWith = amountInInventory(player, with.id)
+
+            if (amountUsed == 1 || amountWith == 1) {
+                return@onUseWith makeKebab()
             }
 
             sendSkillDialogue(player) {
                 withItems(Items.UGTHANKI_KEBAB_1885)
                 create { _, amount ->
                     runTask(player, 2, amount) {
-                        if (amount < 1) return@runTask
-                        if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(player, Item(with.id, 1), Container.INVENTORY)) {
-                            addItem(player, Items.BOWL_1923, 1, Container.INVENTORY)
-                            addItem(player, Items.UGTHANKI_KEBAB_1885, 1, Container.INVENTORY)
-                            rewardXP(player, Skills.COOKING, 40.0)
-                            sendMessage(player, "You put the pitta bread into the kebab mix.")
-                        }
+                        if (amount > 0) makeKebab()
                     }
                 }
-
-                calculateMaxAmount { _ ->
-                    min(amountInInventory(player, with.id), amountInInventory(player, used.id))
+                calculateMaxAmount {
+                    min(amountWith, amountUsed)
                 }
             }
 
@@ -73,30 +81,34 @@ class KebabRecipe : InteractionListener {
                 return@onUseWith false
             }
 
-            if (amountInInventory(player, used.id) == 1 || amountInInventory(player, with.id) == 1) {
-                if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(player, Item(with.id, 1), Container.INVENTORY)) {
+            fun mixMeat(): Boolean {
+                if (removeItem(player, Item(used.id, 1), Container.INVENTORY) &&
+                    removeItem(player, Item(with.id, 1), Container.INVENTORY)
+                ) {
                     addItem(player, Items.KEBAB_MIX_1881, 1, Container.INVENTORY)
                     rewardXP(player, Skills.COOKING, 1.0)
                     sendMessage(player, "You mix the meat with onion and tomato.")
+                    return true
                 }
-                return@onUseWith true
+                return false
+            }
+
+            val amountUsed = amountInInventory(player, used.id)
+            val amountWith = amountInInventory(player, with.id)
+
+            if (amountUsed == 1 || amountWith == 1) {
+                return@onUseWith mixMeat()
             }
 
             sendSkillDialogue(player) {
                 withItems(Items.KEBAB_MIX_1881)
                 create { _, amount ->
                     runTask(player, 2, amount) {
-                        if (amount < 1) return@runTask
-                        if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(player, Item(with.id, 1), Container.INVENTORY)) {
-                            addItem(player, Items.KEBAB_MIX_1881, 1, Container.INVENTORY)
-                            rewardXP(player, Skills.COOKING, 1.0)
-                            sendMessage(player, "You mix the meat with onion and tomato.")
-                        }
+                        if (amount > 0) mixMeat()
                     }
                 }
-
-                calculateMaxAmount { _ ->
-                    min(amountInInventory(player, with.id), amountInInventory(player, used.id))
+                calculateMaxAmount {
+                    min(amountWith, amountUsed)
                 }
             }
 
