@@ -60,11 +60,11 @@ class CookingDialogue(vararg val args: Any) : DialogueFile() {
                 when (args.size) {
                     2 -> {
                         initial = args[0] as Int
-                        if (CookableItem.intentionalBurn(initial)) {
+                        if (CookItem.intentionalBurn(initial)) {
                             // Intentional burning case
-                            product = CookableItem.getIntentionalBurn(initial).id
+                            product = CookItem.getIntentionalBurn(initial).id
                         } else {
-                            product = CookableItem.forId(initial)!!.cooked
+                            product = CookItem.forId(initial)!!.cooked
                         }
                         scenery = args[1] as Scenery
                     }
@@ -108,7 +108,7 @@ class CookingDialogue(vararg val args: Any) : DialogueFile() {
                     }
 
                     2 -> {
-                        product = CookableItem.forId(initial)!!.cooked
+                        product = CookItem.forId(initial)!!.cooked
                         display()
                     }
                 }
@@ -123,7 +123,7 @@ class CookingDialogue(vararg val args: Any) : DialogueFile() {
 
                     2 -> {
                         end()
-                        CookingRewrite.cook(player!!, scenery, initial, CookableItem.forId(initial)!!.cooked, 1)
+                        CookingRewrite.cook(player!!, scenery, initial, CookItem.forId(initial)!!.cooked, 1)
                     }
                 }
             }
