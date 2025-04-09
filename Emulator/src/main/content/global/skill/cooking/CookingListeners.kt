@@ -28,7 +28,7 @@ class CookingListeners : InteractionListener {
          * Handles creating a super kebab from a kebab and red-hot sauce.
          */
 
-        onUseWith(IntType.ITEM, Items.RED_HOT_SAUCE_4610, *kebabId) { player, used, with ->
+        onUseWith(IntType.ITEM, Items.RED_HOT_SAUCE_4610, Items.KEBAB_1971, Items.UGTHANKI_KEBAB_1883, Items.UGTHANKI_KEBAB_1885) { player, used, with ->
             if (removeItem(player, used.asItem()) && removeItem(player, with.asItem())) {
                 addItemOrDrop(player, Items.SUPER_KEBAB_4608)
             }
@@ -72,15 +72,6 @@ class CookingListeners : InteractionListener {
                 replaceSlot(player, itemSlot, Item(Items.UNFERMENTED_WINE_1995, 1))
                 submitIndividualPulse(player, WineFermentingPulse(1, player))
             }
-            return@onUseWith true
-        }
-
-        /*
-         * Handles attempting to add cheese to a baked potato without butter.
-         */
-
-        onUseWith(IntType.ITEM, Items.POTATO_1943, Items.CHEESE_1985) { player, _, _ ->
-            sendMessage(player, "You must add butter to the baked potato before adding toppings.")
             return@onUseWith true
         }
 
