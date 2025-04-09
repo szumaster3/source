@@ -57,7 +57,15 @@ class CuttingRecipes : InteractionListener {
          * Ticks: 2 (1.2s)
          */
 
-        onUseWith(IntType.ITEM, Items.BOWL_1923, Items.TUNA_361, Items.ONION_1957, Items.MUSHROOM_6004, Items.COOKED_MEAT_2142) { player, used, ingredients ->
+        onUseWith(
+            IntType.ITEM,
+            Items.BOWL_1923,
+            // Ingredients:
+            Items.TUNA_361,
+            Items.ONION_1957,
+            Items.MUSHROOM_6004,
+            Items.COOKED_MEAT_2142
+        ) { player, used, ingredients ->
             if (!inInventory(player, Items.KNIFE_946)) {
                 sendMessage(player, "You need a knife to slice up the ${ingredients.name}.")
                 return@onUseWith false
@@ -76,7 +84,7 @@ class CuttingRecipes : InteractionListener {
                     super.setDelay(2)
                     val amount = amountInInventory(player, ingredients.id)
                     if (amount > 0) {
-                        if (removeItem(player, Item(ingredients.id, 1), Container.INVENTORY)) {
+                        if (removeItem(player, Item(ingredients.id, 1), Container.INVENTORY) && removeItem(player, Item(used.id, 1), Container.INVENTORY)) {
                             animate(player, Animations.CUT_THING_WITH_KNIFE_IN_HAND_5756)
                             addItem(player, product, 1, Container.INVENTORY)
                             rewardXP(player, Skills.COOKING, 1.0)

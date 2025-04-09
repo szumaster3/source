@@ -67,7 +67,7 @@ class PizzaRecipes : InteractionListener {
             Items.PINEAPPLE_CHUNKS_2116,
             Items.PINEAPPLE_RING_2118,
             Items.ANCHOVIES_319
-        ) { player, used, with ->
+        ) { player, used, base ->
 
             val pizzaMap = mapOf(
                 Items.COOKED_MEAT_2142 to Triple(Items.MEAT_PIZZA_2293, 45, 26.0),
@@ -77,7 +77,7 @@ class PizzaRecipes : InteractionListener {
                 Items.PINEAPPLE_RING_2118 to Triple(Items.PINEAPPLE_PIZZA_2301, 65, 52.0)
             )
 
-            val (product, requirements, experience) = pizzaMap[with.id] ?: return@onUseWith false
+            val (product, requirements, experience) = pizzaMap[base.id] ?: return@onUseWith false
 
             if (getStatLevel(player, Skills.COOKING) < requirements) {
                 sendMessage(player, "You need a Cooking level of $requirements to make that.")
@@ -87,9 +87,9 @@ class PizzaRecipes : InteractionListener {
             player.pulseManager.run(object : Pulse(1) {
                 override fun pulse(): Boolean {
                     super.setDelay(3)
-                    val amount = amountInInventory(player, with.id)
+                    val amount = amountInInventory(player, base.id)
                     if (amount > 0) {
-                        if (removeItem(player, Item(used.id, 1), Container.INVENTORY)) {
+                        if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(player, Item(base.id, 1), Container.INVENTORY)) {
                             addItem(player, product, 1, Container.INVENTORY)
                             rewardXP(player, Skills.COOKING, experience)
                             val base = used.name.lowercase()

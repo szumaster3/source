@@ -20,6 +20,7 @@ class SkeweredRecipes : InteractionListener {
         onUseWith(
             IntType.ITEM,
             Items.IRON_SPIT_7225,
+            // Ingredients:
             Items.RAW_CHOMPY_2876,
             Items.RAW_RABBIT_3226,
             Items.RAW_BIRD_MEAT_9978,
