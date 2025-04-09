@@ -89,11 +89,11 @@ class PotatoRecipe : InteractionListener {
         )
 
         potatoRecipes.forEach { (ingredient, product) ->
-            val (result, levelReq) = product
+            val (product, requirements) = product
 
             onUseWith(IntType.ITEM, Items.POTATO_WITH_BUTTER_6703, ingredient) { player, used, with ->
-                if (getStatLevel(player, Skills.COOKING) < levelReq) {
-                    sendMessage(player, "You need a Cooking level of $levelReq to make that.")
+                if (getStatLevel(player, Skills.COOKING) < requirements) {
+                    sendMessage(player, "You need a Cooking level of $requirements to make that.")
                     return@onUseWith false
                 }
 
@@ -104,7 +104,7 @@ class PotatoRecipe : InteractionListener {
                         if (ingredient != Items.CHEESE_1985) {
                             addItem(player, Items.BOWL_1923, 1, Container.INVENTORY)
                         }
-                        addItem(player, result, 1, Container.INVENTORY)
+                        addItem(player, product, 1, Container.INVENTORY)
                         rewardXP(player, Skills.COOKING, 10.0)
                         val item = getItemName(with.id).lowercase()
                         sendMessage(player, "You add the $item to the potato.")
@@ -121,7 +121,7 @@ class PotatoRecipe : InteractionListener {
                 }
 
                 sendSkillDialogue(player) {
-                    withItems(result)
+                    withItems(product)
                     create { _, amount ->
                         runTask(player, 2, amount) {
                             if (amount > 0) makeDish()

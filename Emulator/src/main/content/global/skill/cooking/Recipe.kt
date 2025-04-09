@@ -146,15 +146,6 @@ enum class Recipe(
         level = 57,
         experience = 120.0,
     ),
-    EGG_AND_TOMATO(
-        base = Item(Items.SCRAMBLED_EGG_7078),
-        product = Item(Items.EGG_AND_TOMATO_7064),
-        ingredients = arrayOf(Item(Items.TOMATO_1982)),
-        parts = emptyArray(),
-        message = { "You mix the scrambled egg with the tomato." },
-        level = 23,
-        experience = 50.0,
-    ),
     OOMLIE_WRAP(
         base = Item(Items.RAW_OOMLIE_2337),
         product = Item(Items.WRAPPED_OOMLIE_2341),

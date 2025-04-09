@@ -192,6 +192,7 @@ open class CookingPulse(
             product.id == Items.BURNT_PIE_2329 && burned -> "You accidentally burn the pie."
             product.id == Items.BURNT_CHOMPY_7226 && burned -> "You accidentally burn the skewered chompy."
             product.id == Items.RUINED_CHOMPY_2880 && burned -> "You accidentally burn the chompy."
+            product.id == Items.BURNT_OOMLIE_WRAP_2345 && burned -> "The meat is far too delicate to cook like this. Perhaps you should wrap something around it to protect it from the heat."
             product.id == Items.NETTLE_TEA_4239 && !burned -> "You boil the water and make nettle tea."
             product.id == Items.BAKED_POTATO_6701 && !burned -> "You successfully bake a potato."
             product.id == Items.REDBERRY_PIE_2325 && !burned -> "You successfully bake a delicious redberry pie."

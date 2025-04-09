@@ -157,5 +157,95 @@ class ToppingRecipe : InteractionListener {
 
             return@onUseWith true
         }
+
+        /*
+         * Handles creating an Egg and tomato by combining a tomato with scrambled eggs.
+         *
+         * Requirements:
+         *  - Egg and tomato: Level 23 Cooking, +50.0 XP
+         *
+         * Ticks: 2 (1.2 seconds)
+         */
+
+        onUseWith(IntType.ITEM, Items.TOMATO_1982, Items.SCRAMBLED_EGG_7078) { player, used, with ->
+            if (getStatLevel(player, Skills.COOKING) < 23) {
+                sendMessage(player, "You need a Cooking level of 23 to make that.")
+                return@onUseWith false
+            }
+
+            if (amountInInventory(player, used.id) == 1 || amountInInventory(player, with.id) == 1) {
+                if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(player, Item(with.id, 1), Container.INVENTORY)) {
+                    addItem(player, Items.EGG_AND_TOMATO_7064, 1, Container.INVENTORY)
+                    rewardXP(player, Skills.COOKING, 50.0)
+                    sendMessage(player, "You mix the scrambled egg with the tomato.")
+                }
+                return@onUseWith true
+            }
+
+            sendSkillDialogue(player) {
+                withItems(Items.POTATO_WITH_BUTTER_6703)
+                create { _, amount ->
+                    runTask(player, 2, amount) {
+                        if (amount < 1) return@runTask
+                        if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(player, Item(with.id, 1), Container.INVENTORY)) {
+                            addItem(player, Items.EGG_AND_TOMATO_7064, 1, Container.INVENTORY)
+                            rewardXP(player, Skills.COOKING, 50.0)
+                            sendMessage(player, "You mix the scrambled egg with the tomato.")
+                        }
+                    }
+                }
+
+                calculateMaxAmount { _ ->
+                    min(amountInInventory(player, with.id), amountInInventory(player, used.id))
+                }
+            }
+
+            return@onUseWith true
+        }
+
+        /*
+         * Handles creating a Wrapped oomlie by combining a raw oomlie and a palm leaf.
+         *
+         * Requirements:
+         *  - Wrapped oomlie: Level 50 Cooking, +10.0 XP
+         *
+         * Ticks: 1 (0.6 seconds)
+         */
+
+        onUseWith(IntType.ITEM, Items.RAW_OOMLIE_2337, Items.PALM_LEAF_2339) { player, used, with ->
+            if (getStatLevel(player, Skills.COOKING) < 50) {
+                sendMessage(player, "You need a Cooking level of 50 to make that.")
+                return@onUseWith false
+            }
+
+            if (amountInInventory(player, used.id) == 1 || amountInInventory(player, with.id) == 1) {
+                if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(player, Item(with.id, 1), Container.INVENTORY)) {
+                    addItem(player, Items.WRAPPED_OOMLIE_2341, 1, Container.INVENTORY)
+                    rewardXP(player, Skills.COOKING, 50.0)
+                    sendMessage(player, "You wrap the raw oomlie in the palm leaf.")
+                }
+                return@onUseWith true
+            }
+
+            sendSkillDialogue(player) {
+                withItems(Items.POTATO_WITH_BUTTER_6703)
+                create { _, amount ->
+                    runTask(player, 1, amount) {
+                        if (amount < 1) return@runTask
+                        if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(player, Item(with.id, 1), Container.INVENTORY)) {
+                            addItem(player, Items.WRAPPED_OOMLIE_2341, 1, Container.INVENTORY)
+                            rewardXP(player, Skills.COOKING, 50.0)
+                            sendMessage(player, "You wrap the raw oomlie in the palm leaf.")
+                        }
+                    }
+                }
+
+                calculateMaxAmount { _ ->
+                    min(amountInInventory(player, with.id), amountInInventory(player, used.id))
+                }
+            }
+
+            return@onUseWith true
+        }
     }
 }
