@@ -92,8 +92,8 @@ class PizzaRecipes : InteractionListener {
                         if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(player, Item(base.id, 1), Container.INVENTORY)) {
                             addItem(player, product, 1, Container.INVENTORY)
                             rewardXP(player, Skills.COOKING, experience)
-                            val base = used.name.lowercase()
-                            sendMessage(player, "You add the $base to the pizza.")
+                            val ingredients = base.name.lowercase()
+                            sendMessage(player, "You add the $ingredients to the pizza.")
                         }
                     }
                     return amount <= 0

@@ -67,7 +67,7 @@ class CuttingRecipes : InteractionListener {
             Items.COOKED_MEAT_2142
         ) { player, used, ingredients ->
             if (!inInventory(player, Items.KNIFE_946)) {
-                sendMessage(player, "You need a knife to slice up the ${ingredients.name}.")
+                sendMessage(player, "You need a knife to slice up the ${ingredients.name.lowercase()}.")
                 return@onUseWith false
             }
 
