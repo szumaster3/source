@@ -1,4 +1,4 @@
-package content.global.skill.cooking.other
+package content.global.skill.cooking.recipes
 
 import core.api.Container
 import core.api.addItem
