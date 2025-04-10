@@ -25,15 +25,7 @@ class SkeweredRecipe : InteractionListener {
          * Ticks: 2 (1.2 seconds)
          */
 
-        onUseWith(
-            IntType.ITEM,
-            Items.IRON_SPIT_7225,
-            // Ingredients:
-            Items.RAW_CHOMPY_2876,
-            Items.RAW_RABBIT_3226,
-            Items.RAW_BIRD_MEAT_9978,
-            Items.RAW_BEAST_MEAT_9986
-        ) { player, used, base ->
+        onUseWith(IntType.ITEM, Items.IRON_SPIT_7225, Items.RAW_CHOMPY_2876, Items.RAW_RABBIT_3226, Items.RAW_BIRD_MEAT_9978, Items.RAW_BEAST_MEAT_9986) { player, used, base ->
             val itemDetails = mapOf(
                 Items.RAW_BIRD_MEAT_9978 to Pair(11, Items.SKEWERED_BIRD_MEAT_9984),
                 Items.RAW_RABBIT_3226 to Pair(16, Items.SKEWERED_RABBIT_7224),
