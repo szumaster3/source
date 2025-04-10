@@ -54,7 +54,6 @@ class RomilyWeaklaxDialogue(player: Player? = null) : Dialogue(player) {
 
     override fun handle(interfaceId: Int, buttonId: Int): Boolean {
         when (stage) {
-            999 -> end()
             0 -> options("I'd like to buy some pies.", "Do you need any help?", "I'm good thanks.").also { stage++ }
 
             1 -> when (buttonId) {
