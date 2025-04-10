@@ -2294,5 +2294,14 @@
     "id": "267",
     "title": "Mizgog's Amulets of Accuracy",
     "stock": "{1478,30,1000}"
+  },
+  {
+    "npcs": "1980",
+    "high_alch": "0",
+    "currency": "995",
+    "general_store": "false",
+    "id": "268",
+    "title": "The Spice is Right",
+    "stock": "{1931,30,10}-{2169,10,50}-{5970,0,30}-{175,10,30}"
   }
 ]

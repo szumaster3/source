@@ -113,56 +113,66 @@ class StewRecipe : InteractionListener {
         }
 
         /*
-         * Handles creating an uncooked curry.
+         * Handles creating an uncooked curry using spice on stew.
          */
 
-        onUseWith(IntType.ITEM, Items.UNCOOKED_STEW_2001, Items.CURRY_LEAF_5970, Items.SPICE_2007) { player, used, ingredient ->
-            var stewCharges = getCharge(used.asItem())
+        onUseWith(IntType.ITEM, Items.SPICE_2007, Items.UNCOOKED_STEW_2001) { player, used, with ->
             if (getStatLevel(player, Skills.COOKING) < 60) {
                 sendMessage(player, "You need a Cooking level of 60 to make that.")
                 return@onUseWith false
             }
 
-            if (stewCharges == 1000) {
-                stewCharges = 1
-            }
-
-            fun makeUncookedStew(): Boolean {
-                return if (ingredient.id == Items.CURRY_LEAF_5970 && stewCharges < 3) {
-                    removeItem(player, Item(Items.CURRY_LEAF_5970, 1), Container.INVENTORY)
-                    stewCharges++
-                    false
-                } else {
-                    if (
-                        removeItem(player, Item(used.id, 1), Container.INVENTORY) &&
-                        removeItem(player, Item(ingredient.id, 1), Container.INVENTORY)
-                    ) {
-                        addItem(player, Items.UNCOOKED_CURRY_2009, 1, Container.INVENTORY)
-                        sendMessage(player, "You mix the spice with the stew.")
-                        true
-                    } else false
+            if (amountInInventory(player, used.id) == 1 || amountInInventory(player, with.id) == 1) {
+                if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(
+                        player,
+                        Item(with.id, 1),
+                        Container.INVENTORY
+                    )
+                ) {
+                    addItem(player, Items.UNCOOKED_CURRY_2009, 1, Container.INVENTORY)
+                    sendMessage(player, "You mix the spice with the stew.")
                 }
-            }
-
-            val amountUsed = amountInInventory(player, used.id)
-            val amountWith = amountInInventory(player, ingredient.id)
-
-            if (amountUsed == 1 || amountWith == 1) {
-                return@onUseWith makeUncookedStew()
+                return@onUseWith true
             }
 
             sendSkillDialogue(player) {
                 withItems(Items.UNCOOKED_CURRY_2009)
                 create { _, amount ->
                     runTask(player, 2, amount) {
-                        if (amount > 0) makeUncookedStew()
+                        if (amount < 1) return@runTask
+                        if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(
+                                player,
+                                Item(with.id, 1),
+                                Container.INVENTORY
+                            )
+                        ) {
+                            addItem(player, Items.UNCOOKED_CURRY_2009, 1, Container.INVENTORY)
+                            sendMessage(player, "You mix the spice with the stew.")
+                        }
                     }
                 }
-                calculateMaxAmount {
-                    min(amountUsed, amountWith)
+
+                calculateMaxAmount { _ ->
+                    min(amountInInventory(player, with.id), amountInInventory(player, used.id))
                 }
             }
 
+            return@onUseWith true
+        }
+
+        /*
+         * Handles creating an uncooked curry using curry leaves.
+         */
+
+        onUseWith(IntType.ITEM, Items.UNCOOKED_STEW_2001, Items.CURRY_LEAF_5970) { player, used, with ->
+            if(amountInInventory(player, with.id) < 3) {
+                sendMessage(player, "You need 3 curry leaves to mix with the stew.")
+                return@onUseWith true
+            }
+            if (removeItem(player, Item(used.id, 1), Container.INVENTORY) && removeItem(player, Item(with.id, 3), Container.INVENTORY)) {
+                addItem(player, Items.UNCOOKED_CURRY_2009, 1, Container.INVENTORY)
+                sendMessage(player, "You mix the curry leaves with the stew.")
+            }
             return@onUseWith true
         }
     }
