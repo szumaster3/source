@@ -24,7 +24,6 @@ class FishingContest : Quest(Quests.FISHING_CONTEST, 62, 61, 1, 11, 0, 1, 5) {
     /**
      * Draws the quest journal.
      */
-    @OptIn(ExperimentalStdlibApi::class)
     override fun drawJournal(player: Player, stage: Int) {
         super.drawJournal(player, stage)
         var line = 11
@@ -36,7 +35,7 @@ class FishingContest : Quest(Quests.FISHING_CONTEST, 62, 61, 1, 11, 0, 1, 5) {
                 line(player, if (hasLevelStat(player, Skills.FISHING, 10)) "---I must have level 10 fishing./--" else "!!I must have level 10 fishing??.", line++)
             }
 
-            in 1..<100 -> {
+            in 1..99 -> {
                 line(player, "The Dwarves will let me use the tunnel through White Wolf", line++, true)
                 line(player, "Mountain if I can win the Hemenster Fishing Competition.", line++, true)
 
