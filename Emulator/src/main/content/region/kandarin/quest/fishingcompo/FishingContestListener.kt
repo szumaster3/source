@@ -2,13 +2,12 @@ package content.region.kandarin.quest.fishingcompo
 
 import content.data.GameAttributes
 import core.api.*
-import core.api.quest.getQuestStage
 import core.api.quest.isQuestComplete
+import core.api.quest.isQuestInProgress
 import core.game.dialogue.FaceAnim
 import core.game.global.action.DoorActionHandler
-import core.game.interaction.IntType
-import core.game.interaction.InteractionListener
-import core.game.interaction.QueueStrength
+import core.game.interaction.*
+import core.game.node.entity.impl.PulseType
 import core.game.node.item.Item
 import core.game.world.map.Location
 import core.game.world.repository.Repository
@@ -29,6 +28,7 @@ class FishingContestListener : InteractionListener {
                     Scenery.STAIRS_55 -> {
                         player.dialogueInterpreter.open(NPCs.VESTRI_3679, Repository.findNPC(NPCs.VESTRI_3679))
                     }
+
                     Scenery.STAIRS_57 -> {
                         player.dialogueInterpreter.open(NPCs.AUSTRI_232, Repository.findNPC(NPCs.AUSTRI_232))
                     }
@@ -105,30 +105,18 @@ class FishingContestListener : InteractionListener {
          * Handles interaction with vines in McGrubor's Wood.
          */
 
-        on(VINE_SCENERY, IntType.SCENERY, "check") { player, node ->
-            if (node is core.game.node.scenery.Scenery) {
-                if (getQuestStage(player, Quests.FISHING_CONTEST) in 1..99) {
-                    if (!inInventory(player, Items.SPADE_952, 1)) {
-                        sendDialogueLines(
-                            player,
-                            "The ground looks promising around these vines.",
-                            "Perhaps you should dig.",
-                        )
-                        return@on true
-                    }
+        on(VINE_SCENERY, IntType.SCENERY, "check") { player, _ ->
+            if (isQuestInProgress(player, Quests.FISHING_CONTEST, 1, 99)) {
+                if (!inInventory(player, Items.SPADE_952, 1)) {
+                    return@on true
+                }
 
-                    queueScript(player, 1, QueueStrength.WEAK) {
-                        sendMessage(player, "You dig in amongst the vines.")
-                        animate(player, Animation(Animations.DIG_SPADE_830))
-                        sendMessage(player, "You find a red vine worm.")
-                        addItem(player, Items.RED_VINE_WORM_25, 1, Container.INVENTORY)
-                        return@queueScript stopExecuting(player)
-                    }
-                } else {
-                    /*
-                     * TODO: Change to authentic.
-                     */
-                    sendMessage(player, "The ground looks promising around these vines.")
+                queueScript(player, 1, QueueStrength.WEAK) {
+                    sendMessage(player, "You dig in amongst the vines.")
+                    animate(player, Animation(Animations.DIG_SPADE_830))
+                    sendMessage(player, "You find a red vine worm.")
+                    addItem(player, Items.RED_VINE_WORM_25, 1, Container.INVENTORY)
+                    return@queueScript stopExecuting(player)
                 }
             }
             return@on false
@@ -138,18 +126,13 @@ class FishingContestListener : InteractionListener {
          * Handles stash the garlic into pipe.
          */
 
-        onUseWith(IntType.SCENERY, Items.GARLIC_1550, Scenery.WALL_PIPE_41) { player, used, _ ->
-            if (getAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_STASH_GARLIC, false)) {
-                sendDialogue(player, "This is the pipe I stuffed that garlic into.")
-                return@onUseWith false
+        onUseWith(IntType.SCENERY, Items.GARLIC_1550, 41) { player, used, with ->
+            val n = with as core.game.node.scenery.Scenery
+            if(n.location == Location.create(2638, 3445, 0)) {
+                sendItemDialogue(player, used.id, "You stash the garlic in the pipe.")
+                player.inventory.remove(Item(Items.GARLIC_1550))
+                setAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_STASH_GARLIC, true)
             }
-
-            if (!removeItem(player, Item(used.id, 1), Container.INVENTORY)) {
-                return@onUseWith false
-            }
-
-            setAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_STASH_GARLIC, true)
-            sendItemDialogue(player, used.id, "You stash the garlic in the pipe.")
             return@onUseWith true
         }
 
@@ -161,7 +144,7 @@ class FishingContestListener : InteractionListener {
             if (getAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_STASH_GARLIC, false)) {
                 sendDialogue(player, "I shoved garlic up here.")
             } else {
-                sendPlayerDialogue(player, "Ewww - it's a smelly sewage pipe.")
+                sendPlayerDialogue(player, "Ewww - it's a smelly sewage pipe.", FaceAnim.DISGUSTED)
             }
             return@on true
         }
@@ -177,15 +160,20 @@ class FishingContestListener : InteractionListener {
     }
 
     override fun defineDestinationOverrides() {
-
         /*
-         * Handles proper destination to handle interaction with pipe.
+         * Handle pipe.
          */
-
-        setDest(IntType.SCENERY, intArrayOf(Scenery.WALL_PIPE_41)) { _, _ ->
-            return@setDest Location.create(2638, 3446, 0)
+        setDest(IntType.SCENERY, intArrayOf(41), "search") { p, node ->
+            val obj = node as core.game.node.scenery.Scenery
+            return@setDest obj.location.transform(0, -1, 0)
         }
 
+        setDest(IntType.SCENERY, 41) { p, node ->
+            if(inInventory(p.asPlayer(), Items.GARLIC_1550)){
+                return@setDest node.location
+            }
+            return@setDest node.location
+        }
     }
 
     companion object {

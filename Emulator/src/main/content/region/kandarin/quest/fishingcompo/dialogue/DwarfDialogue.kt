@@ -379,8 +379,8 @@ class DwarfDialogue(
             2004 -> {
                 end()
                 if (removeItem(player, Items.FISHING_TROPHY_26)) {
+                    setAttribute(player, "temp-npc", npc.id)
                     finishQuest(player, Quests.FISHING_CONTEST)
-                    updateQuestTab(player)
                 }
             }
 

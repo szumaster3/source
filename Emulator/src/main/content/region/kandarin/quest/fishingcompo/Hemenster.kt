@@ -15,13 +15,8 @@ import org.rs.consts.NPCs
 class Hemenster : MapArea {
 
     override fun defineAreaBorders(): Array<ZoneBorders> = arrayOf(
-        ZoneBorders(2629, 3433, 2642, 3446),
-        ZoneBorders(2625, 3411, 2637, 3433)
+        ZoneBorders(2625, 3411, 2643, 3448)
     )
-
-    override fun getRestrictions(): Array<ZoneRestriction> {
-        return arrayOf(ZoneRestriction.TELEPORT)
-    }
 
     override fun areaLeave(entity: Entity, logout: Boolean) {
         if (entity is Player) {
@@ -37,10 +32,7 @@ class Hemenster : MapArea {
             val p = entity.asPlayer()
 
             /*
-             * Handles moving during competition:
-             *
-             * If the player starts moving toward the spot and has placed garlic into the pipe,
-             * the fishing spot will transform into the quest fishing spot.
+             * Transform fishing spot.
              */
 
             if (getAttribute(p, GameAttributes.QUEST_FISHINGCOMPO_CONTEST, false) && getAttribute(p, GameAttributes.QUEST_FISHINGCOMPO_STASH_GARLIC, false)) {

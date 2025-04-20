@@ -1,10 +1,9 @@
 package content.region.kandarin.quest.fishingcompo
 
 import content.data.GameAttributes
-import core.api.hasLevelStat
-import core.api.removeAttributes
-import core.api.rewardXP
-import core.api.sendItemZoomOnInterface
+import core.api.*
+import core.game.component.CloseEvent
+import core.game.dialogue.FaceAnim
 import core.game.node.entity.player.Player
 import core.game.node.entity.player.link.quest.Quest
 import core.game.node.entity.skill.Skills
@@ -81,6 +80,34 @@ class FishingContest : Quest(Quests.FISHING_CONTEST, 62, 61, 1, 11, 0, 1, 5) {
         drawReward(player, "Access to the White Wolf Mountain shortcut.", ln)
         rewardXP(player, Skills.FISHING, 2437.0)
         removeAttributes(player, GameAttributes.QUEST_FISHINGCOMPO_STASH_GARLIC, GameAttributes.QUEST_FISHINGCOMPO_WON)
+
+        player.interfaceManager.getComponent(Components.QUEST_COMPLETE_SCROLL_277).closeEvent = CloseEvent { p, _ ->
+            val npcId = getAttribute(player, "temp-npc", 0)
+            val isMale = player.isMale
+            val gender = if (isMale) "lad" else "lass"
+
+            sendNPCDialogueLines(
+                player, npcId, FaceAnim.OLD_DEFAULT, false,
+                "You've done us proud. Thank you $gender. I think we can",
+                "now trust you enough to let you in..."
+            )
+            addDialogueAction(player) { _, button ->
+                if (button <= 0) return@addDialogueAction
+                sendPlayerDialogue(player, "In where?", FaceAnim.HALF_ASKING)
+                addDialogueAction(player) { _, _ ->
+                    sendNPCDialogueLines(
+                        player, npcId, FaceAnim.OLD_NORMAL, false,
+                        "Why, the tunnel of course! You may now come and go",
+                        "freely, avoiding the wolves and dangers of the cold, high",
+                        "mountain. You could even stop in for a beer or two!"
+                    )
+                    addDialogueAction(player) { _, _ ->
+                        sendPlayerDialogue(player, "Excellent. That will come in most handy.")
+                    }
+                }
+            }
+            return@CloseEvent true
+        }
     }
 
     override fun newInstance(`object`: Any?): Quest = this

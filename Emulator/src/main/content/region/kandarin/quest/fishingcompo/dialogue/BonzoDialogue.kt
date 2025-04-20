@@ -7,13 +7,14 @@ import core.api.quest.setQuestStage
 import core.game.dialogue.Dialogue
 import core.game.dialogue.FaceAnim
 import core.game.interaction.MovementPulse
-import core.game.interaction.QueueStrength
+import core.game.node.entity.impl.PulseType
 import core.game.node.entity.player.Player
 import core.game.node.item.Item
+import core.game.system.task.Pulse
+import core.game.world.GameWorld.Pulser
 import core.game.world.map.Location
 import core.game.world.map.path.Pathfinder
 import core.plugin.Initializable
-import core.tools.secondsToTicks
 import org.rs.consts.Animations
 import org.rs.consts.Items
 import org.rs.consts.NPCs
@@ -144,56 +145,72 @@ class BonzoDialogue(
             /*
              * Fishing contest.
              * Based on 2008 video source.
+             * Competition time: 100 ticks (60 seconds).
              */
 
             23 -> {
-                val strangerNPC = findLocalNPC(player, 226)
-                val strangerLocation = strangerNPC?.location
+                val strangerNPC = findLocalNPC(player, NPCs.SINISTER_STRANGER_3677)
                 val strangerSpotLocation = Location.create(2637, 3444, 0)
                 val bonzoTableLocation = Location.create(2639, 3437, 0)
                 val playerWon = getAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_WON, false)
 
                 end()
-                player.lock()
+                Pulser.submit(object : Pulse(1, player) {
+                    var counter: Int = 0
 
-                if (strangerNPC != null && strangerLocation != null) {
-                    queueScript(player, 1, QueueStrength.SOFT) { stage: Int ->
-                        when (stage) {
+                    override fun pulse(): Boolean {
+                        when (counter++) {
                             0 -> {
                                 /*
                                  * Move the stranger NPC to the initial fishing spot.
                                  */
-                                strangerNPC.pulseManager.run(
-                                    object : MovementPulse(npc, strangerLocation.transform(14, 52, 0), Pathfinder.SMART) {
-                                        override fun pulse(): Boolean = true
-                                    }
+                                strangerNPC!!.pulseManager.run(
+                                    object : MovementPulse(
+                                        strangerNPC,
+                                        Location.create(2638, 3444, 0),
+                                        Pathfinder.SMART
+                                    ) {
+                                        override fun pulse(): Boolean {
+                                            return false
+                                        }
+                                    }, PulseType.STANDARD
                                 )
-                                return@queueScript delayScript(player, 6)
                             }
-                            1 -> {
+
+                            7 -> {
                                 /*
                                  * Stranger reaction to garlic.
                                  */
-                                strangerNPC.faceLocation(strangerSpotLocation)
-                                sendNPCDialogue(player, strangerNPC.id, "Arrgh! WHAT is THAT GHASTLY smell??? I think I will move over here instead...")
-                                return@queueScript delayScript(player, 6)
+                                strangerNPC!!.faceLocation(strangerSpotLocation)
+                                sendNPCDialogue(
+                                    player,
+                                    strangerNPC.id,
+                                    "Arrgh! WHAT is THAT GHASTLY smell??? I think I will move over here instead..."
+                                )
                             }
-                            2 -> {
+
+                            10 -> {
                                 /*
                                  * Shift NPC location.
                                  */
-                                strangerNPC.pulseManager.run(
-                                    object : MovementPulse(npc, strangerLocation.transform(7, 43, 0), Pathfinder.SMART) {
-                                        override fun pulse(): Boolean = true
-                                    }
+                                strangerNPC!!.pulseManager.run(
+                                    object : MovementPulse(
+                                        strangerNPC,
+                                        Location.create(2631, 3435, 0),
+                                        Pathfinder.SMART
+                                    ) {
+                                        override fun pulse(): Boolean {
+                                            return false
+                                        }
+                                    }, PulseType.STANDARD
                                 )
-                                return@queueScript delayScript(player, 6)
                             }
-                            3 -> {
+
+                            13 -> {
                                 npc("Hmm. You'd better go and take the area by the pipes", "then.")
-                                return@queueScript delayScript(player, 3)
                             }
-                            4 -> {
+
+                            16 -> {
                                 sendDialogue(player, "Your fishing competition spot is now beside the pipes.")
                                 /*
                                  * Begin the fishing contest.
@@ -202,24 +219,24 @@ class BonzoDialogue(
                                 registerLogoutListener(player, "fishing-contest") {
                                     removeAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_CONTEST)
                                 }
-                                return@queueScript delayScript(player, secondsToTicks(20))
                             }
-                            5 -> {
+
+                            116 -> {
                                 /*
                                  * End the contest.
                                  */
                                 findLocalNPC(player, npc.id)?.let { face(player, it) }
                                 npc("Ok folks, time's up!", "Let's see who caught the biggest fish!")
-                                return@queueScript delayScript(player, 3)
                             }
-                            6 -> {
+
+                            119 -> {
                                 /*
                                  * Player walks to the judging table.
                                  */
                                 forceWalk(player, bonzoTableLocation, "")
-                                return@queueScript delayScript(player, 6)
                             }
-                            7 -> {
+
+                            125 -> {
                                 /*
                                  * Check the result.
                                  */
@@ -231,33 +248,45 @@ class BonzoDialogue(
                                     sendDialogue(player, "You hand over your catch.")
                                     setAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_WON, true)
                                 }
-                                return@queueScript delayScript(player, 3)
                             }
-                            8 -> {
+
+                            128 -> {
                                 /*
                                  * Announce the winner based on the result.
                                  */
                                 if (!playerWon) {
                                     npc("And our winner is... the stranger who", "was fishing over by the pipes!")
-                                    return@queueScript stopExecuting(player)
+                                    return false
                                 } else {
-                                    npc(FaceAnim.HAPPY, "The heroic-looking person who was fishing by the pipes", "has caught the biggest carp I've seen since Grandpa", "Jack used to compete!")
-                                    return@queueScript delayScript(player, 3)
+                                    npc(FaceAnim.HAPPY, "We have a new winner!")
+                                    return true
                                 }
                             }
-                            9 -> {
+                            131 -> {
+                                npc(
+                                    FaceAnim.HAPPY,
+                                    "The heroic-looking person who was fishing by the pipes",
+                                    "has caught the biggest carp I've seen since Grandpa",
+                                    "Jack used to compete!"
+                                )
+                            }
+                            134 -> {
                                 /*
                                  * Give the reward if player win.
                                  */
-                                sendItemDialogue(player, Items.FISHING_TROPHY_26, "You are given the Hemenster fishing trophy!")
+                                sendItemDialogue(
+                                    player,
+                                    Items.FISHING_TROPHY_26,
+                                    "You are given the Hemenster fishing trophy!"
+                                )
                                 addItemOrDrop(player, Items.FISHING_TROPHY_26, 1)
                                 setQuestStage(player, Quests.FISHING_CONTEST, 20)
-                                return@queueScript stopExecuting(player)
+                                return false
                             }
                         }
-                        return@queueScript stopExecuting(player)
+                        return false
                     }
-                }
+                })
             }
 
             100 -> end()
