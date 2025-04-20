@@ -1,4 +1,4 @@
-/*package content.region.miscquest.lotg
+package content.region.misthalin.quest.lotg
 
 import org.rs.consts.Vars
 import core.api.rewardXP
@@ -7,10 +7,11 @@ import core.game.node.entity.player.Player
 import core.game.node.entity.player.link.quest.Quest
 import core.game.node.entity.skill.Skills
 import core.plugin.Initializable
+import org.rs.consts.Items
 
-@Initializable
+// @Initializable
 class LandOfTheGoblins :
-    Quest("Land of the Goblins", 144, 143, 1, Vars.VARBIT_QUEST_LAND_OF_THE_GOBLIN_4105, 0, 1, 18) {
+    Quest("Land of the Goblins", 144, 143, 1, Vars.VARBIT_QUEST_LAND_OF_THE_GOBLIN_PROGRESS_4105, 0, 1, 18) {
 
     override fun drawJournal(player: Player, stage: Int) {
         super.drawJournal(player, stage)
@@ -42,7 +43,7 @@ class LandOfTheGoblins :
         rewardXP(player, Skills.FISHING, 3000.0)
         rewardXP(player, Skills.STRENGTH, 3000.0)
         rewardXP(player, Skills.PRAYER, 2000.0)
-        setVarbit(player, Vars.VARBIT_QUEST_LAND_OF_THE_GOBLIN_4105, 18, true)
+        setVarbit(player, Vars.VARBIT_QUEST_LAND_OF_THE_GOBLIN_PROGRESS_4105, 18, true)
     }
 
     override fun newInstance(`object`: Any?): Quest {
@@ -64,5 +65,3 @@ class LandOfTheGoblins :
 //Access to the Bandos gravestone (talk to Blasidar the sculptor in Keldagrim).
 //Ability to access the beacon located near the Goblin Village, west of Ice Mountain.
 //2 Treasure Hunter keys (Ironman accounts will not receive these)
-
- */

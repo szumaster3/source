@@ -163,6 +163,14 @@ enum class FishingOption(
         option = "bait",
         Fish.LAVA_EEL,
     ),
+    GIANT_CRAB(
+        tool = Items.FISHING_ROD_307,
+        level = 10,
+        animation = Animation(Animations.ROD_FISHING_622),
+        bait = intArrayOf(Items.RED_VINE_WORM_25),
+        option = "bait",
+        Fish.GIANT_CARP,
+    )
     ;
 
     companion object {

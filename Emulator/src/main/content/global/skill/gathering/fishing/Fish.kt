@@ -214,6 +214,13 @@ enum class Fish(
         lowChance = 0.63,
         highChance = 0.219,
     ),
+    GIANT_CARP(
+        id = Items.RAW_GIANT_CARP_338,
+        level = 10,
+        experience = 0.0,
+        lowChance = 0.63,
+        highChance = 0.219,
+    )
     ;
 
     companion object {

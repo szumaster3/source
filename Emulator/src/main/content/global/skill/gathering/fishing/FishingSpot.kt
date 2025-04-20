@@ -118,6 +118,9 @@ enum class FishingSpot(
         intArrayOf(NPCs.FISHING_SPOT_800),
         FishingOption.OILY_FISHING_ROD,
     ),
+    FISHING_CONTEST_SPOT(
+        intArrayOf(NPCs.FISHING_SPOT_233),
+    )
     ;
 
     companion object {

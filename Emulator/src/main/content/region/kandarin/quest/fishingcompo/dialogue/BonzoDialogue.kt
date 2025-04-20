@@ -1,34 +1,81 @@
 package content.region.kandarin.quest.fishingcompo.dialogue
 
-import content.region.kandarin.quest.fishingcompo.FishingContest
+import content.data.GameAttributes
 import core.api.*
-import core.game.activity.ActivityManager
+import core.api.quest.getQuestStage
+import core.api.quest.setQuestStage
 import core.game.dialogue.Dialogue
+import core.game.dialogue.FaceAnim
+import core.game.interaction.MovementPulse
+import core.game.interaction.QueueStrength
 import core.game.node.entity.player.Player
-import core.game.node.entity.player.link.quest.QuestRepository
 import core.game.node.item.Item
+import core.game.world.map.Location
+import core.game.world.map.path.Pathfinder
 import core.plugin.Initializable
+import core.tools.secondsToTicks
+import org.rs.consts.Animations
 import org.rs.consts.Items
 import org.rs.consts.NPCs
+import org.rs.consts.Quests
 
+/**
+ * Represents the Bonzo dialogue.
+ *
+ * Relations:
+ * - [Fishing Contest][content.region.kandarin.quest.fishingcompo.FishingContest]
+ */
 @Initializable
 class BonzoDialogue(
     player: Player? = null,
 ) : Dialogue(player) {
     override fun open(vararg args: Any?): Boolean {
-        stage =
-            if (args.size < 2) {
-                if (inInventory(player, FishingContest.FISHING_ROD.id)) {
-                    npc("Roll up, roll up! Enter the great Hemenster", "Fishing Contest! Only 5gp entrance fee!")
-                    0
-                } else {
-                    npc("Sorry, lad, but you need a fishing", "rod to compete.")
-                    100
-                }
-            } else {
-                npc("Ok folks, time's up! Let's see who caught", "the biggest fish!")
-                1000
+        val init = args.size < 2
+        val hasFishingTrophy = hasAnItem(player, Items.FISHING_TROPHY_26).container != null
+        val duringContest = getAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_CONTEST, false)
+
+        stage = when {
+            /*
+             * With fishing rod.
+             */
+            init && inInventory(player, Items.FISHING_ROD_307) -> {
+                npc("Roll up, roll up! Enter the great Hemenster", "Fishing Contest! Only 5gp entrance fee!")
+                0
             }
+
+            /*
+             * Without fishing rod.
+             */
+            init -> {
+                npc("Sorry, lad, but you need a fishing", "rod to compete.")
+                100
+            }
+
+            /*
+             * Lost trophy.
+             */
+            getQuestStage(player, Quests.FISHING_CONTEST) == 20 && !hasFishingTrophy -> {
+                npc("Hello champ!")
+                1600
+            }
+
+            /*
+             * During contest.
+             */
+
+            duringContest -> {
+                npc("You've already paid, you don't need to pay me again!")
+                100
+            }
+
+            else -> {
+                /*
+                 * After quest.
+                 */
+                npc("Hello champ! So any hints on how to fish?")
+                1500
+            }
+        }
         return true
     }
 
@@ -42,35 +89,30 @@ class BonzoDialogue(
                 stage++
             }
 
-            1 ->
-                when (buttonId) {
-                    1 -> {
-                        player("I'll enter the competition please.")
-                        stage =
-                            if (player.getAttribute("fishing_competition:garlic-stuffed", false)) {
-                                50
-                            } else {
-                                10
-                            }
-                    }
-
-                    2 -> {
-                        player("No thanks, I'll just watch the fun.")
-                        stage = 100
-                    }
+            1 -> when (buttonId) {
+                1 -> {
+                    player("I'll enter the competition please.").also { stage = 10 }
                 }
 
+                2 -> {
+                    player("No thanks, I'll just watch the fun.")
+                    stage = 100
+                }
+            }
+
             10 -> {
-                npc("Marvelous!")
+                npc(FaceAnim.HAPPY, "Marvelous!")
                 stage++
             }
 
-            11 ->
-                if (!removeItem(player, Item(Items.COINS_995, 5), Container.INVENTORY)) {
-                    player("I don't have the 5gp though...").also { stage++ }
-                } else {
-                    sendDialogue(player, "You pay Bonzo 5 coins").also { stage = 20 }
-                }
+            11 -> if (!removeItem(player, Item(Items.COINS_995, 5), Container.INVENTORY)) {
+                player("I don't have the 5gp though...")
+                stage++
+            } else {
+                sendItemDialogue(player, Items.COINS_6964, "You pay Bonzo 5 coins.")
+                stage = 20
+            }
+
             12 -> {
                 npc("No pay, no play.")
                 stage = 100
@@ -78,60 +120,171 @@ class BonzoDialogue(
 
             20 -> {
                 npc(
-                    "Ok, we've got all the fishermen! It's time",
-                    "to roll! Ok, nearly everyone is in their",
-                    "place already. You fish in the spot by the",
+                    FaceAnim.HAPPY,
+                    "Ok, we've got all the fishermen! It's time to roll!",
                 )
                 stage++
             }
 
             21 -> {
-                npc("willow tree, and the Sinister Stranger, you fish by the pipes.")
-                stage++
-            }
-
-            22 -> {
-                player.dialogueInterpreter.sendDialogue("Your fishing competition spot is by the willow tree.")
-                stage++
-            }
-
-            23 -> {
-                ActivityManager.start(player, "Fishing Contest Cutscene", false)
-                end()
-            }
-
-            100 -> end()
-            1000 ->
-                if (!inInventory(player, FishingContest.RAW_GIANT_CARP.id)) {
-                    npc("And our winner is... the stranger who", "was fishing over by the pipes!").also { stage = 100 }
-                } else {
-                    player("I have a fish.").also { stage++ }
-                }
-
-            1001 -> {
-                sendDialogue(player, "You hand over your fish.").also { stage++ }
-            }
-
-            1002 -> {
                 npc(
-                    "We have a new winner! The",
-                    "heroic-looking person who was fishing",
-                    "by the pipes has caught the biggest carp I've",
-                    "seen since Grandpa Jack used to compete!",
+                    FaceAnim.NOD_YES,
+                    "Ok, nearly everyone is in their place already. You fish",
+                    "in the spot by the willow tree, and the Sinister Stranger,",
+                    "you fish by the pipes."
                 )
                 stage++
             }
 
-            1003 -> {
-                if (removeItem(player, FishingContest.RAW_GIANT_CARP)) {
-                    sendItemDialogue(
-                        player,
-                        FishingContest.FISHING_TROPHY.id,
-                        "You are given the Hemenester fishing trophy!",
-                    )
-                    player.inventory.add(FishingContest.FISHING_TROPHY)
-                    player.getQuestRepository().setStage(QuestRepository.getQuests()["Fishing Contest"], 20)
+            22 -> {
+                sendDialogue(player, "Your fishing competition spot is by the willow tree.")
+                stage++
+            }
+
+            /*
+             * Fishing contest.
+             * Based on 2008 video source.
+             */
+
+            23 -> {
+                val strangerNPC = findLocalNPC(player, 226)
+                val strangerLocation = strangerNPC?.location
+                val strangerSpotLocation = Location.create(2637, 3444, 0)
+                val bonzoTableLocation = Location.create(2639, 3437, 0)
+                val playerWon = getAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_WON, false)
+
+                end()
+                player.lock()
+
+                if (strangerNPC != null && strangerLocation != null) {
+                    queueScript(player, 1, QueueStrength.SOFT) { stage: Int ->
+                        when (stage) {
+                            0 -> {
+                                /*
+                                 * Move the stranger NPC to the initial fishing spot.
+                                 */
+                                strangerNPC.pulseManager.run(
+                                    object : MovementPulse(npc, strangerLocation.transform(14, 52, 0), Pathfinder.SMART) {
+                                        override fun pulse(): Boolean = true
+                                    }
+                                )
+                                return@queueScript delayScript(player, 6)
+                            }
+                            1 -> {
+                                /*
+                                 * Stranger reaction to garlic.
+                                 */
+                                strangerNPC.faceLocation(strangerSpotLocation)
+                                sendNPCDialogue(player, strangerNPC.id, "Arrgh! WHAT is THAT GHASTLY smell??? I think I will move over here instead...")
+                                return@queueScript delayScript(player, 6)
+                            }
+                            2 -> {
+                                /*
+                                 * Shift NPC location.
+                                 */
+                                strangerNPC.pulseManager.run(
+                                    object : MovementPulse(npc, strangerLocation.transform(7, 43, 0), Pathfinder.SMART) {
+                                        override fun pulse(): Boolean = true
+                                    }
+                                )
+                                return@queueScript delayScript(player, 6)
+                            }
+                            3 -> {
+                                npc("Hmm. You'd better go and take the area by the pipes", "then.")
+                                return@queueScript delayScript(player, 3)
+                            }
+                            4 -> {
+                                sendDialogue(player, "Your fishing competition spot is now beside the pipes.")
+                                /*
+                                 * Begin the fishing contest.
+                                 */
+                                setAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_CONTEST, true)
+                                registerLogoutListener(player, "fishing-contest") {
+                                    removeAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_CONTEST)
+                                }
+                                return@queueScript delayScript(player, secondsToTicks(20))
+                            }
+                            5 -> {
+                                /*
+                                 * End the contest.
+                                 */
+                                findLocalNPC(player, npc.id)?.let { face(player, it) }
+                                npc("Ok folks, time's up!", "Let's see who caught the biggest fish!")
+                                return@queueScript delayScript(player, 3)
+                            }
+                            6 -> {
+                                /*
+                                 * Player walks to the judging table.
+                                 */
+                                forceWalk(player, bonzoTableLocation, "")
+                                return@queueScript delayScript(player, 6)
+                            }
+                            7 -> {
+                                /*
+                                 * Check the result.
+                                 */
+                                faceLocation(player, npc.location)
+                                if (!removeAll(player, Items.RAW_GIANT_CARP_338, Container.INVENTORY)) {
+                                    npc(FaceAnim.HAPPY, "We have a new winner!")
+                                } else {
+                                    animate(player, Animations.MULTI_PUT_833)
+                                    sendDialogue(player, "You hand over your catch.")
+                                    setAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_WON, true)
+                                }
+                                return@queueScript delayScript(player, 3)
+                            }
+                            8 -> {
+                                /*
+                                 * Announce the winner based on the result.
+                                 */
+                                if (!playerWon) {
+                                    npc("And our winner is... the stranger who", "was fishing over by the pipes!")
+                                    return@queueScript stopExecuting(player)
+                                } else {
+                                    npc(FaceAnim.HAPPY, "The heroic-looking person who was fishing by the pipes", "has caught the biggest carp I've seen since Grandpa", "Jack used to compete!")
+                                    return@queueScript delayScript(player, 3)
+                                }
+                            }
+                            9 -> {
+                                /*
+                                 * Give the reward if player win.
+                                 */
+                                sendItemDialogue(player, Items.FISHING_TROPHY_26, "You are given the Hemenster fishing trophy!")
+                                addItemOrDrop(player, Items.FISHING_TROPHY_26, 1)
+                                setQuestStage(player, Quests.FISHING_CONTEST, 20)
+                                return@queueScript stopExecuting(player)
+                            }
+                        }
+                        return@queueScript stopExecuting(player)
+                    }
                 }
+            }
+
+            100 -> end()
+
+            1500 -> {
+                player("I think I'll keep them to myself.")
+                stage = 100
+            }
+
+            1600 -> {
+                player(FaceAnim.HALF_GUILTY, "I don't feel like a champ...")
+                stage++
+            }
+
+            1601 -> {
+                npc(FaceAnim.THINKING, "Why not champ?")
+                stage++
+            }
+
+            1602 -> {
+                player(FaceAnim.SAD, "I lost my fishing trophy...")
+                stage++
+            }
+
+            1603 -> {
+                npc(FaceAnim.FRIENDLY, "Is that all chump? Don't worry, I have a spare!")
+                addItem(player, Items.FISHING_TROPHY_26)
                 stage = 100
             }
         }
