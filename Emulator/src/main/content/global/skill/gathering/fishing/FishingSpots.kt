@@ -206,12 +206,26 @@ enum class FishingSpots(
         Location(3350, 3817, 0),
         Location(3050, 3704, 0),
     ),
+    FISHING_CONTEST(
+        Location.create(2637, 3444, 0),
+        Location.create(2630, 3435, 0)
+    )
     ;
 
     companion object {
+        /**
+         * A list of all known fishing spot locations.
+         */
         private val locs: ArrayList<Location> = ArrayList()
+
+        /**
+         * A map linking each fishing spot location to its corresponding [FishingSpots] enum value.
+         */
         private val locMap: HashMap<Location, FishingSpots> = HashMap()
 
+        /**
+         * Initializes the maps with all locations from each [FishingSpots] value.
+         */
         init {
             for (value in values()) {
                 for (loc in value.locations) {
@@ -221,6 +235,12 @@ enum class FishingSpots(
             }
         }
 
+        /**
+         * Retrieves the [FishingSpots] associated with the given location.
+         *
+         * @param loc The [Location] to look up.
+         * @return The [FishingSpots] for the location, or [TUTORIAL_ISLAND] as a fallback.
+         */
         @JvmStatic
         fun forLocation(loc: Location): FishingSpots? =
             if (locMap[loc] == null) {

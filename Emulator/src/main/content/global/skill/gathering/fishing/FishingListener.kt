@@ -20,6 +20,7 @@ import core.game.system.command.sets.STATS_BASE
 import core.game.system.command.sets.STATS_FISH
 import core.game.world.GameWorld
 import core.game.world.map.path.Pathfinder
+import core.game.world.map.zone.ZoneBorders
 import core.tools.RandomFunction
 import org.rs.consts.Items
 import org.rs.consts.NPCs
@@ -120,13 +121,24 @@ class FishingListener : InteractionListener {
             } else {
                 var msg =
                     when (fish) {
-                        in arrayOf(Fish.ANCHOVIE, Fish.SHRIMP, Fish.SEAWEED) -> "You catch some "
+                        in arrayOf(Fish.ANCHOVY, Fish.SHRIMP, Fish.SEAWEED) -> "You catch some "
                         in arrayOf(Fish.OYSTER) -> "You catch an "
                         else -> "You catch a "
                     }
                 msg += getItemName(fish.id).lowercase().replace("raw ", "").replace("big ", "")
                 msg += if (fish == Fish.SHARK) "!" else "."
                 sendMessage(player, msg)
+                /*
+                 * Fishing contest.
+                 */
+                if (inBorders(player, ZoneBorders(2625, 3411, 2643, 3448))) {
+                    if (getAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_CONTEST, false) && !getAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_STASH_GARLIC, false)) {
+                        addItemOrDrop(player, Items.RAW_SARDINE_327, item.amount)
+                    } else {
+                        addItemOrDrop(player, item.id, item.amount)
+                    }
+                }
+
                 addItemOrDrop(player, item.id, item.amount)
             }
 

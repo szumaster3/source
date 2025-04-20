@@ -7,7 +7,6 @@ import core.api.quest.isQuestInProgress
 import core.game.dialogue.FaceAnim
 import core.game.global.action.DoorActionHandler
 import core.game.interaction.*
-import core.game.node.entity.impl.PulseType
 import core.game.node.item.Item
 import core.game.world.map.Location
 import core.game.world.repository.Repository
@@ -126,13 +125,14 @@ class FishingContestListener : InteractionListener {
          * Handles stash the garlic into pipe.
          */
 
-        onUseWith(IntType.SCENERY, Items.GARLIC_1550, 41) { player, used, with ->
-            val n = with as core.game.node.scenery.Scenery
-            if(n.location == Location.create(2638, 3445, 0)) {
-                sendItemDialogue(player, used.id, "You stash the garlic in the pipe.")
-                player.inventory.remove(Item(Items.GARLIC_1550))
-                setAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_STASH_GARLIC, true)
+        onUseWith(IntType.SCENERY, Items.GARLIC_1550, Scenery.WALL_PIPE_41) { player, used, _ ->
+            if (getAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_STASH_GARLIC, false)) {
+                sendDialogue(player, "I shoved garlic up here.")
+                return@onUseWith false
             }
+            removeItem(player, Item(used.id, 1), Container.INVENTORY)
+            setAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_STASH_GARLIC, true)
+            sendItemDialogue(player, used.id, "You stash the garlic in the pipe.")
             return@onUseWith true
         }
 
@@ -160,19 +160,14 @@ class FishingContestListener : InteractionListener {
     }
 
     override fun defineDestinationOverrides() {
+
         /*
-         * Handle pipe.
+         * Handle pipe destination.
          */
-        setDest(IntType.SCENERY, intArrayOf(41), "search") { p, node ->
-            val obj = node as core.game.node.scenery.Scenery
-            return@setDest obj.location.transform(0, -1, 0)
-        }
 
         setDest(IntType.SCENERY, 41) { p, node ->
-            if(inInventory(p.asPlayer(), Items.GARLIC_1550)){
-                return@setDest node.location
-            }
-            return@setDest node.location
+            val obj = node as core.game.node.scenery.Scenery
+            return@setDest obj.location.transform(p.location.x,p.location.y,p.location.z)
         }
     }
 

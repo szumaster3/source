@@ -6,14 +6,12 @@ import core.api.quest.getQuestStage
 import core.api.quest.setQuestStage
 import core.game.dialogue.Dialogue
 import core.game.dialogue.FaceAnim
-import core.game.interaction.MovementPulse
-import core.game.node.entity.impl.PulseType
+import core.game.node.entity.npc.NPC
 import core.game.node.entity.player.Player
 import core.game.node.item.Item
 import core.game.system.task.Pulse
 import core.game.world.GameWorld.Pulser
 import core.game.world.map.Location
-import core.game.world.map.path.Pathfinder
 import core.plugin.Initializable
 import org.rs.consts.Animations
 import org.rs.consts.Items
@@ -149,99 +147,43 @@ class BonzoDialogue(
              */
 
             23 -> {
-                val strangerNPC = findLocalNPC(player, NPCs.SINISTER_STRANGER_3677)
-                val strangerSpotLocation = Location.create(2637, 3444, 0)
-                val bonzoTableLocation = Location.create(2639, 3437, 0)
-                val playerWon = getAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_WON, false)
-
                 end()
+                val bonzoTableLocation = Location.create(2639, 3437, 0)
+                val nearPipeFishingSpot = findLocalNPC(player, NPCs.FISHING_SPOT_309)!!
+                val tempSpawn = NPC.create(NPCs.FISHING_SPOT_233, Location.create(2637, 3444, 0))
+                val playerWon = getAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_WON, false)
                 Pulser.submit(object : Pulse(1, player) {
                     var counter: Int = 0
-
                     override fun pulse(): Boolean {
                         when (counter++) {
                             0 -> {
-                                /*
-                                 * Move the stranger NPC to the initial fishing spot.
-                                 */
-                                strangerNPC!!.pulseManager.run(
-                                    object : MovementPulse(
-                                        strangerNPC,
-                                        Location.create(2638, 3444, 0),
-                                        Pathfinder.SMART
-                                    ) {
-                                        override fun pulse(): Boolean {
-                                            return false
-                                        }
-                                    }, PulseType.STANDARD
-                                )
-                            }
-
-                            7 -> {
-                                /*
-                                 * Stranger reaction to garlic.
-                                 */
-                                strangerNPC!!.faceLocation(strangerSpotLocation)
-                                sendNPCDialogue(
-                                    player,
-                                    strangerNPC.id,
-                                    "Arrgh! WHAT is THAT GHASTLY smell??? I think I will move over here instead..."
-                                )
-                            }
-
-                            10 -> {
-                                /*
-                                 * Shift NPC location.
-                                 */
-                                strangerNPC!!.pulseManager.run(
-                                    object : MovementPulse(
-                                        strangerNPC,
-                                        Location.create(2631, 3435, 0),
-                                        Pathfinder.SMART
-                                    ) {
-                                        override fun pulse(): Boolean {
-                                            return false
-                                        }
-                                    }, PulseType.STANDARD
-                                )
-                            }
-
-                            13 -> {
-                                npc("Hmm. You'd better go and take the area by the pipes", "then.")
-                            }
-
-                            16 -> {
-                                sendDialogue(player, "Your fishing competition spot is now beside the pipes.")
-                                /*
-                                 * Begin the fishing contest.
-                                 */
-                                setAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_CONTEST, true)
-                                registerLogoutListener(player, "fishing-contest") {
-                                    removeAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_CONTEST)
+                                if(!getAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_STASH_GARLIC, false)) {
+                                    val willowFishingSpot = findNPC(Location.create(2637, 3444, 0), NPCs.FISHING_SPOT_309)
+                                } else {
+                                    nearPipeFishingSpot.asNpc().transform(NPCs.FISHING_SPOT_233)
                                 }
                             }
-
-                            116 -> {
-                                /*
-                                 * End the contest.
-                                 */
-                                findLocalNPC(player, npc.id)?.let { face(player, it) }
+                            7 -> sendNPCDialogue(player, NPCs.SINISTER_STRANGER_3677, "Arrgh! WHAT is THAT GHASTLY smell??? I think I will move over here instead...")
+                            13 -> npc("Hmm. You'd better go and take the area by the pipes", "then.")
+                            16 -> {
+                                nearPipeFishingSpot.reTransform()
+                                // findLocalNPC(player, NPCs.FISHING_SPOT_309)!!.transform(NPCs.FISHING_SPOT_233)
+                                tempSpawn.init()
+                                sendDialogue(player, "Your fishing competition spot is now beside the pipes.")
+                                registerLogoutListener(player, "fishing-contest") { removeAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_CONTEST) }
+                            }
+                            119 -> {
+                                tempSpawn.clear()
+                                player.faceLocation(Location.create(2641, 3437, 0))
                                 npc("Ok folks, time's up!", "Let's see who caught the biggest fish!")
                             }
-
-                            119 -> {
-                                /*
-                                 * Player walks to the judging table.
-                                 */
+                            123 -> {
+                                lock(player, 6)
                                 forceWalk(player, bonzoTableLocation, "")
                             }
-
-                            125 -> {
-                                /*
-                                 * Check the result.
-                                 */
-                                faceLocation(player, npc.location)
-                                if (!removeAll(player, Items.RAW_GIANT_CARP_338, Container.INVENTORY)) {
+                            126 -> {
+                                val amount = amountInInventory(player, Items.RAW_GIANT_CARP_338)
+                                if (!removeItem(player, Item(Items.RAW_GIANT_CARP_338, amount), Container.INVENTORY)) {
                                     npc(FaceAnim.HAPPY, "We have a new winner!")
                                 } else {
                                     animate(player, Animations.MULTI_PUT_833)
@@ -249,11 +191,7 @@ class BonzoDialogue(
                                     setAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_WON, true)
                                 }
                             }
-
-                            128 -> {
-                                /*
-                                 * Announce the winner based on the result.
-                                 */
+                            129 -> {
                                 if (!playerWon) {
                                     npc("And our winner is... the stranger who", "was fishing over by the pipes!")
                                     return false
@@ -262,7 +200,7 @@ class BonzoDialogue(
                                     return true
                                 }
                             }
-                            131 -> {
+                            132 -> {
                                 npc(
                                     FaceAnim.HAPPY,
                                     "The heroic-looking person who was fishing by the pipes",
@@ -270,10 +208,7 @@ class BonzoDialogue(
                                     "Jack used to compete!"
                                 )
                             }
-                            134 -> {
-                                /*
-                                 * Give the reward if player win.
-                                 */
+                            135 -> {
                                 sendItemDialogue(
                                     player,
                                     Items.FISHING_TROPHY_26,
@@ -281,7 +216,7 @@ class BonzoDialogue(
                                 )
                                 addItemOrDrop(player, Items.FISHING_TROPHY_26, 1)
                                 setQuestStage(player, Quests.FISHING_CONTEST, 20)
-                                return false
+                                return true
                             }
                         }
                         return false
