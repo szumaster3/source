@@ -132,7 +132,7 @@ class FishingPulse(
             if (player.inventory.hasSpaceFor(Item(fish!!.id)) && option!!.removeBait(player)) {
                 player.dispatch(ResourceProducedEvent(fish!!.id, 1, node!!))
                 val item = fish!!
-                addItem(player, item.id)
+                addItem(player, item.id, 1)
                 var fishCaught = player.getAttribute(STATS_BASE + ":" + STATS_FISH, 0)
                 setAttribute(player, "/save:$STATS_BASE:$STATS_FISH", ++fishCaught)
                 rewardXP(player, Skills.FISHING, fish!!.experience)
@@ -189,7 +189,7 @@ class FishingPulse(
                         animate(player, Animations.BAREHAND_TUNA_6710)
                         rewardXP(player, Skills.FISHING, 80.0)
                         rewardXP(player, Skills.STRENGTH, 8.0)
-                        addItem(player, Items.RAW_TUNA_359)
+                        addItem(player, Items.RAW_TUNA_359, 1)
                     }
 
                     2, 3 ->
@@ -197,12 +197,12 @@ class FishingPulse(
                             animate(player, Animations.BAREHAND_TUNA_6710)
                             rewardXP(player, Skills.FISHING, 80.0)
                             rewardXP(player, Skills.STRENGTH, 8.0)
-                            addItem(player, Items.RAW_TUNA_359)
+                            addItem(player, Items.RAW_TUNA_359, 1)
                         } else {
                             animate(player, Animations.BAREHAND_SWORDFISH_6707)
                             rewardXP(player, Skills.FISHING, 100.0)
                             rewardXP(player, Skills.STRENGTH, 10.0)
-                            addItem(player, Items.RAW_SWORDFISH_371)
+                            addItem(player, Items.RAW_SWORDFISH_371, 1)
                         }
                 }
 
@@ -210,7 +210,7 @@ class FishingPulse(
                 animate(player, Animations.BAREHAND_SHARK_6705)
                 rewardXP(player, Skills.FISHING, 110.0)
                 rewardXP(player, Skills.STRENGTH, 11.0)
-                addItem(player, Items.RAW_SHARK_383)
+                addItem(player, Items.RAW_SHARK_383, 1)
             }
         }
         return 0

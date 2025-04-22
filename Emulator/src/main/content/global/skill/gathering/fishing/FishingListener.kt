@@ -128,17 +128,6 @@ class FishingListener : InteractionListener {
                 msg += getItemName(fish.id).lowercase().replace("raw ", "").replace("big ", "")
                 msg += if (fish == Fish.SHARK) "!" else "."
                 sendMessage(player, msg)
-                /*
-                 * Fishing contest.
-                 */
-                if (inBorders(player, ZoneBorders(2625, 3411, 2643, 3448))) {
-                    if (getAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_CONTEST, false) && !getAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_STASH_GARLIC, false)) {
-                        addItemOrDrop(player, Items.RAW_SARDINE_327, item.amount)
-                    } else {
-                        addItemOrDrop(player, item.id, item.amount)
-                    }
-                }
-
                 addItemOrDrop(player, item.id, item.amount)
             }
 
