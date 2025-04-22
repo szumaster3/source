@@ -27318,6 +27318,11 @@
     "respawn_delay": "60"
   },
   {
+    "examine": "Works in the Rising Sun.",
+    "name": "Tina",
+    "id": "3318"
+  },
+  {
     "weakness": "2",
     "examine": "An animated shrub.",
     "magic_animation": "0",

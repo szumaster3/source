@@ -4,6 +4,7 @@ import core.api.*
 import core.game.global.action.DoorActionHandler
 import core.game.interaction.IntType
 import core.game.interaction.InteractionListener
+import core.game.node.item.Item
 import core.game.world.map.Location
 import core.tools.DARK_RED
 import org.rs.consts.*
@@ -53,6 +54,16 @@ class FaladorListener : InteractionListener {
             playAudio(player, Sounds.CUPBOARD_OPEN_58)
             replaceScenery(node.asScenery(), CUPBOARD_OPEN, -1)
             return@on true
+        }
+
+        /*
+         * Handles use the coins on Tina NPC.
+         */
+
+        onUseWith(IntType.NPC, Items.COINS_995, NPCs.TINA_3218) { player, used, with ->
+            removeItem(player, Item(used.id, 1), Container.INVENTORY)
+            sendNPCDialogue(player, with.id, "Thanks!")
+            return@onUseWith true
         }
 
         /*
