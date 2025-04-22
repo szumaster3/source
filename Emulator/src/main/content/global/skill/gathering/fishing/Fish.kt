@@ -224,9 +224,15 @@ enum class Fish(
     ;
 
     companion object {
+        /**
+         * Maps item IDs to their corresponding [Fish] instances.
+         */
         @JvmStatic
         val fishMap: HashMap<Int, Fish> = HashMap()
 
+        /**
+         * Maps regular [Fish] to their corresponding "big" fish item ID.
+         */
         @JvmStatic
         val bigFishMap: HashMap<Fish, Int> = HashMap()
 
@@ -239,14 +245,38 @@ enum class Fish(
             bigFishMap[SHARK] = Items.BIG_SHARK_7993
         }
 
+        /**
+         * Returns the item ID of the "big" version of the given [fish], or `null` if none exists.
+         *
+         * @param fish The [Fish] to look up.
+         * @return The item ID of the big fish, or `null` if not found.
+         */
         @JvmStatic
         fun getBigFish(fish: Fish): Int? = bigFishMap[fish]
 
+        /**
+         * Returns the [Fish] instance corresponding to the given [item], or `null` if none exists.
+         *
+         * @param item The item to look up.
+         * @return The corresponding [Fish] or `null` if not found.
+         */
         @JvmStatic
         fun forItem(item: Item): Fish? = fishMap[item.id]
     }
 
-    fun getSuccessChance(level: Int): Double = (level.toDouble() - 1.0) * ((highChance - lowChance) / (99.0 - 1.0)) + lowChance
+    /**
+     * Calculates the success chance of catching this fish based on the given [level].
+     *
+     * @param level The fishing level of the player.
+     * @return The calculated success chance as a [Double].
+     */
+    fun getSuccessChance(level: Int): Double =
+        (level.toDouble() - 1.0) * ((highChance - lowChance) / (99.0 - 1.0)) + lowChance
 
+    /**
+     * Converts the fish's ID to an [Item] instance.
+     *
+     * @return The [Item] representation of this fish.
+     */
     fun getItem(): Item = this.id.asItem()
 }
