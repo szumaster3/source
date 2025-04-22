@@ -147,9 +147,9 @@ class NPCDefinition(
         anInt850 = 255
         anInt871 = -1
         aBoolean852 = true
-        aShort862 = 0.toShort()
+        aShort862 = 0
         anInt876 = -1
-        aByte851 = (-96.toByte()).toByte()
+        aByte851 = -96
         anInt875 = 0
         anInt872 = -1
         aBoolean857 = true
@@ -160,7 +160,7 @@ class NPCDefinition(
         headIcons = -1
         aBoolean856 = false
         configId = -1
-        aByte854 = (-16.toByte()).toByte()
+        aByte854 = -16
         aBoolean863 = false
         isVisibleOnMap = true
         anInt889 = -1
@@ -168,7 +168,7 @@ class NPCDefinition(
         aBoolean841 = true
         anInt879 = -1
         anInt899 = 128
-        aShort894 = 0.toShort()
+        aShort894 = 0
         options = arrayOfNulls(5)
         anInt897 = 0
         anInt901 = -1
