@@ -123,11 +123,11 @@ enum class FishingSpot(
     ),
     BAIT_FISHING_CONTEST_0(
         intArrayOf(NPCs.FISHING_SPOT_233),
-        FishingOption.FISHING_CONTEST_WIN_SPOT
+        FishingOption.FISHING_CONTEST_0
     ),
     BAIT_FISHING_CONTEST_1(
         intArrayOf(NPCs.FISHING_SPOT_234),
-        FishingOption.FISHING_CONTEST_SPOT
+        FishingOption.FISHING_CONTEST_1
     ),
     ;
 
