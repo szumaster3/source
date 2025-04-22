@@ -112,11 +112,22 @@ class FaladorListener : InteractionListener {
     override fun defineDestinationOverrides() {
 
         /*
-         * Handles destination to shop NPC.
+         * Rising Sun Inn.
+         *
+         * Borders refer to the Emily bar counter area.
+         *
+         * When the player is outside of this area, the only possible side
+         * for interaction remains the northern side point.
          */
 
-        setDest(IntType.NPC, intArrayOf(NPCs.EMILY_736), "talk-to") { _, _ ->
-            return@setDest Location.create(2956, 3372, 0)
+        val northPoint = Location.create(2955, 3375, 0)
+
+        setDest(IntType.NPC, NPCs.EMILY_736) { player, _ ->
+            if(inBorders(player, 2953, 3368, 2956, 3374)) {
+                player.location
+            } else {
+                northPoint
+            }
         }
     }
 

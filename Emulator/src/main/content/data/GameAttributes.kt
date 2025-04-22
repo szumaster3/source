@@ -294,6 +294,6 @@ internal object GameAttributes {
 
     // Fishing contest quest
     const val QUEST_FISHINGCOMPO_WON = "/save:fishing_contest:won"
-    const val QUEST_FISHINGCOMPO_STASH_GARLIC = "/save:fishing_contest:garlic"
-    const val QUEST_FISHINGCOMPO_CONTEST = "/save:fishing_contest:contest"
+    const val QUEST_FISHINGCOMPO_STASH_GARLIC = "/save:fishing_contest:garlic-stuffed"
+    const val QUEST_FISHINGCOMPO_CONTEST = "/save:fishing_contest:contest-start"
 }

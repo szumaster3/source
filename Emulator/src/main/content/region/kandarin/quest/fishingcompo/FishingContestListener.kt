@@ -1,13 +1,13 @@
 package content.region.kandarin.quest.fishingcompo
 
-import content.data.GameAttributes
 import core.api.*
 import core.api.quest.isQuestComplete
 import core.api.quest.isQuestInProgress
 import core.game.dialogue.FaceAnim
 import core.game.global.action.DoorActionHandler
-import core.game.interaction.*
-import core.game.node.item.Item
+import core.game.interaction.IntType
+import core.game.interaction.InteractionListener
+import core.game.interaction.QueueStrength
 import core.game.world.map.Location
 import core.game.world.repository.Repository
 import core.game.world.update.flag.context.Animation
@@ -122,52 +122,12 @@ class FishingContestListener : InteractionListener {
         }
 
         /*
-         * Handles stash the garlic into pipe.
-         */
-
-        onUseWith(IntType.SCENERY, Items.GARLIC_1550, Scenery.WALL_PIPE_41) { player, used, _ ->
-            if (getAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_STASH_GARLIC, false)) {
-                sendDialogue(player, "I shoved garlic up here.")
-                return@onUseWith false
-            }
-            removeItem(player, Item(used.id, 1), Container.INVENTORY)
-            setAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_STASH_GARLIC, true)
-            sendItemDialogue(player, used.id, "You stash the garlic in the pipe.")
-            return@onUseWith true
-        }
-
-        /*
-         * Handles search interaction with wall pipe.
-         */
-
-        on(Scenery.WALL_PIPE_41, IntType.SCENERY, "search") { player, _ ->
-            if (getAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_STASH_GARLIC, false)) {
-                sendDialogue(player, "I shoved garlic up here.")
-            } else {
-                sendPlayerDialogue(player, "Ewww - it's a smelly sewage pipe.", FaceAnim.DISGUSTED)
-            }
-            return@on true
-        }
-
-        /*
          * Handles Bonzo NPC - pay option interaction.
          */
 
         on(NPCs.BONZO_225, IntType.NPC, "pay") { player, _ ->
             player.dialogueInterpreter.open(NPCs.BONZO_225, Repository.findNPC(NPCs.BONZO_225))
             return@on true
-        }
-    }
-
-    override fun defineDestinationOverrides() {
-
-        /*
-         * Handle pipe destination.
-         */
-
-        setDest(IntType.SCENERY, 41) { p, node ->
-            val obj = node as core.game.node.scenery.Scenery
-            return@setDest obj.location.transform(p.location.x,p.location.y,p.location.z)
         }
     }
 
