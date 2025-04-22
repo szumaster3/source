@@ -54,10 +54,6 @@ class FishingNPC : NPCBehavior(*fishingSpots) {
                 return
             }
 
-            FishingSpots.FISHING_CONTEST -> {
-                return
-            }
-
             FishingSpots.TUTORIAL_ISLAND -> {
                 // Tutorial Island spots do not move.
                 return

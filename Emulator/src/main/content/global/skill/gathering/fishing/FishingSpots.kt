@@ -206,10 +206,6 @@ enum class FishingSpots(
         Location(3350, 3817, 0),
         Location(3050, 3704, 0),
     ),
-    FISHING_CONTEST(
-        Location.create(2637, 3444, 0),
-        Location.create(2630, 3435, 0)
-    )
     ;
 
     companion object {
