@@ -2,10 +2,7 @@ package content.region.kandarin.quest.fishingcompo.dialogue
 
 import content.data.GameAttributes
 import core.api.*
-import core.api.quest.finishQuest
-import core.api.quest.getQuestStage
-import core.api.quest.setQuestStage
-import core.api.quest.updateQuestTab
+import core.api.quest.*
 import core.game.dialogue.Dialogue
 import core.game.dialogue.FaceAnim
 import core.game.node.entity.npc.NPC
@@ -16,7 +13,6 @@ import core.tools.END_DIALOGUE
 import org.rs.consts.Items
 import org.rs.consts.NPCs
 import org.rs.consts.Quests
-import org.rs.consts.Vars
 
 /**
  * Represents the Austri & Vestri dwarfs dialogue.
@@ -56,6 +52,7 @@ class DwarfDialogue(
                 npc(FaceAnim.OLD_NORMAL, "Have you won yet?")
                 stage = 1500
             }
+
             /*
              * Post-quest dialogue.
              */
@@ -377,8 +374,8 @@ class DwarfDialogue(
             }
 
             2004 -> {
-                end()
                 if (removeItem(player, Items.FISHING_TROPHY_26)) {
+                    end()
                     setAttribute(player, "temp-npc", npc.id)
                     finishQuest(player, Quests.FISHING_CONTEST)
                 }

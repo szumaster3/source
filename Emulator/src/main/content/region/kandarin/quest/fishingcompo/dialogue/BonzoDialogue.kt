@@ -6,7 +6,6 @@ import core.api.quest.getQuestStage
 import core.api.quest.setQuestStage
 import core.game.dialogue.Dialogue
 import core.game.dialogue.FaceAnim
-import core.game.node.entity.npc.NPC
 import core.game.node.entity.player.Player
 import core.game.node.item.Item
 import core.game.system.task.Pulse
@@ -120,22 +119,25 @@ class BonzoDialogue(
             20 -> {
                 npc(
                     FaceAnim.HAPPY,
-                    "Ok, we've got all the fishermen! It's time to roll!",
+                    "Ok, we've got all the fishermen!",
                 )
                 stage++
             }
 
             21 -> {
-                npc(
-                    FaceAnim.NOD_YES,
-                    "Ok, nearly everyone is in their place already. You fish",
-                    "in the spot by the willow tree, and the Sinister Stranger,",
-                    "you fish by the pipes."
-                )
+                npc(FaceAnim.HAPPY, "It's time to roll!")
                 stage++
             }
 
             22 -> {
+                npcl(
+                    FaceAnim.NOD_YES,
+                    "Ok, nearly everyone is in their place already. You fish in the spot by the willow tree, and the Sinister Stranger, you fish by the pipes."
+                )
+                stage++
+            }
+
+            23 -> {
                 sendDialogue(player, "Your fishing competition spot is by the willow tree.")
                 stage++
             }
@@ -143,64 +145,103 @@ class BonzoDialogue(
             /*
              * Fishing contest.
              * Based on 2008 video source.
-             * Competition time: 100 ticks (60 seconds).
+             * Competition time: 33 ticks (~20 seconds).
              */
 
-            23 -> {
-                end()
-                val bonzoTableLocation = Location.create(2639, 3437, 0)
-                val nearPipeFishingSpot = findLocalNPC(player, NPCs.FISHING_SPOT_309)!!
-                val tempSpawn = NPC.create(NPCs.FISHING_SPOT_233, Location.create(2637, 3444, 0))
-                val playerWon = getAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_WON, false)
+            24 -> {
+                var fishingSpots = findLocalNPC(player, NPCs.FISHING_SPOT_309)!!
+                setAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_CONTEST, true)
                 Pulser.submit(object : Pulse(1, player) {
                     var counter: Int = 0
                     override fun pulse(): Boolean {
                         when (counter++) {
                             0 -> {
-                                if(!getAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_STASH_GARLIC, false)) {
-                                    val willowFishingSpot = findNPC(Location.create(2637, 3444, 0), NPCs.FISHING_SPOT_309)
+                                // Transform the willow tree spot for competition.
+                                fishingSpots.asNpc().transform(NPCs.FISHING_SPOT_234)
+                            }
+
+                            7 -> {
+                                if (getAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_STASH_GARLIC, false)) {
+                                    sendNPCDialogue(
+                                        player,
+                                        NPCs.SINISTER_STRANGER_3677,
+                                        "Arrgh! WHAT is THAT GHASTLY smell??? I think I will move over here instead...",
+                                        FaceAnim.DISGUSTED
+                                    )
                                 } else {
-                                    nearPipeFishingSpot.asNpc().transform(NPCs.FISHING_SPOT_233)
+                                    counter++
                                 }
                             }
-                            7 -> sendNPCDialogue(player, NPCs.SINISTER_STRANGER_3677, "Arrgh! WHAT is THAT GHASTLY smell??? I think I will move over here instead...")
-                            13 -> npc("Hmm. You'd better go and take the area by the pipes", "then.")
-                            16 -> {
-                                nearPipeFishingSpot.reTransform()
-                                // findLocalNPC(player, NPCs.FISHING_SPOT_309)!!.transform(NPCs.FISHING_SPOT_233)
-                                tempSpawn.init()
-                                sendDialogue(player, "Your fishing competition spot is now beside the pipes.")
-                                registerLogoutListener(player, "fishing-contest") { removeAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_CONTEST) }
+
+                            10 -> {
+                                if (getAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_STASH_GARLIC, false)) {
+                                    npc("Hmm. You'd better go and take the area by the pipes", "then.")
+                                    // Transform spot beside pipe to carp spot.
+                                    fishingSpots.transform(NPCs.FISHING_SPOT_233)
+                                } else {
+                                    counter++
+                                }
                             }
-                            119 -> {
-                                tempSpawn.clear()
+
+                            13 -> {
+                                if (getAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_STASH_GARLIC, false)) {
+                                    sendDialogue(player, "Your fishing competition spot is now beside the pipes.")
+                                }
+                                registerLogoutListener(player, "fishing-contest-end") {
+                                    fishingSpots.reTransform()
+                                }
+                            }
+
+                            /*
+                             * 20 seconds to end the competition.
+                             */
+
+                            46 -> {
                                 player.faceLocation(Location.create(2641, 3437, 0))
+                                removeAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_CONTEST)
                                 npc("Ok folks, time's up!", "Let's see who caught the biggest fish!")
                             }
-                            123 -> {
-                                lock(player, 6)
-                                forceWalk(player, bonzoTableLocation, "")
+
+                            49 -> {
+                                forceWalk(player, Location.create(2639, 3437, 0), "")
                             }
-                            126 -> {
-                                val amount = amountInInventory(player, Items.RAW_GIANT_CARP_338)
-                                if (!removeItem(player, Item(Items.RAW_GIANT_CARP_338, amount), Container.INVENTORY)) {
-                                    npc(FaceAnim.HAPPY, "We have a new winner!")
-                                } else {
+
+                            54 -> {
+                                val sardines = amountInInventory(player, Items.RAW_SARDINE_327)
+                                val carps = amountInInventory(player, Items.RAW_GIANT_CARP_338)
+
+                                val hasSardines = sardines > 0
+                                val hasCarps = carps > 0
+                                if (hasSardines || hasCarps) {
+                                    if (hasSardines) {
+                                        removeAll(player, Item(Items.RAW_SARDINE_327, sardines), Container.INVENTORY)
+                                    }
+                                    if (hasCarps) {
+                                        removeAll(
+                                            player,
+                                            Item(Items.RAW_GIANT_CARP_338, carps),
+                                            Container.INVENTORY
+                                        ).also {
+                                            setAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_WON, true)
+                                        }
+                                    }
+
                                     animate(player, Animations.MULTI_PUT_833)
                                     sendDialogue(player, "You hand over your catch.")
-                                    setAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_WON, true)
-                                }
-                            }
-                            129 -> {
-                                if (!playerWon) {
-                                    npc("And our winner is... the stranger who", "was fishing over by the pipes!")
-                                    return false
                                 } else {
-                                    npc(FaceAnim.HAPPY, "We have a new winner!")
-                                    return true
+                                    sendDialogue(player, "You haven't caught anything worth handing in.")
                                 }
+
                             }
-                            132 -> {
+
+                            59 -> {
+                                npc(FaceAnim.HAPPY, "We have a new winner!")
+                            }
+
+                            62 -> if (!getAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_WON, false)) {
+                                npc("And our winner is... the stranger who", "was fishing over by the pipes!")
+                                return true
+                            } else {
                                 npc(
                                     FaceAnim.HAPPY,
                                     "The heroic-looking person who was fishing by the pipes",
@@ -208,12 +249,10 @@ class BonzoDialogue(
                                     "Jack used to compete!"
                                 )
                             }
-                            135 -> {
-                                sendItemDialogue(
-                                    player,
-                                    Items.FISHING_TROPHY_26,
-                                    "You are given the Hemenster fishing trophy!"
-                                )
+
+                            65 -> {
+                                sendItemDialogue(player, Items.FISHING_TROPHY_26, "You are given the Hemenster fishing trophy!")
+                                removeAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_CONTEST)
                                 addItemOrDrop(player, Items.FISHING_TROPHY_26, 1)
                                 setQuestStage(player, Quests.FISHING_CONTEST, 20)
                                 return true

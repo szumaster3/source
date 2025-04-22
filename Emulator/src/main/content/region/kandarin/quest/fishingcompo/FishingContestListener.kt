@@ -1,5 +1,6 @@
 package content.region.kandarin.quest.fishingcompo
 
+import content.data.GameAttributes
 import core.api.*
 import core.api.quest.isQuestComplete
 import core.api.quest.isQuestInProgress
@@ -51,9 +52,40 @@ class FishingContestListener : InteractionListener {
         on(GATES, IntType.SCENERY, "open") { player, node ->
             when (node.id) {
                 Scenery.GATE_47, Scenery.GATE_48 -> {
+                    // Exit during competition.
+                    if(player.location.x < 2643 && getAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_CONTEST, false)) {
+                        sendNPCDialogue(player, NPCs.BONZO_225, "So you're calling it quits here for now?")
+                        addDialogueAction(player) { _, button ->
+                            sendDialogueOptions(player, "Select an option",
+                                "Yes I'll compete again another day.",
+                                "Actually I'll go back and catch some more."
+                            )
+                            addDialogueAction(player) { _, _ ->
+                                if(button == 2) {
+                                    removeAttribute(player, GameAttributes.QUEST_FISHINGCOMPO_CONTEST)
+                                    sendPlayerDialogue(player, "Yes I'll compete again another day.")
+                                    runTask(player, 3) {
+                                        DoorActionHandler.autowalkFence(
+                                            player,
+                                            node.asScenery(),
+                                            Scenery.GATE_47,
+                                            Scenery.GATE_48
+                                        )
+                                        sendNPCDialogue(player, NPCs.BONZO_225, "Ok, I'll see you again.")
+                                    }
+                                } else {
+                                    sendPlayerDialogue(player, "Actually I'll go back and catch some more.")
+                                    runTask(player, 3) {
+                                        sendNPCDialogue(player, NPCs.BONZO_225, "Good luck!")
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     val shownPass = getVarbit(player, Vars.VARBIT_FISHING_CONTEST_PASS_SHOWN_2053)
                     when {
-                        shownPass == 0 -> {
+                        shownPass == 0 && player.location.x > 2642 -> {
                             if (inInventory(player, Items.FISHING_PASS_27)) {
                                 sendMessage(player, "You should give your pass to Morris.")
                             } else {
