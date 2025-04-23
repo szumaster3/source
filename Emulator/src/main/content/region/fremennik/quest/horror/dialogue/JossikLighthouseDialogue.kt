@@ -1,4 +1,4 @@
-package content.region.fremennik.quest.horror
+package content.region.fremennik.quest.horror.dialogue
 
 import content.region.fremennik.quest.horror.handlers.DagannothBossCutscene
 import content.region.fremennik.quest.horror.handlers.DagannothCutscene

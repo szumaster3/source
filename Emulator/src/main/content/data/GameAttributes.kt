@@ -156,17 +156,12 @@ internal object GameAttributes {
     const val QUEST_HFTD_LIGHTHOUSE_MECHANISM = "hftd:lighthouse-fixed"
     const val QUEST_HFTD_UNLOCK_BRIDGE = "/save:hftd:lighthouse-bridge"
     const val QUEST_HFTD_STRANGE_WALL_DISCOVER = "/save:hftd:strange-wall"
+    const val QUEST_HFTD_STRANGE_WALL_PROGRESS = "/save:hftd:used-on-wall"
     const val QUEST_HFTD_UNLOCK_DOOR = "/save:hftd:item-placed"
+    const val QUEST_HFTD_JOSSIK_FOUNDED = "/save:hftd:jossik-founded"
 
     // God books
     const val GOD_BOOKS = "/save:god_books:access"
-
-    const val QUEST_HFTD_USE_AIR_RUNE = "/save:hftd:air"
-    const val QUEST_HFTD_USE_FIRE_RUNE = "/save:hftd:fire"
-    const val QUEST_HFTD_USE_EARTH_RUNE = "/save:hftd:earth"
-    const val QUEST_HFTD_USE_WATER_RUNE = "/save:hftd:water"
-    const val QUEST_HFTD_USE_ARROW = "/save:hftd:arrow"
-    const val QUEST_HFTD_USE_SWORD = "/save:hftd:sword"
 
     // Black knights fortress quest.
     const val QUEST_BKF_DOSSIER_INTER = "/save:quest:fortress:read_dossier"
