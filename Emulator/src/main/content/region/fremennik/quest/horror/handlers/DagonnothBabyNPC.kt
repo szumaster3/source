@@ -1,6 +1,6 @@
 package content.region.fremennik.quest.horror.handlers
 
-import content.region.fremennik.quest.horror.JossikLighthouseDialogue
+import content.region.fremennik.quest.horror.dialogue.JossikLighthouseDialogue
 import core.api.*
 import core.api.quest.setQuestStage
 import core.game.interaction.QueueStrength

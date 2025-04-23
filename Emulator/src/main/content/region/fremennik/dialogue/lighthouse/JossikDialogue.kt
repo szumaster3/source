@@ -14,6 +14,13 @@ import org.rs.consts.Items
 import org.rs.consts.NPCs
 import java.util.*
 
+/**
+ * Represents the Jossik dialogue.
+ *
+ * Relations:
+ * - [GodBook]'s
+ * - [Horror from the Deep][content.region.fremennik.quest.horror.HorrorFromTheDeep]
+ */
 @Initializable
 class JossikDialogue : Dialogue {
     private var uncompleted: MutableList<GodBook>? = null
