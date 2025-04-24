@@ -1456,6 +1456,11 @@ class ItemDefinition : Definition<Item?>() {
                 Items.AGILE_TOP_14708,
                 Items.AGILE_LEGS_14709,
                 Items.AGILE_LEGS_14710,
+
+                // TODO: Confirm
+                // Items.PROSYTE_HARNESS_M_9666,
+                // Items.INITIATE_HARNESS_M_9668,
+                // Items.PROSYTE_HARNESS_F_9670,
             )
 
         /**
