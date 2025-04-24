@@ -376,7 +376,7 @@ class RenderAnimationDefinition {
                 log(
                     RenderAnimationDefinition::class.java,
                     Log.ERR,
-                    "No definitions found for render animation " + animId + ", size=" +
+                    "No definitions found for render animation $animId, size=" +
                         getArchiveCapacity(
                             CacheIndex.CONFIGURATION,
                             CacheArchive.BAS_TYPE,
