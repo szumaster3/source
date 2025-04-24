@@ -249,31 +249,62 @@ class ItemDefinition : Definition<Item?>() {
         return true
     }
 
+    /**
+     * Checks if the item is allowed to be taken to Entrana.
+     *
+     * @return boolean
+     */
     val isAllowedOnEntrana: Boolean
-        /**
-         * Is allowed on entrana boolean.
-         *
-         * @return the boolean
-         */
         get() {
-            if (permittedItems.contains(getId())) {
-                return true
-            }
-            if (forbiddenItems.contains(getId())) {
-                return false
-            }
-            if (equipSlot(getId()) == EquipmentSlot.AMMO) {
-                return true
-            }
-            if (getName().lowercase(Locale.getDefault()).startsWith("ring") ||
-                getName()
-                    .lowercase(Locale.getDefault())
-                    .startsWith("amulet")
-            ) {
-                return true
-            }
+            val name = getName().lowercase(Locale.getDefault())
+            val id = getId()
+
+            // If the item is explicitly listed as permitted, allow it.
+            if (id in permittedItems) return true
+            // If the item is explicitly listed as forbidden, disallow it.
+            if (id in forbiddenItems) return false
+
+            // Substrings in item names that mark the item as disallowed.
+            val disallowedNameParts = listOf(
+                "(class",                   // Stealing creation
+                "camo ","larupia","kyatt",  // Hunter gear
+                " stole",                   //
+                "moonclan",                 //
+                "villager ","tribal",       // Villager gear (except masks)
+                "spirit ",                  // Pouches
+                "gauntlets",                //
+            )
+
+            if (disallowedNameParts.any { it in name }) return false
+
+            // Ammo slot items are allowed by default.
+            if (equipSlot(id) == EquipmentSlot.AMMO) return true
+
+
+            // List of exact names that are allowed.
+            val allowedName = listOf(
+                "trousers",
+                "tribal top",
+                "woven top",
+                "chompy bird hat",
+                "cape"
+            )
+            // Substrings in item names that are allowed.
+            val allowedContains = listOf(
+                "satchel",
+                "naval",
+                " partyhat"
+            )
+
+            // If the name exactly matches an allowed one, or contains any allowed substring, allow it.
+            if (name in allowedName || allowedContains.any { it in name }) return true
+
+            // Items starting with "afro", "ring", or "amulet" are allowed.
+            if (name.startsWith("afro") || name.startsWith("ring") || name.startsWith("amulet")) return true
+
+            // Check item bonuses; if none exist or all bonuses are 0, allow it.
             val bonuses = getConfiguration<IntArray>(ItemConfigParser.BONUS)
-            return bonuses == null || Arrays.stream(bonuses).allMatch { x: Int -> x == 0 }
+            return bonuses == null || bonuses.all { it == 0 }
         }
 
     /**
@@ -1306,10 +1337,17 @@ class ItemDefinition : Definition<Item?>() {
 
         private val permittedItems =
             arrayOf(
-                Items.PENANCE_GLOVES_10553,
-                Items.ICE_GLOVES_1580,
+                Items.COMBAT_BRACELET1_11124,
+                Items.COMBAT_BRACELET2_11122,
+                Items.COMBAT_BRACELET3_11120,
+                Items.COMBAT_BRACELET4_11118,
+                Items.REGEN_BRACELET_11133,
                 Items.BOOTS_OF_LIGHTNESS_88,
                 Items.CLIMBING_BOOTS_3105,
+                Items.BLUE_BERET_2633,
+                Items.BLACK_BERET_2635,
+                Items.WHITE_BERET_2637,
+                Items.BROOMSTICK_14057,
                 Items.SPOTTED_CAPE_10069,
                 Items.SPOTTIER_CAPE_10071,
                 Items.SARADOMIN_CAPE_2412,
@@ -1318,23 +1356,20 @@ class ItemDefinition : Definition<Item?>() {
                 Items.SARADOMIN_CLOAK_10446,
                 Items.ZAMORAK_CLOAK_10450,
                 Items.GUTHIX_CLOAK_10448,
+                Items.TAN_CAVALIER_2639,
+                Items.BLACK_CAVALIER_2643,
+                Items.DARK_CAVALIER_2641,
+                Items.DAVY_KEBBIT_HAT_12568,
+                Items.FIXED_DEVICE_6082,
+                Items.FLARED_TROUSERS_10394,
+                Items.GIANTS_HAND_13666,
+                Items.GNOME_SCARF_9470,
                 Items.HOLY_BOOK_3840,
                 Items.DAMAGED_BOOK_3839,
                 Items.UNHOLY_BOOK_3842,
                 Items.DAMAGED_BOOK_3841,
                 Items.BOOK_OF_BALANCE_3844,
                 Items.DAMAGED_BOOK_3843,
-                Items.WIZARD_BOOTS_2579,
-                Items.COMBAT_BRACELET1_11124,
-                Items.COMBAT_BRACELET2_11122,
-                Items.COMBAT_BRACELET3_11120,
-                Items.COMBAT_BRACELET4_11118,
-                Items.REGEN_BRACELET_11133,
-                Items.WARLOCK_CLOAK_14081,
-                Items.WARLOCK_LEGS_14077,
-                Items.WARLOCK_TOP_14076,
-                Items.MONKS_ROBE_542,
-                Items.MONKS_ROBE_544,
                 Items.HAM_SHIRT_4298,
                 Items.HAM_ROBE_4300,
                 Items.HAM_HOOD_4302,
@@ -1342,24 +1377,85 @@ class ItemDefinition : Definition<Item?>() {
                 Items.HAM_LOGO_4306,
                 Items.GLOVES_4308,
                 Items.BOOTS_4310,
+                Items.ICE_GLOVES_1580,
+                Items.MIND_HELMET_9733,
+                Items.MONKS_ROBE_542,
+                Items.MONKS_ROBE_544,
+                Items.PRIEST_GOWN_426,
+                Items.PRIEST_GOWN_428,
+                Items.SHADE_ROBE_546,
+                Items.SHADE_ROBE_548,
+                Items.ZAMORAK_ROBE_1033,
+                Items.ZAMORAK_ROBE_1035,
+                Items.NURSE_HAT_6548,
+                Items.OMNI_TIARA_13655,
+                Items.PENANCE_GLOVES_10553,
+                Items.PET_ROCK_3695,
+                Items.SALVE_AMULETE_10588,
+                Items.SKELETAL_BOOTS_6147,
+                Items.SKELETAL_GLOVES_6153,
+                Items.SKIRT_5048,
+                Items.WARLOCK_TOP_14076,
+                Items.WARLOCK_LEGS_14077,
+                Items.WARLOCK_CLOAK_14081,
+                Items.WIZARD_BOOTS_2579,
+                Items.BONES_TO_BANANAS_8014,
+                Items.BONES_TO_PEACHES_8015,
+                Items.ENCHANT_SAPPHIRE_8016,
+                Items.ENCHANT_EMERALD_8017,
+                Items.ENCHANT_RUBY_8018,
+                Items.ENCHANT_DIAMOND_8019,
+                Items.ENCHANT_DRAGONSTN_8020,
+                Items.ENCHANT_ONYX_8021,
+                Items.ECTOPHIAL_4251,
             )
 
         private val forbiddenItems =
             arrayOf(
+                Items.CAPE_OF_LEGENDS_1052,
+                Items.FIRE_CAPE_6570,
+                Items.AVAS_ATTRACTOR_10498,
+                Items.AVAS_ACCUMULATOR_10499,
+                Items.COOKING_GAUNTLETS_775,
+                Items.CHAOS_GAUNTLETS_777,
+                Items.GOLDSMITH_GAUNTLETS_776,
+                Items.SILVER_SICKLE_2961,
+                Items.SILVER_SICKLEB_2963,
+                Items.SILVER_SICKLE_EMERALDB_13155,
+                Items.KARAMJA_GLOVES_1_11136,
+                Items.KARAMJA_GLOVES_2_11138,
+                Items.KARAMJA_GLOVES_3_11140,
+                Items.EXPLORERS_RING_1_13560,
+                Items.EXPLORERS_RING_2_13561,
+                Items.EXPLORERS_RING_3_13562,
+                Items.FANCY_BOOTS_9005,
+                Items.FIGHTING_BOOTS_9006,
+                Items.VYREWATCH_TOP_9634,
+                Items.VYREWATCH_LEGS_9636,
+                Items.VYREWATCH_SHOES_9638,
+                Items.BARB_TAIL_HARPOON_10129,
+                Items.BUTTERFLY_NET_10010,
+                Items.MIME_MASK_3057,
                 Items.DWARF_CANNON_SET_11967,
                 Items.CANNON_BARRELS_10,
                 Items.CANNON_BASE_6,
                 Items.CANNON_STAND_8,
                 Items.CANNON_FURNACE_12,
-                Items.COOKING_GAUNTLETS_775,
-                Items.CHAOS_GAUNTLETS_777,
-                Items.GOLDSMITH_GAUNTLETS_776,
-                Items.KARAMJA_GLOVES_1_11136,
-                Items.KARAMJA_GLOVES_2_11138,
-                Items.KARAMJA_GLOVES_3_11140,
-                Items.VYREWATCH_TOP_9634,
-                Items.VYREWATCH_LEGS_9636,
-                Items.VYREWATCH_SHOES_9638,
+                Items.HOLY_WATER_732,
+                Items.ENCHANTED_WATER_TIARA_11969,
+                Items.OMNI_TALISMAN_STAFF_13642,
+                Items.FREMENNIK_SEA_BOOTS_1_14571,
+                Items.FREMENNIK_SEA_BOOTS_2_14572,
+                Items.FREMENNIK_SEA_BOOTS_3_14573,
+                Items.ROBIN_HOOD_HAT_2581,
+                Items.SAFETY_GLOVES_12629,
+                Items.FALADOR_SHIELD_1_14577,
+                Items.FALADOR_SHIELD_2_14578,
+                Items.FALADOR_SHIELD_3_14579,
+                Items.AGILE_TOP_14707,
+                Items.AGILE_TOP_14708,
+                Items.AGILE_LEGS_14709,
+                Items.AGILE_LEGS_14710,
             )
 
         /**
