@@ -1299,14 +1299,19 @@ class ItemDefinition : Definition<Item?>() {
         }
 
         /**
-         * Can enter entrana boolean.
+         * Checks if the player can enter Entrana.
          *
-         * @param player the player
-         * @return the boolean
+         * @param player the player who will be checked.
+         * @return `true` can enter Entrana, `false` otherwise.
          */
         @JvmStatic
         fun canEnterEntrana(player: Player): Boolean {
-            val container = arrayOf(player.inventory, player.equipment)
+            val container = mutableListOf(player.inventory, player.equipment)
+
+            if (player.familiarManager.hasFamiliar() && player.familiarManager.familiar.isBurdenBeast) {
+                container.add((player.familiarManager.familiar as BurdenBeast).container)
+            }
+
             for (c in container) {
                 for (i in c.toArray()) {
                     if (i == null) {
