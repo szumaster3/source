@@ -1,5 +1,6 @@
 package core.cache.def.impl
 
+import content.global.skill.summoning.familiar.BurdenBeast
 import core.api.EquipmentSlot
 import core.api.equipSlot
 import core.api.log
@@ -264,40 +265,24 @@ class ItemDefinition : Definition<Item?>() {
             // If the item is explicitly listed as forbidden, disallow it.
             if (id in forbiddenItems) return false
 
-            // Substrings in item names that mark the item as disallowed.
-            val disallowedNameParts = listOf(
-                "(class",                   // Stealing creation
-                "camo ","larupia","kyatt",  // Hunter gear
-                " stole",                   //
-                "moonclan",                 //
-                "villager ","tribal",       // Villager gear (except masks)
-                "spirit ",                  // Pouches
-                "gauntlets",                //
-            )
+            // If the item is in the allowed list by exact name, allow it.
+            val allowedName = listOf("trousers", "tribal top", "woven top", "chompy bird hat", "cape")
+            if (name in allowedName) return true
 
+            // Substrings in item names that mark the item as disallowed.
+            val disallowedNameParts = listOf("(class", "camo ", "larupia", "kyatt", " stole", "moonclan", "villager ", "tribal", "spirit ", "gauntlets")
+
+            // If the item name contains a disallowed substring, disallow it.
             if (disallowedNameParts.any { it in name }) return false
 
             // Ammo slot items are allowed by default.
             if (equipSlot(id) == EquipmentSlot.AMMO) return true
 
-
-            // List of exact names that are allowed.
-            val allowedName = listOf(
-                "trousers",
-                "tribal top",
-                "woven top",
-                "chompy bird hat",
-                "cape"
-            )
             // Substrings in item names that are allowed.
-            val allowedContains = listOf(
-                "satchel",
-                "naval",
-                " partyhat"
-            )
+            val allowedContains = listOf("satchel", "naval", " partyhat")
 
             // If the name exactly matches an allowed one, or contains any allowed substring, allow it.
-            if (name in allowedName || allowedContains.any { it in name }) return true
+            if (allowedContains.any { it in name }) return true
 
             // Items starting with "afro", "ring", or "amulet" are allowed.
             if (name.startsWith("afro") || name.startsWith("ring") || name.startsWith("amulet")) return true
@@ -1457,10 +1442,9 @@ class ItemDefinition : Definition<Item?>() {
                 Items.AGILE_LEGS_14709,
                 Items.AGILE_LEGS_14710,
 
-                // TODO: Confirm
-                // Items.PROSYTE_HARNESS_M_9666,
-                // Items.INITIATE_HARNESS_M_9668,
-                // Items.PROSYTE_HARNESS_F_9670,
+                Items.PROSYTE_HARNESS_M_9666,
+                Items.INITIATE_HARNESS_M_9668,
+                Items.PROSYTE_HARNESS_F_9670,
             )
 
         /**
