@@ -22,8 +22,10 @@ class LeoDialogue : DialogueFile() {
         npc = NPC(NPCs.LEO_3508)
         when (stage) {
             0 -> {
-                if (getAttribute(player!!, GameAttributes.GRAVEDIGGER_SCORE, 0) > 1) {
+                if (getAttribute(player!!, GameAttributes.GRAVEDIGGER_SCORE, 0) >= 1) {
                     options("There, finished!", "I want to leave.").also { stage = 9 }
+                } else if(getAttribute(player!!, "random:talk-to", false)) {
+                    player("Remind me what I'm supposed to do.").also { stage = 4 }
                 } else {
                     npcl("You have to help me dig these graves ${player!!.username}, I don't know who else to turn to!").also { stage++ }
                 }
@@ -38,9 +40,10 @@ class LeoDialogue : DialogueFile() {
             7 -> playerl("Ok, I'll get right on it.").also { stage++ }
             8 -> {
                 end()
+                setAttribute(player!!, "random:talk-to", true)
                 GravediggerListener.init(player!!)
-                openInterface(player!!, Components.BLANK_SCROLL_222).also {
-                    sendString(player!!, arrayOf("You need to:", "Pick up the coffins.", "Check the body inside.", "Find out where they need to be buried.", "Put all give coffins in the correct graves.", "Then talk to Leo to get a reward.", "You can store items in the mausoleum if you need more", "inventory space.").joinToString("<br><col=FFF900>"), Components.BLANK_SCROLL_222, 3)
+                openInterface(player!!, Components.MESSAGESCROLL_220).also {
+                    sendString(player!!, arrayOf("You need to:", "Pick up the coffins.", "Check the body inside.", "Find out where they need to be buried.", "Put all give coffins in the correct graves.", "Then talk to Leo to get a reward.", "You can store items in the mausoleum if you need more", "inventory space.").joinToString("<br>"), Components.MESSAGESCROLL_220, 6)
                 }
             }
             9 -> when (buttonID) {
@@ -64,28 +67,43 @@ class LeoDialogue : DialogueFile() {
             14 -> {
                 end()
                 GravediggerListener.cleanup(player!!)
-                val itemsToCheck = listOf(Items.ZOMBIE_MASK_7594, Items.ZOMBIE_SHIRT_7592, Items.ZOMBIE_TROUSERS_7593, Items.ZOMBIE_GLOVES_7595, Items.ZOMBIE_BOOTS_7596)
+                val rewardID = listOf(Items.ZOMBIE_MASK_7594, Items.ZOMBIE_SHIRT_7592, Items.ZOMBIE_TROUSERS_7593, Items.ZOMBIE_GLOVES_7595, Items.ZOMBIE_BOOTS_7596)
                 player!!.pulseManager.run(
                     object : Pulse(2) {
                         override fun pulse(): Boolean {
-                            for (item in itemsToCheck) {
-                                if (hasAnItem(player!!, item).container != null) {
-                                    addItemOrDrop(player!!, item, 1)
-                                    return true
-                                }
+                            val item = rewardID.filter { hasAnItem(player!!, it).container == null }.randomOrNull()
+
+                            if (item != null) {
+                                addItemOrDrop(player!!, item, 1)
+                                return true
                             }
+
                             addItemOrDrop(player!!, Items.COINS_995, 500)
-                            player!!.emoteManager.unlock(Emotes.ZOMBIE_DANCE)
-                            player!!.emoteManager.unlock(Emotes.ZOMBIE_WALK)
+                            if (!player!!.emoteManager.isUnlocked(Emotes.ZOMBIE_DANCE)) {
+                                player!!.emoteManager.unlock(Emotes.ZOMBIE_DANCE)
+                            }
+                            if (!player!!.emoteManager.isUnlocked(Emotes.ZOMBIE_WALK)) {
+                                player!!.emoteManager.unlock(Emotes.ZOMBIE_WALK)
+                            }
                             return true
                         }
-                    },
+                    }
                 )
             }
             15 -> npcl("Try looking in the coffins to get a better idea of who is in them, and then read the gravestones to find who needs to be in there.",).also { stage++ }
             16 -> playerl("All right, I'll give it another shot.").also { stage++ }
             17 -> npcl("Don't forget to store any items that you don't need in the mausoleum. I'll take them to the bank while you work.").also { stage = END_DIALOGUE }
-            18 -> end().also { runTask(player!!, 2) { GravediggerListener.cleanup(player!!) } }
+            18 -> {
+                end()
+                player!!.pulseManager.run(
+                    object : Pulse(2) {
+                        override fun pulse(): Boolean {
+                            GravediggerListener.cleanup(player!!)
+                            return true
+                        }
+                    }
+                )
+            }
         }
     }
 }
