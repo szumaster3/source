@@ -26,22 +26,21 @@ class ItemStorageListener : InterfaceListener, InteractionListener {
          */
 
         on(INTERFACE) { player, _, _, buttonID, _, _ ->
-            val interfaces = listOf(
-                StorageInterface("con:bookcase", BookcaseItem.values().map { it.labelId }) { labelId ->
-                    val book = BookcaseItem.values().firstOrNull { it.labelId == labelId }
-                    book?.let { addItem(player, it.takeId) }
-                },
-                StorageInterface("con:fancy-dress-box", FancyDressBoxItem.values().map { it.labelId }) { labelId ->
-                    val item = FancyDressBoxItem.values().firstOrNull { it.labelId == labelId }
-                    item?.let { handleFancyDressBox(player, it.ordinal) }
-                },
-                StorageInterface(
-                    "con:cape-rack",
-                    CapeRackItem.values().flatMap { listOf(it.labelId, it.iconId) }) { id ->
-                    val cape = CapeRackItem.values().firstOrNull { it.labelId == id || it.iconId == id }
-                    cape?.let { handleCapeRack(player, it.ordinal) }
-                }
-            )
+            val interfaces =
+                listOf(
+                    StorageInterface("con:bookcase", BookcaseItem.values().map { it.labelId }) { labelId ->
+                        val book = BookcaseItem.values().firstOrNull { it.labelId == labelId }
+                        book?.let { addItem(player, it.takeId) }
+                    },
+                    StorageInterface("con:fancy-dress-box", FancyDressBoxItem.values().map { it.labelId }) { labelId ->
+                        val item = FancyDressBoxItem.values().firstOrNull { it.labelId == labelId }
+                        item?.let { handleFancyDressBox(player, it.ordinal) }
+                    },
+                    StorageInterface("con:cape-rack", CapeRackItem.values().flatMap { listOf(it.labelId, it.iconId) }) { id ->
+                        val cape = CapeRackItem.values().firstOrNull { it.labelId == id || it.iconId == id }
+                        cape?.let { handleCapeRack(player, it.ordinal) }
+                    }
+                )
 
             for (storage in interfaces) {
                 if (getAttribute(player, storage.attribute, false)) {
@@ -53,7 +52,6 @@ class ItemStorageListener : InterfaceListener, InteractionListener {
                     break
                 }
             }
-
             return@on true
         }
 
@@ -62,39 +60,31 @@ class ItemStorageListener : InterfaceListener, InteractionListener {
          */
 
         onClose(INTERFACE) { player, _ ->
-            removeAttributes(
-                player,
-                "con:fancy-dress-box",
-                "con:bookcase",
-                "con:cape-rack"
-            )
+            removeAttributes(player, "con:fancy-dress-box", "con:bookcase", "con:cape-rack")
             return@onClose true
         }
     }
-
 
     companion object {
         private const val INTERFACE = 467
 
         private fun handleFancyDressBox(player: Player, setIndex: Int) {
-            val item = FancyDressBoxItem.values().getOrNull(setIndex) ?: run {
-                player.debug("Invalid outfit selection.")
+            val item = FancyDressBoxItem.values().getOrNull(setIndex)
+
+            if (item == null) {
+                player.debug("Invalid $item selection.")
                 return
             }
 
             val set = if (item == FancyDressBoxItem.Royal_frog_costume) {
                 if (player.isMale) {
-                    intArrayOf(
-                        Items.PRINCE_TUNIC_6184,
-                        Items.PRINCE_LEGGINGS_6185,
-                    )
+                    intArrayOf(Items.PRINCE_TUNIC_6184, Items.PRINCE_LEGGINGS_6185)
                 } else {
-                    intArrayOf(
-                        Items.PRINCESS_BLOUSE_6186,
-                        Items.PRINCESS_SKIRT_6187
-                    )
+                    intArrayOf(Items.PRINCESS_BLOUSE_6186, Items.PRINCESS_SKIRT_6187)
                 }
-            } else item.takeId
+            } else {
+                item.takeId
+            }
 
             val labelId = item.labelId
             val iconId = item.iconId
@@ -125,10 +115,12 @@ class ItemStorageListener : InterfaceListener, InteractionListener {
         }
 
         private fun handleCapeRack(player: Player, setIndex: Int) {
-            val item = CapeRackItem.values().getOrNull(setIndex) ?: run {
-                player.debug("Invalid cape index: [$setIndex]")
-                return
-            }
+            val item =
+                CapeRackItem.values().getOrNull(setIndex)
+                    ?: run {
+                        player.debug("Invalid cape index: [$setIndex]")
+                        return
+                    }
 
             val labelId = item.labelId
             val iconId = item.iconId

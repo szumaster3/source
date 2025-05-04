@@ -14,9 +14,28 @@ import org.rs.consts.Items
 import org.rs.consts.Scenery
 
 class BookcaseListener : InteractionListener {
-    private val BOOKCASE = intArrayOf(Scenery.BOOKCASE_13597, Scenery.BOOKCASE_13598, Scenery.BOOKCASE_13599)
-    private val BOOKCASE_RESTRICTED_CONTENT = intArrayOf(Items.HOLY_BOOK_3840, Items.DAMAGED_BOOK_3839, Items.BOOK_OF_BALANCE_3844, Items.DAMAGED_BOOK_3843, Items.UNHOLY_BOOK_3842, Items.DAMAGED_BOOK_3841, Items.STRANGE_BOOK_5507, Items.BOOK_ON_CHICKENS_7464, Items.BOOK_OF_FOLKLORE_5508, Items.PVP_WORLDS_MANUAL_14056)
+    private val BOOKCASE =
+        intArrayOf(
+            Scenery.BOOKCASE_13597,
+            Scenery.BOOKCASE_13598,
+            Scenery.BOOKCASE_13599
+        )
 
+    private val BOOKCASE_RESTRICTED_CONTENT =
+        intArrayOf(
+            Items.HOLY_BOOK_3840,
+            Items.DAMAGED_BOOK_3839,
+            Items.BOOK_OF_BALANCE_3844,
+            Items.DAMAGED_BOOK_3843,
+            Items.UNHOLY_BOOK_3842,
+            Items.DAMAGED_BOOK_3841,
+            Items.STRANGE_BOOK_5507,
+            Items.BOOK_ON_CHICKENS_7464,
+            Items.BOOK_OF_FOLKLORE_5508,
+            Items.PVP_WORLDS_MANUAL_14056
+        )
+
+    private val INTERFACE = 467
     override fun defineListeners() {
         /*
          * Handles interaction with bookcase.
@@ -25,21 +44,22 @@ class BookcaseListener : InteractionListener {
         on(BOOKCASE, IntType.SCENERY, "search") { player, _ ->
             animate(player, Animations.USE_OBJECT_POH_3659)
             setAttribute(player, "con:bookcase", true)
-            openInterface(player, 467).also {
+            openInterface(player, INTERFACE).also {
+                sendString(player, "Bookcase", INTERFACE, 225)
                 val books = BookcaseItem.values()
                 PacketRepository.send(
                     ContainerPacket::class.java,
-                    ContainerContext(player, 467, 164, 30, books.map { Item(it.takeId) }.toTypedArray(), false)
+                    ContainerContext(player, INTERFACE, 164, 30, books.map { Item(it.takeId) }.toTypedArray(), false)
                 )
                 books.forEach { book ->
                     val itemName = getItemName(book.takeId)
                     val itemExamine = ItemDefinition.forId(book.takeId).examine
-                    sendString(player, "${core.tools.YELLOW}$itemName</col> <br>$itemExamine", 467, book.labelId)
+                    sendString(player, "${core.tools.YELLOW}$itemName</col> <br>$itemExamine", INTERFACE, book.labelId)
                 }
-                sendString(player, "Bookcase", 467, 225)
             }
             return@on true
         }
+
 
         /*
          * Handles use the restricted book on bookcase.

@@ -35,5 +35,4 @@ enum class BookcaseItem (val takeId: Int) {
     Varmens_Notes (Items.VARMENS_NOTES_4616);
 
     val labelId: Int get() = 55 +  (ordinal * 2)
-    val iconId: Int get() = 165 +  (ordinal * 2)
 }

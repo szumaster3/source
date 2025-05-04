@@ -12,7 +12,17 @@ import core.net.packet.out.ContainerPacket
 import org.rs.consts.Scenery
 
 class CapeRackListener : InteractionListener {
-    private val CAPE_RACK = intArrayOf(Scenery.OAK_CAPE_RACK_18766, Scenery.TEAK_CAPE_RACK_18767, Scenery.MAHOGANY_CAPE_RACK_18768, Scenery.GILDED_CAPE_RACK_18769, Scenery.MARBLE_CAPE_RACK_18770, Scenery.MAGIC_CAPE_RACK_18771)
+    private val CAPE_RACK =
+        intArrayOf(
+            Scenery.OAK_CAPE_RACK_18766,
+            Scenery.TEAK_CAPE_RACK_18767,
+            Scenery.MAHOGANY_CAPE_RACK_18768,
+            Scenery.GILDED_CAPE_RACK_18769,
+            Scenery.MARBLE_CAPE_RACK_18770,
+            Scenery.MAGIC_CAPE_RACK_18771
+        )
+    private val INTERFACE = 467
+
     override fun defineListeners() {
 
         /*
@@ -21,22 +31,21 @@ class CapeRackListener : InteractionListener {
 
         on(CAPE_RACK, IntType.SCENERY, "search") { player, _ ->
             setAttribute(player, "con:cape-rack", true)
-            openInterface(player, 467).also {
-                sendString(player, "Cape rack", 467, 225)
-
+            openInterface(player, INTERFACE).also {
+                sendString(player, "Cape rack", INTERFACE, 225)
                 val storedItems = CapeRackItem.values().map { Item(it.displayId) }.toTypedArray()
                 PacketRepository.send(
                     ContainerPacket::class.java,
-                    ContainerContext(player, 467, 164, 30, storedItems, false)
+                    ContainerContext(player, INTERFACE, 164, 30, storedItems, false)
                 )
                 CapeRackItem.values().forEachIndexed { index, item ->
                     val itemName = getItemName(item.displayId) ?: "Unknown"
-                    sendString(player, itemName, 467, item.labelId)
+                    sendString(player, itemName, INTERFACE, item.labelId)
 
                     val key = "cape:$index"
                     val hidden = getAttribute(player, key, false)
-                    sendInterfaceConfig(player, 467, item.labelId, hidden)
-                    sendInterfaceConfig(player, 467, item.iconId + 1, hidden)
+                    sendInterfaceConfig(player, INTERFACE, item.labelId, hidden)
+                    sendInterfaceConfig(player, INTERFACE, item.iconId + 1, hidden)
                 }
             }
             return@on true
