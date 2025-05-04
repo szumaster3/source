@@ -203,7 +203,7 @@ public class TeleportManager {
                     public void stop() {
                         super.stop();
                         entity.unlock();
-                        entity.lock(5);
+                        entity.lock(7);
                     }
                 };
             }
