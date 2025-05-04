@@ -50,6 +50,7 @@ class FancyDressBoxListener : InteractionListener {
                     animate(player, Animations.HUMAN_CLOSE_CHEST_538)
                     replaceScenery(node.asScenery(), node.id - 1, -1)
                 }
+
                 else -> {
                     setAttribute(player, "con:fancy-dress-box", true)
                     val contentId =
@@ -62,8 +63,8 @@ class FancyDressBoxListener : InteractionListener {
                         FancyDressBoxItem.values().forEachIndexed { index, item ->
                             val key = "set:$index"
                             val hidden = getAttribute(player, key, false)
-                            val itemName = getItemName(item.displayId) ?: "Unknown"
-                            sendString(player, itemName, INTERFACE, item.labelId)
+                            val itemName = getItemName(item.displayId)
+                            sendString(player, itemName, INTERFACE, 55 + index * 2)
                             sendInterfaceConfig(player, INTERFACE, item.labelId, hidden)
                             sendInterfaceConfig(player, INTERFACE, item.iconId + 1, hidden)
                         }

@@ -19,7 +19,7 @@ private data class StorageInterface(
     val handler: (Int) -> Unit
 )
 
-class ItemStorageListener : InterfaceListener, InteractionListener {
+class ItemStorageListener : InterfaceListener {
     override fun defineInterfaceListeners() {
 
         /*
@@ -33,14 +33,15 @@ class ItemStorageListener : InterfaceListener, InteractionListener {
                         val book = BookcaseItem.values().firstOrNull { it.labelId == labelId }
                         book?.let { addItem(player, it.takeId) }
                     },
-                    StorageInterface("con:fancy-dress-box", FancyDressBoxItem.values().map { it.labelId }) { labelId ->
-                        val item = FancyDressBoxItem.values().firstOrNull { it.labelId == labelId }
+                    StorageInterface("con:fancy-dress-box", FancyDressBoxItem.values().flatMap { listOf(it.labelId, it.iconId) }) { id ->
+                        val item = FancyDressBoxItem.values().firstOrNull { it.labelId == id || it.iconId == id }
                         item?.let { handleFancyDressBox(player, it.ordinal) }
                     },
                     StorageInterface("con:cape-rack", CapeRackItem.values().flatMap { listOf(it.labelId, it.iconId) }) { id ->
                         val cape = CapeRackItem.values().firstOrNull { it.labelId == id || it.iconId == id }
                         cape?.let { handleCapeRack(player, it.ordinal) }
                     },
+                    // TODO
                     StorageInterface("con:toybox", ToyBoxItem.values().map { it.displayId }) { id ->
                         val page = getAttribute(player, "con:toybox:page", 0) ?: 0
                         val itemsPerPage = 30
@@ -48,6 +49,10 @@ class ItemStorageListener : InterfaceListener, InteractionListener {
                         val visibleItems = ToyBoxItem.values().drop(offset).take(itemsPerPage)
 
                         val item = visibleItems.firstOrNull { it.displayId == id }
+
+                        if (item != null) {
+                            handleToyItem(player, item)
+                        }
                         when (item) {
                             ToyBoxItem.More -> {
                                 setAttribute(player, "con:toybox:page", page + 1)
@@ -203,7 +208,7 @@ class ItemStorageListener : InterfaceListener, InteractionListener {
     }
 
     private fun handlePage(player: Player) {
-        val page = getAttribute<Int>(player, "con:toybox:page", 0) ?: 0
+        val page = getAttribute(player, "con:toybox:page", 0)
         val itemsPerPage = 30
         val offset = page * itemsPerPage
         ToyBoxItem.values().forEachIndexed { index, item ->

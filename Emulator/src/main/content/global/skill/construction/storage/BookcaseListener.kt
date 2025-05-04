@@ -54,7 +54,12 @@ class BookcaseListener : InteractionListener {
                 books.forEach { book ->
                     val itemName = getItemName(book.takeId)
                     val itemExamine = ItemDefinition.forId(book.takeId).examine
-                    sendString(player, "${core.tools.YELLOW}$itemName</col> <br>$itemExamine", INTERFACE, book.labelId)
+                    sendString(
+                        player,
+                        "${core.tools.YELLOW}$itemName</col> <br>$itemExamine",
+                        INTERFACE,
+                        55 + book.labelId * 2
+                    )
                 }
             }
             return@on true

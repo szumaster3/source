@@ -41,13 +41,11 @@ class ToyBoxListener : InteractionListener {
                     animate(player, Animations.HUMAN_CLOSE_CHEST_538)
                     replaceScenery(node.asScenery(), node.id - 1, -1)
                 }
+
                 else -> {
                     setAttribute(player, "con:toy-box", true)
-
-                    val visibleItems =
-                        ToyBoxItem.values().filterNot {
-                            it == ToyBoxItem.More || it == ToyBoxItem.Back
-                        }
+                    sendString(player, "Toy box", INTERFACE, 225)
+                    val visibleItems = ToyBoxItem.values().filterNot { it == ToyBoxItem.More || it == ToyBoxItem.Back }
                     val contentId = visibleItems.map { Item(it.displayId) }.toTypedArray()
 
                     openInterface(player, INTERFACE).also {
@@ -56,11 +54,10 @@ class ToyBoxListener : InteractionListener {
                             ContainerContext(player, INTERFACE, 164, 30, contentId, false)
                         )
                         visibleItems.forEachIndexed { index, item ->
-                            val key = "set:$index"
+                            val key = "toybox:${item.name}"
                             val hidden = getAttribute(player, key, false)
-                            val itemName = getItemName(item.displayId) ?: "Unknown"
-                            sendString(player, itemName, INTERFACE, item.labelId)
-                            sendInterfaceConfig(player, INTERFACE, item.labelId, hidden)
+                            val itemName = getItemName(item.displayId)
+                            sendString(player, itemName, INTERFACE, 55 + index * 2)
                             sendInterfaceConfig(player, INTERFACE, item.iconId + 1, hidden)
                         }
                     }

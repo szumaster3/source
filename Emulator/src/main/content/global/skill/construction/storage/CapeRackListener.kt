@@ -39,11 +39,10 @@ class CapeRackListener : InteractionListener {
                     ContainerContext(player, INTERFACE, 164, 30, storedItems, false)
                 )
                 CapeRackItem.values().forEachIndexed { index, item ->
-                    val itemName = getItemName(item.displayId) ?: "Unknown"
-                    sendString(player, itemName, INTERFACE, item.labelId)
-
+                    val itemName = getItemName(item.displayId)
                     val key = "cape:$index"
                     val hidden = getAttribute(player, key, false)
+                    sendString(player, itemName, INTERFACE, 55 + index * 2)
                     sendInterfaceConfig(player, INTERFACE, item.labelId, hidden)
                     sendInterfaceConfig(player, INTERFACE, item.iconId + 1, hidden)
                 }
