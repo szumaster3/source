@@ -2,11 +2,11 @@ package content.global.activity.ttrail.challenge
 
 import content.global.activity.ttrail.ClueLevel
 import content.global.activity.ttrail.ClueScrollPlugin
+import content.global.activity.ttrail.TreasureTrailManager
 import core.api.addDialogueAction
-import core.api.interaction.getNPCName
 import core.api.sendInputDialogue
+import core.api.sendItemDialogue
 import core.api.sendNPCDialogue
-import core.api.ui.setInterfaceText
 import core.game.dialogue.FaceAnim
 import core.game.interaction.Option
 import core.game.node.Node
@@ -14,6 +14,7 @@ import core.game.node.entity.Entity
 import core.game.node.entity.player.Player
 import core.game.world.map.zone.ZoneBorders
 import org.rs.consts.Components
+import org.rs.consts.Items
 import org.rs.consts.NPCs
 
 /**
@@ -38,18 +39,16 @@ abstract class ChallengeClueScroll(
 ) : ClueScrollPlugin(name, clueId, level, Components.TRAIL_MAP09_345, *borders) {
 
     /**
-     * Shows clue text to the player.
+     * Shows clue question to the player.
      *
      * @param player The player reading the clue.
      */
     override fun read(player: Player) {
-        repeat(8) { index ->
-            setInterfaceText(player, "", interfaceId, index + 1)
-        }
-
         super.read(player)
-        val npc = getNPCName(npc!!).lowercase()
-        setInterfaceText(player, "<br><br><br><br><br> Speak to $npc.", interfaceId, 1)
+        for (i in 1..8) {
+            player.packetDispatch.sendString("", interfaceId, i)
+        }
+        player.packetDispatch.sendString(question, interfaceId, 1)
     }
 
     /**
@@ -64,19 +63,30 @@ abstract class ChallengeClueScroll(
         val npc = target as? core.game.node.entity.npc.NPC ?: return false
 
         if (npc.id != this.npc) return false
-
         sendNPCDialogue(
             player,
             npc.id,
-            "$question",
+            "Please enter the answer to the question.",
             if (npc.id == NPCs.GNOME_COACH_2802 || npc.id == NPCs.GNOME_BALL_REFEREE_635) FaceAnim.OLD_DEFAULT else FaceAnim.HALF_ASKING
         )
         addDialogueAction(player) { player, button ->
             if (button > 0) {
-                sendInputDialogue(player, true, "Your answer:") { value: Any ->
+                sendInputDialogue(player, true, "Enter amount:") { value: Any ->
                     val answer = (value as? Int) ?: return@sendInputDialogue
                     if (answer == this.answer) {
-                        reward(player)
+                        val manager = TreasureTrailManager.getInstance(player)
+                        val clueScroll = getClueScrolls()[clueId]
+                        clueScroll?.reward(player)
+                        if (manager.isCompleted) {
+                            sendItemDialogue(player, Items.CASKET_405, "You've found a casket!")
+                            manager.clearTrail()
+                        } else {
+                            val newClue = getClue(clueScroll?.level)
+                            if (newClue != null) {
+                                sendItemDialogue(player, newClue, "You receive another clue scroll.")
+                                player.inventory.add(newClue)
+                            }
+                        }
                     }
                 }
             }
