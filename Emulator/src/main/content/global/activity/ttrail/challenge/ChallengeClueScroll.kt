@@ -3,16 +3,15 @@ package content.global.activity.ttrail.challenge
 import content.global.activity.ttrail.ClueLevel
 import content.global.activity.ttrail.ClueScrollPlugin
 import content.global.activity.ttrail.TreasureTrailManager
-import core.api.addDialogueAction
-import core.api.sendInputDialogue
-import core.api.sendItemDialogue
-import core.api.sendNPCDialogue
+import core.api.*
+import core.game.dialogue.DialogueFile
 import core.game.dialogue.FaceAnim
 import core.game.interaction.Option
 import core.game.node.Node
 import core.game.node.entity.Entity
 import core.game.node.entity.player.Player
 import core.game.world.map.zone.ZoneBorders
+import core.tools.END_DIALOGUE
 import org.rs.consts.Components
 import org.rs.consts.Items
 import org.rs.consts.NPCs
@@ -63,36 +62,50 @@ abstract class ChallengeClueScroll(
         val npc = target as? core.game.node.entity.npc.NPC ?: return false
 
         if (npc.id != this.npc) return false
-        sendNPCDialogue(
+
+        openDialogue(
             player,
-            npc.id,
-            "Please enter the answer to the question.",
-            if (npc.id == NPCs.GNOME_COACH_2802 || npc.id == NPCs.GNOME_BALL_REFEREE_635) FaceAnim.OLD_DEFAULT else FaceAnim.HALF_ASKING
-        )
-        addDialogueAction(player) { player, button ->
-            if (button > 0) {
-                sendInputDialogue(player, true, "Enter amount:") { value: Any ->
-                    val answer = (value as? Int) ?: return@sendInputDialogue
-                    if (answer == this.answer) {
-                        val manager = TreasureTrailManager.getInstance(player)
-                        val clueScroll = getClueScrolls()[clueId]
-                        clueScroll?.reward(player)
-                        if (manager.isCompleted) {
-                            sendItemDialogue(player, Items.CASKET_405, "You've found a casket!")
-                            manager.clearTrail()
-                        } else {
-                            val newClue = getClue(clueScroll?.level)
-                            if (newClue != null) {
-                                sendItemDialogue(player, newClue, "You receive another clue scroll.")
-                                player.inventory.add(newClue)
+            object : DialogueFile() {
+                val facialExpression = if (npc.id == NPCs.GNOME_COACH_2802 || npc.id == NPCs.GNOME_BALL_REFEREE_635)
+                    FaceAnim.OLD_DEFAULT else FaceAnim.HALF_ASKING
+
+                override fun handle(componentID: Int, buttonID: Int) {
+                    when (stage) {
+                        0 -> {
+                            npc(facialExpression, "Please enter the answer to the question.")
+                            stage = 1
+                        }
+                        1 -> {
+                            end()
+                            sendInputDialogue(player, true, "Enter amount:") { value: Any ->
+                                val answer = (value as? Int) ?: return@sendInputDialogue
+                                if (answer == this@ChallengeClueScroll.answer) {
+                                    val manager = TreasureTrailManager.getInstance(player)
+                                    val clueScroll = getClueScrolls()[this@ChallengeClueScroll.clueId]
+                                    clueScroll?.reward(player)
+                                    if (manager.isCompleted) {
+                                        sendItemDialogue(player, Items.CASKET_405, "You've found a casket!")
+                                        manager.clearTrail()
+                                    } else {
+                                        val newClue = getClue(clueScroll?.level)
+                                        if (newClue != null) {
+                                            sendItemDialogue(player, newClue, "You receive another clue scroll.")
+                                            player.inventory.add(newClue)
+                                        }
+                                    }
+                                } else {
+                                    npc(facialExpression, "That's not the correct answer.")
+                                    stage = END_DIALOGUE
+                                }
                             }
                         }
                     }
                 }
             }
-        }
+        )
         return true
     }
+
 
     companion object {
         /**
