@@ -7,6 +7,7 @@ import content.global.activity.ttrail.challenge.ChallengeClueScroll
 import content.global.activity.ttrail.puzzle.PuzzleBox
 import core.api.*
 import core.api.ui.setInterfaceText
+import core.game.dialogue.DialogueFile
 import core.game.dialogue.FaceAnim
 import core.game.interaction.Option
 import core.game.node.Node
@@ -164,8 +165,29 @@ abstract class AnagramClueScroll(
         fun handleClue(player: Player, npc: NPC): Boolean {
             val anagramClue = getClueForNpc(player, npc) ?: return false
 
-            val givePuzzle = listOf(true, false).random()
+            // Determine facial expression for NPCs.
+            val facialExpression = if (npc.id in intArrayOf(
+                    NPCs.UGLUG_NAR_2039,
+                    NPCs.GNOME_COACH_2802,
+                    NPCs.GNOME_BALL_REFEREE_635
+                )
+            ) FaceAnim.OLD_DEFAULT else FaceAnim.HALF_ASKING
 
+            // Check inventory space first.
+            if (freeSlots(player) == 0) {
+                sendNPCDialogue(
+                    player,
+                    npc.id,
+                    "Your inventory is full, make some room first.",
+                    facialExpression
+                )
+                return false
+            }
+
+            // Decide randomly whether to give puzzle or challenge clue.
+            val givePuzzle = kotlin.random.Random.nextBoolean()
+
+            // Handle Puzzle Box logic.
             if (givePuzzle && anagramClue.challenge != null) {
                 val puzzle = PuzzleBox.fromItemId(anagramClue.challenge)
                 if (puzzle != null) {
@@ -173,22 +195,51 @@ abstract class AnagramClueScroll(
                     val isComplete = PuzzleBox.hasCompletePuzzleBox(player, puzzle.key)
 
                     if (!hasPuzzle) {
+                        // Give puzzle box.
                         if (!player.inventory.remove(Item(anagramClue.clueId, 1))) return false
                         player.setAttribute("anagram_clue_active", anagramClue.clueId)
                         player.inventory.add(puzzle.item)
-                        sendNPCDialogue(player, npc.id, "Oh, I have a puzzle for you to solve.", FaceAnim.HALF_GUILTY)
+
+                        val message = if (npc.id == NPCs.RAMARA_DU_CROISSANT_3827)
+                            "I've ze puzzle for you to solve."
+                        else if (npc.id == NPCs.UGLUG_NAR_2039) {
+                            "You want puzzle?"
+                        } else {
+                            "Oh, I have a puzzle for you to solve."
+                        }
+
+                        sendNPCDialogue(player, npc.id, message, facialExpression)
+
                         addDialogueAction(player) { p, btn ->
                             if (btn > 0) sendItemDialogue(p, puzzle.item, "${npc.name} has given you a puzzle box!")
                         }
+
                     } else if (isComplete) {
+                        // Puzzle completed, remove and reward.
                         if (!player.inventory.remove(puzzle.item)) return false
-                        removeAttributes(player, "${puzzle.key}:puzzle:done", "${puzzle.key}:puzzle:data", "anagram_clue_active")
-                        sendNPCDialogue(player, npc.id, "Well done, traveller.", FaceAnim.HALF_GUILTY)
+
+                        removeAttributes(
+                            player,
+                            "${puzzle.key}:puzzle:done",
+                            "${puzzle.key}:puzzle:data",
+                            "anagram_clue_active"
+                        )
+                        val randomMessage = arrayOf("Here is your reward!", "Well done, traveller.").random()
+                        val message = if (npc.id == NPCs.RAMARA_DU_CROISSANT_3827)
+                            "Zat's wonderful!"
+                        else if (npc.id == NPCs.UGLUG_NAR_2039) {
+                            "Dere you go!"
+                        } else {
+                            randomMessage
+                        }
+                        sendNPCDialogue(player, npc.id, message, facialExpression)
+
                         addDialogueAction(player) { p, btn ->
                             if (btn > 0) {
                                 val manager = TreasureTrailManager.getInstance(p)
                                 val clueScroll = getClueScrolls()[anagramClue.clueId]
                                 clueScroll?.reward(p)
+
                                 if (manager.isCompleted) {
                                     sendItemDialogue(p, Items.CASKET_405, "You've found a casket!")
                                     manager.clearTrail()
@@ -201,21 +252,41 @@ abstract class AnagramClueScroll(
                                 }
                             }
                         }
-                    } else {
-                        sendMessage(player, "You still need to solve the puzzle I gave you.")
                     }
                     return true
                 }
             }
 
+            // Handle Challenge Clue Scroll logic.
             val challengeClue = ChallengeClueScroll.getClueForNpc(player, npc)
             if (challengeClue != null && !player.inventory.contains(challengeClue.clueId, 1)) {
-                player.setAttribute("anagram_clue_active", challengeClue.clueId)
-                player.inventory.add(Item(challengeClue.clueId, 1))
-                sendNPCDialogue(player, npc.id, "I have a challenge for you.", FaceAnim.HALF_ASKING)
-                addDialogueAction(player) { p, btn ->
-                    if (btn > 0) sendItemDialogue(p, Item(challengeClue.clueId, 1), "${npc.name} has given you a challenge scroll!")
-                }
+                openDialogue(
+                    player,
+                    object : DialogueFile() {
+                        override fun handle(componentID: Int, buttonID: Int) {
+                            when (stage) {
+                                0 -> {
+                                    npc(facialExpression, "Ah! Here you go!")
+                                    stage = 1
+                                }
+                                1 -> {
+                                    player("What?")
+                                    stage++
+                                }
+                                2 -> {
+                                    npc(facialExpression, "I need you to answer this for me.")
+                                    stage++
+                                }
+                                3 -> {
+                                    end()
+                                    player.setAttribute("anagram_clue_active", challengeClue.clueId)
+                                    sendItemDialogue(player, Item(challengeClue.clueId, 1), "${npc.name} has given you a challenge scroll!")
+                                    player.inventory.add(Item(challengeClue.clueId, 1))
+                                }
+                            }
+                        }
+                    }
+                )
                 return true
             }
 
