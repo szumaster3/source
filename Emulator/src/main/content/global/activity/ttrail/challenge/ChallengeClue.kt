@@ -5,9 +5,26 @@ import core.plugin.Plugin
 import org.rs.consts.Items
 import org.rs.consts.NPCs
 
+/**
+ * Represents Challenge clue scrolls.
+ */
 open class ChallengeClue : ChallengeClueScroll {
+
+    /**
+     * Default constructor.
+     */
     constructor() : super(null, -1, null, null, null, null)
 
+    /**
+     * Constructs a challenge clue scroll.
+     *
+     * @param name      the internal name of the clue
+     * @param clueId    the item ID representing the clue scroll
+     * @param level     the difficulty level of the clue
+     * @param question  the question text the player must answer
+     * @param npc       the NPC associated with this clue
+     * @param answer    the correct answer to the challenge
+     */
     constructor(name: String, clueId: Int, level: ClueLevel, question: String, npc: Int, answer: Int) : super(
         name,
         clueId,
@@ -17,6 +34,12 @@ open class ChallengeClue : ChallengeClueScroll {
         answer,
     )
 
+    /**
+     * Initializes and registers the challenge clues.
+     *
+     * @param arg optional argument, not used
+     * @return this instance of [ChallengeClue]
+     */
     override fun newInstance(arg: Any?): Plugin<Any?>? {
         register(ChallengeClue("zoo_keeper", Items.CLUE_SCROLL_7301, ClueLevel.HARD, "How many animals<br>are in the Ardougne Zoo?", NPCs.ZOO_KEEPER_28, 40))
         register(ChallengeClue("luthas", Items.CLUE_SCROLL_7303, ClueLevel.HARD, "How many banana trees<br>are there in the plantation?", NPCs.LUTHAS_379, 33))

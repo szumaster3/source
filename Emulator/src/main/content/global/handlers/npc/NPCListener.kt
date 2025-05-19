@@ -1,6 +1,7 @@
 package content.global.handlers.npc
 
 import content.global.activity.ttrail.anagram.AnagramClueScroll
+import content.global.activity.ttrail.challenge.ChallengeClue
 import content.global.activity.ttrail.challenge.ChallengeClueScroll
 import content.global.ame.RandomEvents
 import content.minigame.gnomecook.dialogue.GnomeCookingDialogue
@@ -129,8 +130,9 @@ class NPCListener : InteractionListener {
             val npc = node.asNpc()
 
             if (AnagramClueScroll.handleClue(player, npc)) return@on true
-            val challengeClue = ChallengeClueScroll.getClueForNpc(player, npc)
-            if (challengeClue != null && challengeClue.interact(player, npc, Option("talk-to", 0))) {
+            val clueScroll = ChallengeClueScroll.getClueForNpc(player, npc)
+            if (clueScroll != null) {
+                ChallengeClueScroll.handleNPC(player, npc, clueScroll)
                 return@on true
             }
 
