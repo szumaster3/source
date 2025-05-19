@@ -45,11 +45,11 @@ abstract class ChallengeClueScroll(
      * @param player The player reading the clue.
      */
     override fun read(player: Player) {
-        super.read(player)
         for (i in 1..8) {
             player.packetDispatch.sendString("", interfaceId, i)
         }
-        player.packetDispatch.sendString("<br><br><br><br><br>$question", interfaceId, 1)
+        super.read(player)
+        player.packetDispatch.sendString(question?.replace("<br>", "<br><br>"), interfaceId, 1)
     }
 
     /**
@@ -59,9 +59,9 @@ abstract class ChallengeClueScroll(
         val player = e?.asPlayer() ?: return false
         val npc = target?.asNpc() ?: return false
 
-        val clueScroll = ChallengeClueScroll.getClueForNpc(player, npc)
+        val clueScroll = getClueForNpc(player, npc)
         if (clueScroll != null) {
-            ChallengeClueScroll.handleNPC(player, npc, clueScroll)
+            handleNPC(player, npc, clueScroll)
             return true
         }
 
