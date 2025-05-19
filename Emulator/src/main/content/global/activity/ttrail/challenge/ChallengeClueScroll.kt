@@ -49,7 +49,7 @@ abstract class ChallengeClueScroll(
         for (i in 1..8) {
             player.packetDispatch.sendString("", interfaceId, i)
         }
-        player.packetDispatch.sendString("<br><br><br>$question", interfaceId, 1)
+        player.packetDispatch.sendString("<br><br><br><br><br>$question", interfaceId, 1)
     }
 
     /**
@@ -115,7 +115,8 @@ abstract class ChallengeClueScroll(
                                 }
                                 val manager = TreasureTrailManager.getInstance(player)
                                 val clueScroll = getClueScrolls()[clue.clueId]
-                                if (clueScroll != null && removeItem(player, clueScroll.clueId)) {
+                                val anagramClue = AnagramClueScroll.getClueForNpc(player, npc)
+                                if (clueScroll != null && removeItem(player, clueScroll.clueId) && removeItem(player, anagramClue?.clueId)) {
                                     removeAttributes(player, "anagram_clue_active")
                                     clueScroll.reward(player)
                                     if (manager.isCompleted) {
