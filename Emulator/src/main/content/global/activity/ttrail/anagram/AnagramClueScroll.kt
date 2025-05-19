@@ -126,6 +126,7 @@ abstract class AnagramClueScroll(
                     val message = when (npc.id) {
                         NPCs.RAMARA_DU_CROISSANT_3827 -> "I've ze puzzle for you to solve."
                         NPCs.UGLUG_NAR_2039 -> "You want puzzle?"
+                        NPCs.GENERAL_BENTNOZE_4493 -> "Human do puzzle for me!"
                         else -> messages.random()
                     }
                     sendNPCDialogue(player, npc.id, message, facialExpression)
@@ -143,12 +144,11 @@ abstract class AnagramClueScroll(
                         "anagram_clue_active"
                     )
                     val randomMessage = arrayOf("Here is your reward!", "Well done, traveller.").random()
-                    val message = if (npc.id == NPCs.RAMARA_DU_CROISSANT_3827)
-                        "Zat's wonderful!"
-                    else if (npc.id == NPCs.UGLUG_NAR_2039) {
-                        "Dere you go!"
-                    } else {
-                        randomMessage
+                    val message = when (npc.id) {
+                        NPCs.RAMARA_DU_CROISSANT_3827 -> "Zat's wonderful!"
+                        NPCs.UGLUG_NAR_2039 -> "Dere you go!"
+                        NPCs.GENERAL_BENTNOZE_4493 -> "Thank you human!"
+                        else -> randomMessage
                     }
                     sendNPCDialogue(player, npc.id, message, facialExpression)
                     addDialogueAction(player) { p, btn ->

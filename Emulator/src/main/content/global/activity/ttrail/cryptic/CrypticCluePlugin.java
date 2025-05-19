@@ -1,10 +1,12 @@
 package content.global.activity.ttrail.cryptic;
 
 import content.global.activity.ttrail.ClueLevel;
+import core.game.node.entity.npc.NPC;
 import core.game.world.map.Location;
 import core.game.world.map.zone.ZoneBorders;
 import core.plugin.Plugin;
 import org.rs.consts.Items;
+import org.rs.consts.NPCs;
 
 /**
  * The Cryptic clue plugin.
@@ -15,35 +17,66 @@ public final class CrypticCluePlugin extends CrypticClueScroll {
      * Constructs a new Cryptic clue plugin.
      */
     public CrypticCluePlugin() {
-        this(null, -1, null, null, null);
+        this(null, -1, null, null, null, -1, -1, null);
     }
 
     /**
-     * Constructs a cryptic clue with basic parameters.
+     * Creates a new cryptic clue scroll plugin with the specified parameters.
      *
-     * @param name     the internal name of the clue scroll
-     * @param clueId   the item id of the clue scroll
-     * @param level    the difficulty level of the clue
-     * @param clueText the text/riddle of the clue
-     * @param location the in-game location to solve the clue
+     * @param name    the unique name identifier for this clue plugin
+     * @param clueId  the item ID of the clue scroll associated with this plugin
+     * @param level   the difficulty level of the clue
+     * @param clueText the textual hint or description for the clue
+     * @param location the location associated with this clue scroll
      */
     public CrypticCluePlugin(String name, int clueId, ClueLevel level, String clueText, Location location) {
-        super(name, clueId, level, clueText, location);
+        this(name, clueId, level, clueText, location, -1, -1, null);
     }
 
     /**
-     * Constructs a cryptic clue with additional object and zone data.
+     * Creates a new cryptic clue scroll plugin associated with a specific object
+     * within a defined zone.
      *
-     * @param name     the internal name of the clue scroll
-     * @param clueId   the item id of the clue scroll
-     * @param level    the difficulty level of the clue
-     * @param clueText the text/riddle of the clue
-     * @param location the in-game location to solve the clue
-     * @param object   the object id to interact with (if applicable)
-     * @param borders  the zone borders that define the clue's area
+     * @param name      the unique name identifier for this clue plugin
+     * @param clueId    the item ID of the clue scroll
+     * @param level     the difficulty level of the clue
+     * @param clueText  the textual hint or description for the clue
+     * @param location  the location associated with the clue
+     * @param objectId  the ID of the game object linked to this clue
+     * @param borders   one or more zone borders defining the area related to this clue
      */
-    public CrypticCluePlugin(String name, int clueId, ClueLevel level, String clueText, Location location, int object, ZoneBorders... borders) {
-        super(name, clueId, level, clueText, location, object, borders);
+    public CrypticCluePlugin(String name, int clueId, ClueLevel level, String clueText, Location location, int objectId, ZoneBorders... borders) {
+        this(name, clueId, level, clueText, location, -1, objectId, borders);
+    }
+
+    /**
+     * Creates a new cryptic clue scroll plugin associated with a specific NPC.
+     *
+     * @param name     the unique name identifier for this clue plugin
+     * @param clueId   the item ID of the clue scroll
+     * @param level    the difficulty level of the clue
+     * @param clueText the textual hint or description for the clue
+     * @param location the location associated with the clue
+     * @param npcId    the NPC ID related to this clue
+     */
+    public CrypticCluePlugin(String name, int clueId, ClueLevel level, String clueText, Location location, int npcId) {
+        this(name, clueId, level, clueText, location, npcId, -1, null);
+    }
+
+    /**
+     * Full constructor for initializing all parameters of a cryptic clue plugin.
+     *
+     * @param name      the unique name identifier
+     * @param clueId    the clue scroll item ID
+     * @param level     the clue difficulty level
+     * @param clueText  the clue description text
+     * @param location  the location of the clue
+     * @param npcId     the NPC ID involved in the clue (or -1 if none)
+     * @param objectId  the object ID involved in the clue (or -1 if none)
+     * @param borders   array of zone borders defining the clue's area (nullable)
+     */
+    private CrypticCluePlugin(String name, int clueId, ClueLevel level, String clueText, Location location, int npcId, int objectId, ZoneBorders[] borders) {
+        super(name, clueId, level, clueText, location, npcId, objectId, borders);
     }
 
     /**
@@ -82,18 +115,18 @@ public final class CrypticCluePlugin extends CrypticClueScroll {
         // TODO: Add key drop to penda and lock the drawer.
         register(new CrypticCluePlugin("dunstan-burthorpe", Items.CLUE_SCROLL_10236, ClueLevel.MEDIUM, "Go to the village being<br>attacked by trolls, search the<br>drawers while you are there.", Location.create(2921, 3577, 0), 351, new ZoneBorders(2920, 3576, 2922, 3578)));
         register(new CrypticCluePlugin("dungeon-chest", Items.CLUE_SCROLL_10238, ClueLevel.MEDIUM, "This temple is rather sluggish.<br>The chest just inside the entrance,<br>however,<br>is filled with goodies.", Location.create(2698, 9684, 0), 18321, new ZoneBorders(2697, 9683, 2699, 9685)));
-        // register(new CrypticCluePlugin("abbot-langley", Items.CLUE_SCROLL_10240, ClueLevel.MEDIUM, "'A bag belt only?' he asked his balding brothers.", Location.create(0, 0, 0)));
-        // register(new CrypticCluePlugin("oziac-armor-seller", Items.CLUE_SCROLL_10242, ClueLevel.HARD, "A strange little man who sells armour only to those who've proven themselves to be unafraid of dragons.", Location.create(0, 0, 0)));
-        // register(new CrypticCluePlugin("zanaris-forge", Items.CLUE_SCROLL_10244, ClueLevel.MEDIUM, "After a hard slays spraying back the vegetation, why not pop off to the nearby forge and search the crates?", Location.create(0, 0, 0)));
+        register(new CrypticCluePlugin("abbot-langley", Items.CLUE_SCROLL_10240, ClueLevel.MEDIUM, "'A bag belt only?'<br>he asked his balding<br>brothers.", null, NPCs.ABBOT_LANGLEY_801));
+        register(new CrypticCluePlugin("oziac-armor-seller", Items.CLUE_SCROLL_10242, ClueLevel.HARD, "A strange little man who sells armour<br>only to those who've proven<br>themselves to be unafraid of dragons.", null, NPCs.OZIACH_747));
+        register(new CrypticCluePlugin("zanaris-forge", Items.CLUE_SCROLL_10244, ClueLevel.MEDIUM, "After a hard slays spraying<br>back the vegetation, why not<br>pop off to the nearby forge and<br>search the crates?", Location.create(2399, 4476, 0), 12105, new ZoneBorders(2398, 4475, 2400, 4477)));
         register(new CrypticCluePlugin("port-khazard-anvil", Items.CLUE_SCROLL_10246, ClueLevel.MEDIUM, "After trawling for bars,<br>go to the nearest place and smith<br>them and dig by the door.", Location.create(2656, 3161, 0)));
         // register(new CrypticCluePlugin("citric-cellar", Items.CLUE_SCROLL_10248, ClueLevel.HARD, "Citric Cellar.", Location.create(0, 0, 0)));
         // register(new CrypticCluePlugin("blue-moon-inn", Items.CLUE_SCROLL_10250, ClueLevel.HARD, "Find a bar with a centre fountain in its city. Go upstairs and get changed.", Location.create(0, 0, 0)));
-        // register(new CrypticCluePlugin("general-bentnoze", Items.CLUE_SCROLL_10252, ClueLevel.HARD, "Generally speaking, his nose was very bent.", Location.create(0, 0, 0)));
+        register(new CrypticCluePlugin("general-bentnoze", Items.CLUE_SCROLL_10252, ClueLevel.HARD, "Generally speaking,<br>his nose was very bent.", null, NPCs.GENERAL_BENTNOZE_4493));
         register(new CrypticCluePlugin("lumbridge-castle-spinning-wheel", Items.CLUE_SCROLL_10254, ClueLevel.HARD, "My home is grey and made of stone;<br>A castle with a search for a meal.<br>Hidden in some drawers I am,<br>Across from a wooden wheel.", Location.create(3213, 3216, 1), 37012, new ZoneBorders(3212, 3215, 3214, 3217, 1)));
         register(new CrypticCluePlugin("tai-bwo-wannai-crates", Items.CLUE_SCROLL_10256, ClueLevel.HARD, "In a village made of bamboo,<br>look for some crates<br>under one of the houses.", Location.create(2800, 3074, 0), 356, new ZoneBorders(2799, 3073, 2801, 3075)));
         register(new CrypticCluePlugin("shilo-village-bookcase", Items.CLUE_SCROLL_10258, ClueLevel.HARD, "This village has a problem<br>with cartloads of the undead.<br>Try checking the bookcase<br>to find the answer.", Location.create(2833, 2991, 0), 394, new ZoneBorders(2832, 2990, 2834, 2993)));
         register(new CrypticCluePlugin("necromancer-tower", Items.CLUE_SCROLL_10260, ClueLevel.HARD, "Throat mage seeks companionship.<br>Seek answers inside my furniture<br>if interested.", Location.create(2668, 3238, 1), 353, new ZoneBorders(2667, 3237, 2670, 3239, 1)));
-        // register(new CrypticCluePlugin("braine-death-island-lake", Items.CLUE_SCROLL_10262, ClueLevel.HARD, "You will need to wash the old ash off of your spade when you dig here, but the only water nearby is stagnant.", Location.create(0, 0, 0)));
+        register(new CrypticCluePlugin("braine-death-island-lake", Items.CLUE_SCROLL_10262, ClueLevel.HARD, "You will need to wash the old ash<br>off of your spade when you dig here,<br>but the only water nearby is<br>stagnant.", Location.create(2136, 5166, 0)));
         register(new CrypticCluePlugin("digsite-doug-deep", Items.CLUE_SCROLL_10264, ClueLevel.HARD, "You'll need to have Doug Deep<br>into the distant<br>past to get to these sacks.", Location.create(3348, 9758, 0), 32049, new ZoneBorders(3347, 9757, 3349, 9759)));
         // TODO: Add OnUseWith Fire interaction.
         // register(new CrypticCluePlugin("captain-klemfoodle", Items.CLUE_SCROLL_10266, ClueLevel.MEDIUM, "You can cook food on me,<br>but don't cook any foodles -<br>That would be just wrong.", Location.create(0, 0, 0)));
