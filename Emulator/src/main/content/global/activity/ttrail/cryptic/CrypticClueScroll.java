@@ -7,7 +7,6 @@ import core.game.global.action.DigSpadeHandler;
 import core.game.interaction.Option;
 import core.game.node.Node;
 import core.game.node.entity.Entity;
-import core.game.node.entity.npc.NPC;
 import core.game.node.entity.player.Player;
 import core.game.world.map.Location;
 import core.game.world.map.zone.ZoneBorders;
@@ -35,45 +34,36 @@ public abstract class CrypticClueScroll extends ClueScrollPlugin {
     private final String clueText;
 
     /**
-     * The id of the npc.
-     */
-    private final int npcId;
-
-    /**
-     * The required item.
-     */
-    private final int requiredItemId;
-
-
-    /**
-     * Constructs a new cryptic clue scroll.
+     * Creates a cryptic clue scroll with a searchable object.
      *
-     * @param name         the internal name of the clue
-     * @param clueId       the clue item id
-     * @param level        the clue difficulty level
-     * @param clueText     the cryptic clue text shown to the player
-     * @param location     the associated dig or interaction location
-     * @param npcId        the NPC id related to this clue (used externally)
-     * @param objectId     the object id that can be searched, or 0 if unused
-     * @param borders      the optional zone borders associated with this clue
+     * @param name     the clue name
+     * @param clueId   the clue item id
+     * @param level    the clue scroll difficulty
+     * @param clueText the clue description
+     * @param location the target location
+     * @param object   the object id to search
+     * @param borders  optional zone borders
      */
-    public CrypticClueScroll(String name, int clueId, ClueLevel level, String clueText, Location location, int npcId, int objectId, ZoneBorders[] borders) {
+    public CrypticClueScroll(String name, int clueId, ClueLevel level, String clueText, Location location, final int object, ZoneBorders... borders) {
         super(name, clueId, level, Components.TRAIL_MAP09_345, borders);
         this.location = location;
-        this.npcId = npcId;
-        this.object = objectId;
-        this.requiredItemId = -1;
+        this.object = object;
         this.clueText = clueText;
     }
 
     /**
-     * Called when a player interacts with an object.
+     * Creates a cryptic clue scroll with no object interaction (dig-only).
      *
-     * @param e      the entity performing the action
-     * @param target the target node (object)
-     * @param option the selected interaction option
-     * @return true if the clue was completed through this interaction
+     * @param name     the clue name
+     * @param clueId   the clue item id
+     * @param level    the clue scroll difficulty
+     * @param clueText the clue description
+     * @param location the dig location
      */
+    public CrypticClueScroll(String name, int clueId, ClueLevel level, String clueText, Location location) {
+        this(name, clueId, level, clueText, location, 0);
+    }
+
     @Override
     public boolean interact(Entity e, Node target, Option option) {
         if (e instanceof Player) {
@@ -86,35 +76,6 @@ public abstract class CrypticClueScroll extends ClueScrollPlugin {
                 reward(p);
                 return true;
             }
-
-            if (npcId > 0 && target instanceof NPC) {
-                NPC npc = (NPC) target;
-                if (npc.getId() == npcId) {
-                    if (!p.getInventory().contains(clueId, 1) || !target.getLocation().equals(location)) {
-                        p.sendMessage("Nothing interesting happens.");
-                        return false;
-                    }
-                    reward(p);
-                    npc.face(p);
-                    return true;
-                }
-            }
-            /*
-            if (object > 0 && target.getId() == object && option.getName().equals("Search")) {
-                if (!target.getLocation().equals(location)) {
-                    p.sendMessage("Nothing interesting happens.");
-                    return false;
-                }
-
-                if (requiredItemId > 0 && !p.getInventory().contains(requiredItemId, 1)) {
-                    p.sendMessage("The chest is locked.");
-                    return false;
-                }
-
-                reward(p);
-                return true;
-            }
-            */
         }
         return super.interact(e, target, option);
     }
@@ -196,19 +157,4 @@ public abstract class CrypticClueScroll extends ClueScrollPlugin {
     public String getClueText() {
         return clueText;
     }
-
-    /**
-     * @return the id of the related NPC
-     */
-    public int getNpcId() {
-        return npcId;
-    }
-
-    /**
-     * @return the id of the required item, or -1 if no item is required
-     */
-    public int getRequiredItemId() {
-        return requiredItemId;
-    }
-
 }
