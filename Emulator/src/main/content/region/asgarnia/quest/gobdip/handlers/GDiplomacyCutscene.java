@@ -166,7 +166,7 @@ public final class GDiplomacyCutscene extends CutscenePlugin {
             if (npc.getId() == NPCs.GENERAL_BENTNOZE_4493 &&
                     player.getInventory().containsItem(new Item(Items.CLUE_SCROLL_10252, 1))) {
 
-                ClueScrollPlugin clueScroll = getClueScrolls().get(Items.CLUE_SCROLL_10252);
+                ClueScrollPlugin clueScroll = getClueScrolls().get(manager.getClueId());
 
                 if (clueScroll != null && removeItem(player, clueScroll.getClueId(), Container.INVENTORY)) {
                     clueScroll.reward(player);
