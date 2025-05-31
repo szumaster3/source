@@ -34,36 +34,37 @@ class WatchtowerWizardDialogue(player: Player? = null) : Dialogue(player) {
             return true
         }
 
-        val itemIds = listOf(Items.RELIC_PART_1_2373, Items.RELIC_PART_2_2374, Items.RELIC_PART_3_2375)
-        val attributes = listOf(GameAttributes.WATCHTOWER_RELIC_1, GameAttributes.WATCHTOWER_RELIC_2, GameAttributes.WATCHTOWER_RELIC_3)
+        val items = listOf(
+            Items.RELIC_PART_1_2373 to GameAttributes.WATCHTOWER_RELIC_1,
+            Items.RELIC_PART_2_2374 to GameAttributes.WATCHTOWER_RELIC_2,
+            Items.RELIC_PART_3_2375 to GameAttributes.WATCHTOWER_RELIC_3
+        )
 
-        val hasAll = itemIds.all { inInventory(player, it) }
-        val turnedInAll = attributes.all { getAttribute(player, it, false) }
+        val hasAll = items.all { inInventory(player, it.first) }
+        val turnedInAll = items.all { getAttribute(player, it.second, false) }
+        val turnedInAny = items.any { getAttribute(player, it.second, false) }
 
-        if (hasAll) {
+        if (hasAll && !turnedInAny) {
             player("An ogre gave me these...")
-            for (i in itemIds.indices) {
-                removeItem(player, itemIds[i])
-                setAttribute(player, attributes[i], true)
+            items.forEach { (item, attr) ->
+                removeItem(player, item)
+                setAttribute(player, attr, true)
             }
             stage = 600
             return true
         }
 
-        for (i in itemIds.indices) {
-            val item = itemIds[i]
-            val attr = attributes[i]
-            if (inInventory(player, item) && !getAttribute(player, attr, false)) {
-                player("An ogre gave me this...")
+        val handedIn = items.any { (item, attr) ->
+            if (!getAttribute(player, attr, false) && inInventory(player, item)) {
                 removeItem(player, item)
                 setAttribute(player, attr, true)
-                stage = 700
-                return true
-            }
+                true
+            } else false
         }
 
-        if (turnedInAll) {
-            npc("Thanks again for those relic pieces. I’ve already started working on them.")
+        if (handedIn || turnedInAll) {
+            player("An ogre gave me this...")
+            stage = if (handedIn) 700 else 600
             return true
         }
 
@@ -194,17 +195,21 @@ class WatchtowerWizardDialogue(player: Player? = null) : Dialogue(player) {
             400 -> npc("Hmph! Suit yourself.").also { stage = END_DIALOGUE }
             500 -> npcl(FaceAnim.NEUTRAL, "Won't bother? Won't bother! Perhaps this quest is too hard for you?").also { stage = END_DIALOGUE }
 
-            600 -> {
-                animate(npc, 4602)
-                npc("Hmm, yes, it is as I thought... A statue symbolising an", "ogre warrior of old.")
+            600 -> npc(FaceAnim.HAPPY, "Excellent! That seems to be all the pieces. Now I can", "assemble it...").also {
+                // Need gfx or wrong anim.
+                animate(findLocalNPC(player, npc.id)!!, 4379)
                 stage++
             }
-            601 -> npc(FaceAnim.HAPPY, "Well, if you ever want to make friends with an ogre,", "this is the item to have!").also { stage++ }
-            602 -> {
+            601 -> {
+                npc("Hmm, yes, it is as I thought... A statue symbolising an", "ogre warrior of old.").also {
+                    stage++
+                }
+            }
+            602 -> npc(FaceAnim.HAPPY, "Well, if you ever want to make friends with an ogre,", "this is the item to have!").also {
                 end()
                 sendItemDialogue(player, Items.OGRE_RELIC_2372, "The wizard gives you a complete statue.")
-                addItemOrDrop(player, Items.OGRE_RELIC_2372, 1)
                 setQuestStage(player, Quests.WATCHTOWER, 10)
+                addItemOrDrop(player, Items.OGRE_RELIC_2372, 1)
                 removeAttributes(player,
                     GameAttributes.WATCHTOWER_TOBAN_GOLD,
                     GameAttributes.WATCHTOWER_TOBAN_KEY,
@@ -216,7 +221,7 @@ class WatchtowerWizardDialogue(player: Player? = null) : Dialogue(player) {
                 )
             }
 
-            700 -> npcl(FaceAnim.HAPPY, "Ah, it's part of an old ogre statue. I'll see if I can fix it up for you. It might come in handy. There may be more parts to find... I'll keep this for later.").also { stage = END_DIALOGUE}
+            700 -> npcl(FaceAnim.HAPPY, "Ah, it's part of an old ogre statue. I'll see if I can fix it up for you. It might come in handy. There may be more parts to find... I'll keep this for later.").also { stage = END_DIALOGUE }
 
         }
         return true

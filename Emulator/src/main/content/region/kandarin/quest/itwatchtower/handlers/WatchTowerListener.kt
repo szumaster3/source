@@ -33,6 +33,8 @@ class WatchTowerListener : InteractionListener {
 
         bushes.forEach { (bush, item) ->
             on(bush, IntType.SCENERY, "search") { player, _ ->
+                lock(player, 3)
+                animate(player, 800)
                 searchBush(player, item)
                 return@on true
             }
@@ -63,7 +65,7 @@ class WatchTowerListener : InteractionListener {
          */
 
         on(Scenery.CAVE_EXIT_2818, IntType.SCENERY, "leave") { player, _ ->
-            teleport(player, Location.create(2524, 3070, 0), TeleportManager.TeleportType.INSTANT)
+            teleport(player, Location(2524, 3070, 0), TeleportManager.TeleportType.INSTANT)
             return@on true
         }
 
@@ -152,8 +154,6 @@ class WatchTowerListener : InteractionListener {
     }
 
     private fun searchBush(player: Player, item: Pair<Int, String>?): Boolean {
-        lock(player, 3)
-        animate(player, 800)
         when {
             item == null -> sendPlayerDialogue(player, "Hmmm, nothing here.", FaceAnim.NEUTRAL)
             !inInventory(player, item.first) -> {

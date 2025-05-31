@@ -24,11 +24,11 @@ class Watchtower : Quest(Quests.WATCHTOWER, 131, 130, 4, Vars.VARP_QUEST_WATCHTO
             line(player, "!!wizard?? on the top floor of Yanille's !!Watchtower??.", line++)
             line++
             line(player, "To complete this quest I need:", line++)
-            line(player, "!!Level 14 Magic??", line++, getStatLevel(player, Skills.MAGIC) >= 14)
-            line(player, "!!Level 40 Mining??", line++, getStatLevel(player, Skills.MINING) >= 40)
-            line(player, "!!Level 14 Herblore??", line++, getStatLevel(player, Skills.HERBLORE) >= 14)
-            line(player, "!!Level 15 Thieving??", line++, getStatLevel(player, Skills.THIEVING) >= 15)
-            line(player, "!!Level 25 Agility??", line++, getStatLevel(player, Skills.AGILITY) >= 25)
+            line(player, "!!Level 14 Magic??", line++, hasLevelStat(player, Skills.MAGIC, 14))
+            line(player, "!!Level 40 Mining??", line++, hasLevelStat(player, Skills.MINING, 40))
+            line(player, "!!Level 14 Herblore??", line++, hasLevelStat(player, Skills.HERBLORE, 14))
+            line(player, "!!Level 15 Thieving??", line++, hasLevelStat(player, Skills.THIEVING, 15))
+            line(player, "!!Level 25 Agility??", line++, hasLevelStat(player, Skills.AGILITY, 25))
             line(player, "The north west guard wants a sign of !!friendship??.", line++)
             limitScrolling(player, line, true)
         }
@@ -81,8 +81,8 @@ class Watchtower : Quest(Quests.WATCHTOWER, 131, 130, 4, Vars.VARP_QUEST_WATCHTO
         drawReward(player, "4 Quest Points", ln++)
         drawReward(player, "Watchtower Teleport spell", ln++)
         drawReward(player, "15,250 Magic XP", ln++)
-        drawReward(player, "5000 Coins", ln++)
-        rewardXP(player, Skills.MAGIC, 1500.0)
+        drawReward(player, "5000 coins", ln)
+        rewardXP(player, Skills.MAGIC, 15250.0)
         addItemOrDrop(player, Items.COINS_995, 5000)
     }
 
