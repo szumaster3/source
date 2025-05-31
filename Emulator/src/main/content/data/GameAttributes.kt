@@ -346,4 +346,9 @@ internal object GameAttributes {
 
     // Plague City quest.
     const val ARDOUGNE_TELEPORT = "/save:ardougne_teleport"
+
+    // Watchtower relics.
+    const val WATCHTOWER_RELIC_1 = "/save:quest:watchtower:relic_1"
+    const val WATCHTOWER_RELIC_2 = "/save:quest:watchtower:relic_2"
+    const val WATCHTOWER_RELIC_3 = "/save:quest:watchtower:relic_3"
 }

@@ -11,7 +11,7 @@ import org.rs.consts.Quests
 import org.rs.consts.Vars
 
 @Initializable
-class WatchTower : Quest(Quests.WATCHTOWER, 131, 130, 4, Vars.VARP_QUEST_WATCHTOWER_PROGRESS_212, 0, 1, 13) {
+class Watchtower : Quest(Quests.WATCHTOWER, 131, 130, 4, Vars.VARP_QUEST_WATCHTOWER_PROGRESS_212, 0, 1, 13) {
     override fun drawJournal(
         player: Player,
         stage: Int,

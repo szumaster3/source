@@ -2,6 +2,7 @@ package content.region.kandarin.quest.itwatchtower.handlers
 
 import core.api.*
 import core.api.quest.getQuestStage
+import core.api.quest.setQuestStage
 import core.api.ui.closeDialogue
 import core.game.dialogue.FaceAnim
 import core.game.interaction.IntType
@@ -15,12 +16,6 @@ import org.rs.consts.Quests
 import org.rs.consts.Scenery
 
 class WatchTowerListener : InteractionListener {
-    companion object {
-        val NW_PILLAR = 3127
-        val NE_PILLAR = 3129
-        val SW_PILLAR = 3128
-        val SE_PILLAR = 3129
-    }
 
     override fun defineListeners() {
         val bushes =
@@ -35,7 +30,6 @@ class WatchTowerListener : InteractionListener {
 
         /*
          * Handles searching the bushes for quest items.
-         * Source: https://youtu.be/27eg7zxUtZc?si=_L8zZhvdY8P-jQJh
          */
 
         bushes.forEach { (bush, item) ->
@@ -79,16 +73,17 @@ class WatchTowerListener : InteractionListener {
          */
 
         onUseWith(IntType.SCENERY, Items.TOBANS_KEY_2378, Scenery.CHEST_2790) { player, _, with ->
-            if (
-                freeSlots(player) <= 1 ||
-                inInventory(player, Items.TOBANS_GOLD_2393) ||
-                getQuestStage(player, Quests.WATCHTOWER) < 6
-            ) {
-                sendMessage(player, "This chest is securely locked shut.")
+            if(freeSlots(player) == 0) {
+                player.packetDispatch.sendMessage("Not enough space in your inventory.")
+                return@onUseWith true
+            }
+            if(!inInventory(player, Items.TOBANS_GOLD_2393)) {
+                sendPlayerDialogue(player, "I think I need a key of some sort...")
             } else {
-                replaceScenery(with.asScenery(), 2828, 8)
+                sendMessage(player, "You use the key Og gave you.")
+                replaceScenery(with.asScenery(), 2828, 3)
                 sendItemDialogue(player, Items.TOBANS_GOLD_2393, "You find a stash of gold inside.")
-                addItem(player, Items.TOBANS_GOLD_2393)
+                addItem(player, Items.TOBANS_GOLD_2393, 1)
             }
             return@onUseWith true
         }
@@ -102,13 +97,24 @@ class WatchTowerListener : InteractionListener {
             return@on true
         }
 
+        on(Scenery.CAVE_ENTRANCE_2811, IntType.SCENERY, "enter") { player, _ ->
+            sendMessage(player, "You enter the cave.")
+            teleport(player, Location(2576, 3029, 0))
+            return@on true
+        }
+
+        on(Scenery.LADDER_2812, IntType.SCENERY, "climb-down") { player, _ ->
+            sendMessage(player, "You climb down the ladder.")
+            teleport(player, Location(2499, 2988, 0))
+            return@on true
+        }
+
         onUseWith(IntType.NPC, Items.CAVE_NIGHTSHADE_2398, NPCs.ENCLAVE_GUARD_870) { _, _, _ ->
             return@onUseWith true
         }
-
     }
 
-    private fun searchBush(player: Player, item: Pair<Int, String>?, ): Boolean {
+    private fun searchBush(player: Player, item: Pair<Int, String>?): Boolean {
         lock(player, 3)
         animate(player, 800)
         when {
