@@ -26,27 +26,40 @@ class TobanDialogue(player: Player? = null) : Dialogue(player) {
 
     override fun open(vararg args: Any?): Boolean {
         npc = args[0] as NPC
-        val hasRelic = hasAnItem(player, Items.RELIC_PART_3_2375).container != null
-        if(getQuestStage(player, Quests.WATCHTOWER) > 1) {
-            npc(FaceAnim.OLD_NEUTRAL, "What do you want, small t'ing?")
-        } else {
+
+        val questStage = getQuestStage(player, Quests.WATCHTOWER)
+
+        if (questStage in 10..100) {
+            sendMessage(player, "The ogre is not interested in you anymore.")
+            return true
+        }
+
+        if (questStage == 0) {
+            sendMessage(player, "He's busy, try him later.")
+            return true
+        }
+
+        if (getAttribute(player, GameAttributes.WATCHTOWER_RELIC_3, false)) {
+            player("I can't find the relic part you gave me.")
+            stage = 14
+            return true
+        }
+
+        if(getAttribute(player, GameAttributes.WATCHTOWER_DRAGON_BONES, false)) {
             npc(FaceAnim.OLD_NEUTRAL, "Hahaha! Small t'ing returns. Did you bring the dragon", "bone?")
             stage = 10
+            return true
         }
-        if(getAttribute(player, GameAttributes.WATCHTOWER_RELIC_3, false) && !hasRelic) {
-            player("I can't find the relic part you have me.").also { stage = 14 }
-        } else {
-                if (!isQuestComplete(player, Quests.WATCHTOWER)) {
-                    sendMessage(player, "The ogre has nothing to say at the moment.")
-                } else {
-                    sendMessage(player, "The ogre is not interested in you anymore.")
-                }
-            }
+
+        if(questStage > 1) {
+            npc(FaceAnim.OLD_NEUTRAL, "What do you want, small t'ing?")
+            return true
+        }
+
         return true
     }
 
     override fun handle(interfaceId: Int, buttonId: Int): Boolean {
-        val hasRelic = hasAnItem(player, Items.RELIC_PART_3_2375).container != null
         when (stage) {
             0 -> options("I seek entrance to the city of ogres.", "Die, creature!").also { stage++ }
             1 -> when (buttonId) {
@@ -67,33 +80,48 @@ class TobanDialogue(player: Player? = null) : Dialogue(player) {
                 2 -> player("Die, creature!").also { stage = 2 }
             }
             8 -> npc(FaceAnim.OLD_NEUTRAL, "Hahaha! This creature t'inks it can help me! I would eat", "you now, but for your punt size.").also { stage++ }
-            9 -> npc(FaceAnim.OLD_NEUTRAL, "Prove to me your might: bring me the bones of an", "adult dragon to chew on, and I'll eat them, not you.",).also { stage = END_DIALOGUE }
-            10 -> if(!inInventory(player, Items.DRAGON_BONES_536)) {
-                player("I have nothing for you.")
-                stage = 13
-            } else {
-                if(freeSlots(player) == 0) {
-                    npcl(FaceAnim.OLD_NEUTRAL, "Hahaha! Small t'ing has done it. Toban is glad, but you can't hold his reward; you'd best put somet'ing down.")
+            9 -> npc(FaceAnim.OLD_NEUTRAL, "Prove to me your might: bring me the bones of an", "adult dragon to chew on, and I'll eat them, not you.").also {
+                setAttribute(player, GameAttributes.WATCHTOWER_DRAGON_BONES, true)
+                stage = END_DIALOGUE
+            }
+            10 -> {
+                if (!inInventory(player, Items.DRAGON_BONES_536)) {
+                    player("I have nothing for you.")
+                    stage = 13
                     return true
                 }
+
+                if (freeSlots(player) == 0) {
+                    npcl(FaceAnim.OLD_NEUTRAL, "Hahaha! Small t'ing has done it. Toban is glad, but you can't hold his reward; you'd best put somet'ing down.")
+                    stage = END_DIALOGUE
+                    return true
+                }
+
                 npcl(FaceAnim.OLD_NEUTRAL, "Hahaha! Small t'ing has done it. Toban is glad - take this...")
-                stage++
+                stage = 11
             }
-            11 -> player("When I say I will get something, I get it!").also { stage++ }
+
+            11 -> {
+                player("When I say I will get something, I get it!")
+                stage = 12
+            }
+
             12 -> {
-                if(removeItem(player, Items.DRAGON_BONES_536)) {
-                    sendItemDialogue(player, Items.RELIC_PART_3_2375, "The ogre gives you part of a statue.")
+                if (removeItem(player, Items.DRAGON_BONES_536)) {
                     addItem(player, Items.RELIC_PART_3_2375)
+                    sendItemDialogue(player, Items.RELIC_PART_3_2375, "The ogre gives you part of a statue.")
                     setAttribute(player, GameAttributes.WATCHTOWER_RELIC_3, true)
                 }
+                stage = END_DIALOGUE
             }
+
             13 -> npc(FaceAnim.OLD_NEUTRAL, "Then you shall get nothing from me!").also { stage = END_DIALOGUE }
             14 -> {
-                if (!hasRelic) {
+                if (!inInventory(player, Items.RELIC_PART_3_2375)) {
                     npc(FaceAnim.OLD_NEUTRAL, "Small thing, how could you be so careless?")
                     stage = 16
                 } else {
-                    npc(FaceAnim.OLD_NEUTRAL, "Small thing, you like to me!")
+                    npc(FaceAnim.OLD_NEUTRAL, "Small thing, you lie to me!")
                     stage++
                 }
             }

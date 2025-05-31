@@ -1,11 +1,10 @@
 package content.region.kandarin.quest.itwatchtower.dialogue
 
-import core.api.anyInInventory
-import core.api.asItem
+import content.data.GameAttributes
+import core.api.*
 import core.api.item.allInInventory
 import core.api.quest.getQuestStage
 import core.api.quest.setQuestStage
-import core.api.removeItem
 import core.game.dialogue.Dialogue
 import core.game.dialogue.FaceAnim
 import core.game.node.entity.npc.NPC
@@ -27,22 +26,52 @@ class WatchtowerWizardDialogue(player: Player? = null) : Dialogue(player) {
 
     override fun open(vararg args: Any?): Boolean {
         npc = args[0] as NPC
-        val stage = getQuestStage(player, Quests.WATCHTOWER)
+        val questStage = getQuestStage(player, Quests.WATCHTOWER)
 
-        when (npc.id) {
-            NPCs.WIZARD_5195 -> {
-                player("What's going on here?")
-                this.stage = 100
-            }
+        if (npc.id == NPCs.WIZARD_5195) {
+            player("What's going on here?")
+            stage = 100
+            return true
+        }
 
-            else -> {
-                if (stage >= 1) {
-                    npc("Hello again. Did you find anything of interest?")
-                    this.stage = 30
-                } else {
-                    npc("Who are you? Are you one of the new guards?")
-                }
+        val itemIds = listOf(Items.RELIC_PART_1_2373, Items.RELIC_PART_2_2374, Items.RELIC_PART_3_2375)
+        val attributes = listOf(GameAttributes.WATCHTOWER_RELIC_1, GameAttributes.WATCHTOWER_RELIC_2, GameAttributes.WATCHTOWER_RELIC_3)
+
+        val hasAll = itemIds.all { inInventory(player, it) }
+        val turnedInAll = attributes.all { getAttribute(player, it, false) }
+
+        if (hasAll) {
+            player("An ogre gave me these...")
+            for (i in itemIds.indices) {
+                removeItem(player, itemIds[i])
+                setAttribute(player, attributes[i], true)
             }
+            stage = 600
+            return true
+        }
+
+        for (i in itemIds.indices) {
+            val item = itemIds[i]
+            val attr = attributes[i]
+            if (inInventory(player, item) && !getAttribute(player, attr, false)) {
+                player("An ogre gave me this...")
+                removeItem(player, item)
+                setAttribute(player, attr, true)
+                stage = 700
+                return true
+            }
+        }
+
+        if (turnedInAll) {
+            npc("Thanks again for those relic pieces. I’ve already started working on them.")
+            return true
+        }
+
+        if (questStage >= 1) {
+            npc("Hello again. Did you find anything of interest?")
+            stage = 30
+        } else {
+            npc("Who are you? Are you one of the new guards?")
         }
 
         return true
@@ -164,6 +193,31 @@ class WatchtowerWizardDialogue(player: Player? = null) : Dialogue(player) {
             300 -> npcl(FaceAnim.NEUTRAL, "That's typical, nowadays. It's left to us wizards to do all the work.").also { stage = END_DIALOGUE }
             400 -> npc("Hmph! Suit yourself.").also { stage = END_DIALOGUE }
             500 -> npcl(FaceAnim.NEUTRAL, "Won't bother? Won't bother! Perhaps this quest is too hard for you?").also { stage = END_DIALOGUE }
+
+            600 -> {
+                animate(npc, 4602)
+                npc("Hmm, yes, it is as I thought... A statue symbolising an", "ogre warrior of old.")
+                stage++
+            }
+            601 -> npc(FaceAnim.HAPPY, "Well, if you ever want to make friends with an ogre,", "this is the item to have!").also { stage++ }
+            602 -> {
+                end()
+                sendItemDialogue(player, Items.OGRE_RELIC_2372, "The wizard gives you a complete statue.")
+                addItemOrDrop(player, Items.OGRE_RELIC_2372, 1)
+                setQuestStage(player, Quests.WATCHTOWER, 10)
+                removeAttributes(player,
+                    GameAttributes.WATCHTOWER_TOBAN_GOLD,
+                    GameAttributes.WATCHTOWER_TOBAN_KEY,
+                    GameAttributes.WATCHTOWER_GORAD_TOOTH,
+                    GameAttributes.WATCHTOWER_DRAGON_BONES,
+                    GameAttributes.WATCHTOWER_RELIC_3,
+                    GameAttributes.WATCHTOWER_RELIC_2,
+                    GameAttributes.WATCHTOWER_RELIC_1,
+                )
+            }
+
+            700 -> npcl(FaceAnim.HAPPY, "Ah, it's part of an old ogre statue. I'll see if I can fix it up for you. It might come in handy. There may be more parts to find... I'll keep this for later.").also { stage = END_DIALOGUE}
+
         }
         return true
     }

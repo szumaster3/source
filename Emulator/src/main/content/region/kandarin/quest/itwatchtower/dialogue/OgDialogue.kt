@@ -4,9 +4,9 @@ import content.data.GameAttributes
 import core.api.*
 import core.api.quest.getQuestStage
 import core.api.quest.isQuestComplete
-import core.api.quest.setQuestStage
 import core.game.dialogue.Dialogue
 import core.game.dialogue.FaceAnim
+import core.game.node.entity.npc.NPC
 import core.game.node.entity.player.Player
 import core.game.world.map.RegionManager
 import core.plugin.Initializable
@@ -25,24 +25,37 @@ import org.rs.consts.Quests
 class OgDialogue(player: Player? = null) : Dialogue(player) {
 
     override fun open(vararg args: Any?): Boolean {
+        npc = args[0] as NPC
         val questStage = getQuestStage(player, Quests.WATCHTOWER)
 
-        when {
-            questStage == 2 -> {
-                npc(FaceAnim.OLD_DEFAULT, "Why you here, little t'ing?")
-            }
-            questStage >= 3 -> {
-                npc(FaceAnim.OLD_DEFAULT, "Where my gold from dat dirty Toban?")
-                stage = 9
-            }
-            !isQuestComplete(player, Quests.WATCHTOWER) -> {
-                sendMessage(player, "The ogre has nothing to say at the moment.")
-            }
-            else -> {
-                sendMessage(player, "The ogre is not interested in you anymore.")
-            }
+        if (questStage in 10..100) {
+            sendMessage(player, "The ogre is not interested in you anymore.")
+            return true
         }
 
+        if (questStage == 0) {
+            sendMessage(player, "He's busy, try him later.")
+            return true
+        }
+
+        if (getAttribute(player, GameAttributes.WATCHTOWER_TOBAN_GOLD, false)) {
+            npc(FaceAnim.OLD_DEFAULT, "Where my gold from dat dirty Toban?")
+            stage = 9
+            return true
+        }
+
+        if (getAttribute(player, GameAttributes.WATCHTOWER_RELIC_1, false)) {
+            npc(FaceAnim.OLD_DEFAULT, "It's the little rat again.")
+            stage = 16
+            return true
+        }
+
+        if (questStage == 2) {
+            npc(FaceAnim.OLD_DEFAULT, "Why you here, little t'ing?")
+            return true
+        }
+
+        sendMessage(player, "The ogre has nothing to say at the moment.")
         return true
     }
 
@@ -60,7 +73,7 @@ class OgDialogue(player: Player? = null) : Dialogue(player) {
             6 -> npc(FaceAnim.OLD_DEFAULT, "Here is a key to the chest it's in. If you bring it here,", "I may reward you...").also {
                 end()
                 addItemOrDrop(player, Items.TOBANS_KEY_2378, 1)
-                setQuestStage(player, Quests.WATCHTOWER, 3)
+                setAttribute(player, GameAttributes.WATCHTOWER_TOBAN_GOLD, true)
             }
             7 -> npc(FaceAnim.OLD_DEFAULT, "Kill me, eh? You shall be crushed. Guards!").also { stage++ }
             8 -> {
@@ -107,6 +120,26 @@ class OgDialogue(player: Player? = null) : Dialogue(player) {
                 end()
                 sendMessage(player, "It seems you still have the key...")
             }
+            16 -> options("Do you have any other tasks for me?", "I have lost the relic part you gave me.").also { stage++ }
+            17 -> when(buttonId) {
+                1 -> player("Do you have any other tasks for me?")
+                2 -> player(FaceAnim.HALF_WORRIED, "I have lost the relic part you gave me.").also { stage++ }
+            }
+            18 -> {
+                if (inInventory(player, Items.RELIC_PART_1_2373)) {
+                    npcl(FaceAnim.OLD_DEFAULT, "Are you blind! I can see you have it even from here!")
+                    stage = END_DIALOGUE
+                } else {
+                    npc(FaceAnim.OLD_DEFAULT, "Grrr, why do I bother?")
+                    stage++
+                }
+            }
+            19 -> {
+                end()
+                npc("It's a good job I have another part!")
+                addItem(player, Items.RELIC_PART_1_2373)
+            }
+
         }
         return true
     }

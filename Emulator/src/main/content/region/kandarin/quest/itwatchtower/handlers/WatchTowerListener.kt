@@ -1,8 +1,7 @@
 package content.region.kandarin.quest.itwatchtower.handlers
 
 import core.api.*
-import core.api.quest.getQuestStage
-import core.api.quest.setQuestStage
+import core.api.quest.isQuestComplete
 import core.api.ui.closeDialogue
 import core.game.dialogue.FaceAnim
 import core.game.interaction.IntType
@@ -74,11 +73,18 @@ class WatchTowerListener : InteractionListener {
 
         onUseWith(IntType.SCENERY, Items.TOBANS_KEY_2378, Scenery.CHEST_2790) { player, _, with ->
             if(freeSlots(player) == 0) {
-                player.packetDispatch.sendMessage("Not enough space in your inventory.")
+                sendMessage(player, "Not enough space in your inventory.")
                 return@onUseWith true
             }
-            if(!inInventory(player, Items.TOBANS_GOLD_2393)) {
+
+            if(inInventory(player, Items.TOBANS_GOLD_2393)) {
+                sendMessage(player, "The chest is empty.")
+                return@onUseWith true
+            }
+
+            if(!inInventory(player, Items.TOBANS_KEY_2378)) {
                 sendPlayerDialogue(player, "I think I need a key of some sort...")
+                sendMessage(player, "The chest is locked.")
             } else {
                 sendMessage(player, "You use the key Og gave you.")
                 replaceScenery(with.asScenery(), 2828, 3)
@@ -97,15 +103,46 @@ class WatchTowerListener : InteractionListener {
             return@on true
         }
 
+        /*
+         * Handles entrance to grew island.
+         */
+
         on(Scenery.CAVE_ENTRANCE_2811, IntType.SCENERY, "enter") { player, _ ->
             sendMessage(player, "You enter the cave.")
             teleport(player, Location(2576, 3029, 0))
             return@on true
         }
 
+        /*
+         * Handles ladder from grew island.
+         */
+
         on(Scenery.LADDER_2812, IntType.SCENERY, "climb-down") { player, _ ->
             sendMessage(player, "You climb down the ladder.")
             teleport(player, Location(2499, 2988, 0))
+            return@on true
+        }
+
+        /*
+         * Handles use any one relic part with another.
+         */
+
+        onUseWith(IntType.NPC, Items.RELIC_PART_1_2373, Items.RELIC_PART_2_2374, Items.RELIC_PART_3_2375) { player, _, _ ->
+            sendMessage(player, "I think these fit together, but I can't seem to make them fit.")
+            sendMessage(player, "I am going to need someone with experience to help me with this.")
+            return@onUseWith true
+        }
+
+        /*
+         * Handles attack option after quest for gorad.
+         */
+
+        on(NPCs.GORAD_856, IntType.NPC, "attack") { player, node ->
+            if (isQuestComplete(player, Quests.WATCHTOWER)) {
+                sendNPCDialogueLines(player, node.id, FaceAnim.OLD_DEFAULT, false, "Ho Ho! why would I want to fight a worm?", "Get lost!")
+            } else {
+                player.attack(node)
+            }
             return@on true
         }
 

@@ -2,7 +2,8 @@ package content.region.kandarin.quest.itwatchtower.dialogue
 
 import content.data.GameAttributes
 import core.api.*
-import core.api.quest.*
+import core.api.quest.getQuestStage
+import core.api.quest.isQuestComplete
 import core.game.dialogue.Dialogue
 import core.game.dialogue.FaceAnim
 import core.game.node.entity.player.Player
@@ -23,39 +24,48 @@ import org.rs.consts.Quests
 class GrewDialogue(player: Player? = null) : Dialogue(player) {
 
     override fun open(vararg args: Any?): Boolean {
-        val quest = getQuestStage(player, Quests.WATCHTOWER)
+        val questStage = getQuestStage(player, Quests.WATCHTOWER)
 
-        if (isQuestComplete(player, Quests.WATCHTOWER)) {
+        if (questStage in 10..100) {
             sendMessage(player, "The ogre is not interested in you anymore.")
-            stage = END_DIALOGUE
             return true
         }
 
-        when (quest) {
-            3 -> {
-                npc(FaceAnim.OLD_NEUTRAL, "What do you want, little morsel? You would look good", "on my plate!")
-                stage = 0
-            }
-            4 -> {
-                when {
-                    !inInventory(player, Items.RELIC_PART_2_2374) -> {
-                        player("I've lost the relic part you gave me.")
-                        stage = 40
-                    }
-                    !inInventory(player, Items.CRYSTAL_2380) -> {
-                        player("I've lost the crystal you gave me.")
-                        stage = 50
-                    }
-                    else -> {
-                        npc(FaceAnim.OLD_NEUTRAL, "The morsel is back. Does it have our tooth for us?")
-                        stage = 10
-                    }
+        if (questStage == 0) {
+            sendMessage(player, "The ogre has nothing to say at the moment...")
+            return true
+        }
+
+        if (getAttribute(player, GameAttributes.WATCHTOWER_GORAD_TOOTH, false)) {
+            npc(FaceAnim.OLD_NEUTRAL, "The morsel is back. Does it have our tooth for us?")
+            stage = 10
+            return true
+        }
+
+        if (getAttribute(player, GameAttributes.WATCHTOWER_RELIC_2, false)) {
+            when {
+                !inInventory(player, Items.CRYSTAL_2380) -> {
+                    player("I've lost the crystal you gave me.")
+                    stage = 50
+                    return true
+                }
+                !inInventory(player, Items.RELIC_PART_2_2374) -> {
+                    player("I've lost the relic part you gave me.")
+                    stage = 40
+                    return true
+                }
+                else -> {
+                    player("Can I do anything else for you?")
+                    stage = 30
+                    return true
                 }
             }
-            else -> {
-                sendMessage(player, "The ogre has nothing to say at the moment...")
-                stage = END_DIALOGUE
-            }
+        }
+
+        if (questStage > 1) {
+            npc(FaceAnim.OLD_NEUTRAL, "What do you want, little morsel? You would look good", "on my plate!")
+        } else {
+            sendMessage(player, "The ogre has nothing to say at the moment...")
         }
 
         return true
@@ -80,10 +90,9 @@ class GrewDialogue(player: Player? = null) : Dialogue(player) {
             6 -> player("I am a mighty adventurer, slayer of monsters and user", "of magic powers.").also { stage++ }
             7 -> npc(FaceAnim.OLD_NEUTRAL, "Well well, perhaps the morsel can help after all...").also { stage++ }
             8 -> npc(FaceAnim.OLD_NEUTRAL, "If you think you're tough", "find Gorad my enemy in the south east settlement", "And knock one of his teeth out!", "Heheheheh!"). also {
-                setQuestStage(player, Quests.WATCHTOWER, 4)
+                setAttribute(player, GameAttributes.WATCHTOWER_GORAD_TOOTH, true)
                 stage = END_DIALOGUE
             }
-
             10 -> {
                 if (!removeItem(player, Items.OGRE_TOOTH_2377)) {
                     player("Err, I don't have it.")
@@ -108,23 +117,18 @@ class GrewDialogue(player: Player? = null) : Dialogue(player) {
                 sendMessage(player, "You are under attack!")
                 stage = END_DIALOGUE
             }
-            30 -> player("Can I do anything else for you?").also { stage++ }
-            31 -> npc(FaceAnim.OLD_NEUTRAL, "I have nothing left for you but the cooking pot!").also { stage = END_DIALOGUE }
-
-            // Lost relic.
+            30 -> npc(FaceAnim.OLD_NEUTRAL, "I have nothing left for you but the cooking pot!").also { stage = END_DIALOGUE }
             40 -> {
-                if (inInventory(player, Items.RELIC_PART_1_2373)) {
+                if (inInventory(player, Items.RELIC_PART_2_2374)) {
                     npc(FaceAnim.OLD_NEUTRAL, "You lie to me morsel!")
                     stage = END_DIALOGUE
                 } else {
                     npc(FaceAnim.OLD_NEUTRAL, "Stupid morsel, I have another", "Take it and go now before I lose my temper.").also {
-                        addItem(player, Items.RELIC_PART_1_2373)
+                        addItem(player, Items.RELIC_PART_2_2374)
                         stage = END_DIALOGUE
                     }
                 }
             }
-
-            // Lost crystal.
             50 -> {
                 if (inInventory(player, Items.CRYSTAL_2380)) {
                     npc(FaceAnim.OLD_NEUTRAL, "How dare you lie to me Morsel!", "I will finish you now!")

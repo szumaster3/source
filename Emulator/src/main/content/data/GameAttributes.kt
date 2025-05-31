@@ -351,4 +351,9 @@ internal object GameAttributes {
     const val WATCHTOWER_RELIC_1 = "/save:quest:watchtower:relic_1"
     const val WATCHTOWER_RELIC_2 = "/save:quest:watchtower:relic_2"
     const val WATCHTOWER_RELIC_3 = "/save:quest:watchtower:relic_3"
+
+    const val WATCHTOWER_TOBAN_GOLD = "/save:quest:watchtower:gold_bar"
+    const val WATCHTOWER_TOBAN_KEY = "/save:quest:watchtower:toban_key"
+    const val WATCHTOWER_GORAD_TOOTH = "/save:quest:watchtower:ogre_tooth"
+    const val WATCHTOWER_DRAGON_BONES = "/save:quest:watchtower:dragon_bones"
 }
