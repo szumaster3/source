@@ -1,5 +1,6 @@
 package content.region.kandarin.quest.itwatchtower.handlers
 
+import content.data.GameAttributes
 import content.region.kandarin.quest.itwatchtower.dialogue.BattlementDialogue
 import content.region.kandarin.quest.itwatchtower.dialogue.CityGuardDialogue
 import content.region.kandarin.quest.itwatchtower.dialogue.OgreCityGateDialogue
@@ -336,6 +337,25 @@ class WatchTowerListener : InteractionListener {
         onUseWith(IntType.NPC, Items.DEATH_RUNE_560, NPCs.CITY_GUARD_862) { player, _, _ ->
             openDialogue(player, CityGuardDialogue())
             return@onUseWith true
+        }
+
+        /*
+         * Handles reading the spell scroll.
+         */
+
+        on(Items.SPELL_SCROLL_2396, IntType.ITEM, "read") { player, node ->
+            if(!inInventory(player, Items.SPELL_SCROLL_2396)) return@on true
+            animate(player, Animations.READING_SCROLL_DISPLACED_WATCH_TOWER_5354)
+            sendSequenceDialogue(player,
+                dialogueLine("You memorise what is written on the scroll."),
+                onComplete = {
+                    removeItem(player, node.asItem(), Container.INVENTORY)
+                    sendDialogueLines(player, "You can now cast the Watchtower teleport spell... ...Provided you", "have the requiired runes and magic level.")
+                    setAttribute(player, GameAttributes.WATCHTOWER_TELEPORT, true)
+                    sendMessage(player, "The scroll crumbles to dust.")
+                }
+            )
+            return@on true
         }
 
         onUseWith(IntType.NPC, Items.CAVE_NIGHTSHADE_2398, NPCs.ENCLAVE_GUARD_870) { _, _, _ ->

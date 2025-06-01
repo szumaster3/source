@@ -358,4 +358,7 @@ internal object GameAttributes {
     const val WATCHTOWER_DRAGON_BONES = "/save:quest:watchtower:dragon_bones"
     const val WATCHTOWER_ROCK_CAKE = "/save:quest:watchtower:rock_cake"
     const val WATCHTOWER_RIDDLE = "/save:quest:watchtower:ogre_riddle"
+
+    // Watchtower quest.
+    const val WATCHTOWER_TELEPORT = "/save:watchtower_teleport"
 }

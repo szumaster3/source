@@ -7,6 +7,8 @@ import core.api.quest.getQuestStage
 import core.api.quest.setQuestStage
 import core.game.dialogue.Dialogue
 import core.game.dialogue.FaceAnim
+import core.game.dialogue.IfTopic
+import core.game.dialogue.Topic
 import core.game.node.entity.npc.NPC
 import core.game.node.entity.player.Player
 import core.plugin.Initializable
@@ -31,6 +33,12 @@ class WatchtowerWizardDialogue(player: Player? = null) : Dialogue(player) {
         if (npc.id == NPCs.WIZARD_5195) {
             player("What's going on here?")
             stage = 100
+            return true
+        }
+
+        if(questStage == 100 && npc.id == NPCs.WIZARD_5195) {
+            npc("All's well that ends well.")
+            stage = END_DIALOGUE
             return true
         }
 
@@ -87,6 +95,12 @@ class WatchtowerWizardDialogue(player: Player? = null) : Dialogue(player) {
         if(getAttribute(player!!, GameAttributes.WATCHTOWER_RIDDLE, false) || inInventory(player!!, Items.SKAVID_MAP_2376)) {
             npc("How is the quest going?")
             stage = 800
+            return true
+        }
+
+        if(questStage == 100) {
+            npcl(FaceAnim.HAPPY, "Greetings, friend. I trust all is well with you? Yanille is safe at last!")
+            stage = 1000
             return true
         }
 
@@ -295,6 +309,21 @@ class WatchtowerWizardDialogue(player: Player? = null) : Dialogue(player) {
             813 -> npcl(FaceAnim.FRIENDLY, "Well, regardless, I'm sure a bold, brave adventurer such as yourself won't have any problems.").also { stage++ }
             814 -> player(FaceAnim.THINKING, "Great...").also { stage = END_DIALOGUE }
             815 -> npcl(FaceAnim.FRIENDLY, "That's good to hear. We are much closer to fixing the tower now.").also { stage = END_DIALOGUE }
+
+            1000 -> showTopics(
+                IfTopic("Do you have any more quests for me?", 1001, getAttribute(player, GameAttributes.WATCHTOWER_TELEPORT, false), false),
+                IfTopic("I lost the scroll you gave me.", 1002, !getAttribute(player, GameAttributes.WATCHTOWER_TELEPORT, false), false),
+                Topic("That's okay.", 1003, false)
+            )
+            1001 -> npcl(FaceAnim.HALF_THINKING, "More quests? No, indeed, adventurer. You have done us a great service, already.").also { stage = END_DIALOGUE }
+            1002 -> if(inInventory(player, Items.SPELL_SCROLL_2396)) {
+                npcl(FaceAnim.LAUGH, "Ho, ho, ho! A comedian to the finish. There it is, in your backpack!")
+                stage = END_DIALOGUE
+            } else {
+                npcl(FaceAnim.THINKING, "Never mind, have another...")
+                addItem(player, Items.SPELL_SCROLL_2396, 1)
+            }
+            1003 -> npcl(FaceAnim.FRIENDLY, "We are always in your debt; do come and visit us again.").also { stage = END_DIALOGUE }
         }
         return true
     }
