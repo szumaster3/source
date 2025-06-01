@@ -82518,6 +82518,13 @@
     "archery_ticket_price": "0",
     "id": "9719"
   },
+    {
+    "examine": "A scroll with some writing on it.",
+    "durability": null,
+    "name": "Scroll",
+    "archery_ticket_price": "0",
+    "id": "9721"
+  },
   {
     "examine": "A crane claw.",
     "durability": null,
