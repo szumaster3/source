@@ -1,19 +1,16 @@
 package content.region.kandarin.quest.itwatchtower.dialogue
 
 import content.region.kandarin.quest.itwatchtower.handlers.WatchtowerUtils
-import core.api.*
+import core.api.inInventory
+import core.api.openDialogue
 import core.api.quest.getQuestStage
 import core.game.dialogue.Dialogue
 import core.game.dialogue.DialogueFile
 import core.game.dialogue.FaceAnim
-import core.game.global.action.DoorActionHandler
-import core.game.node.entity.combat.ImpactHandler
 import core.game.node.entity.npc.NPC
 import core.game.node.entity.player.Player
-import core.game.node.entity.player.link.TeleportManager
 import core.game.world.map.Location
 import core.plugin.Initializable
-import org.rs.consts.Graphics
 import org.rs.consts.Items
 import org.rs.consts.NPCs
 import org.rs.consts.Quests
@@ -43,7 +40,7 @@ class OgreCityGuardDialogue(player: Player? = null) : Dialogue(player) {
             1 -> npc(FaceAnim.OLD_DEFAULT, "Show me a sign of companionship, like a lost relic", "or somefing, and you may pass.").also { stage++ }
             2 -> player(FaceAnim.HALF_GUILTY, "I don't have anything.").also { stage = 3 }
             3 -> npc(FaceAnim.OLD_DEFAULT,"Why have you returned with no proof of companionship?", "Back to whence you came!").also { stage++ }
-            4 -> end().also { WatchtowerUtils.handleGatePassage(player!!, Location.create(2546, 3065), openGate = false) }
+            4 -> end().also { WatchtowerUtils.handleGatePassage(player!!, Location.create(2546, 3065, 0), openGate = false) }
         }
         return true
     }
@@ -59,7 +56,7 @@ class OgreCityGateDialogue : DialogueFile() {
         when(stage) {
             0 -> npc(FaceAnim.OLD_DEFAULT, "Well, what proof of friendship did you bring?").also { stage++ }
             1 -> if(inInventory(player!!, Items.OGRE_RELIC_2372)) {
-                player(FaceAnim.NEUTRAL, "I have a relic fro a chieftain.").also { stage++ }
+                player(FaceAnim.NEUTRAL, "I have a relic from a chieftain.").also { stage++ }
             } else {
                 player(FaceAnim.HALF_GUILTY, "I don't have anything.").also { stage = 4 }
             }
@@ -67,7 +64,7 @@ class OgreCityGateDialogue : DialogueFile() {
             2 -> npc(FaceAnim.OLD_DEFAULT,"It's got the statue of Dalgroth. Welcome to Gu'Tanoth,", "friend of the ogres.").also { stage++ }
             3 -> end().also { WatchtowerUtils.handleGatePassage(player!!, Location.create(2503, 3062, 0), openGate = true) }
             4 -> npc(FaceAnim.OLD_DEFAULT,"Why have you returned with no proof of companionship?", "Back to whence you came!").also { stage++ }
-            5 -> end().also { WatchtowerUtils.handleGatePassage(player!!, Location.create(2546, 3065), openGate = false) }
+            5 -> end().also { WatchtowerUtils.handleGatePassage(player!!, Location.create(2546, 3065, 0), openGate = false) }
         }
     }
 }

@@ -84,6 +84,12 @@ class WatchtowerWizardDialogue(player: Player? = null) : Dialogue(player) {
             return true
         }
 
+        if(getAttribute(player!!, GameAttributes.WATCHTOWER_RIDDLE, false) || inInventory(player!!, Items.SKAVID_MAP_2376)) {
+            npc("How is the quest going?")
+            stage = 800
+            return true
+        }
+
         if (questStage >= 1) {
             npc("Hello again. Did you find anything of interest?")
             stage = 30
@@ -255,7 +261,6 @@ class WatchtowerWizardDialogue(player: Player? = null) : Dialogue(player) {
             707 -> when(buttonId) {
                 1 -> player("I have lost the relic you gave me.").also { stage++ }
                 2 -> player("I will find my way in, no problem.").also { stage = 710 }
-
             }
             708 -> npc("What! lost the relic ? How careless!", "It's a good job I copied that design then...").also { stage++ }
             709 -> {
@@ -269,6 +274,27 @@ class WatchtowerWizardDialogue(player: Player? = null) : Dialogue(player) {
                 stage = END_DIALOGUE
             }
             710 -> npc("Yes, I'm sure you will...good luck.").also { stage = END_DIALOGUE }
+
+            800 -> playerl(FaceAnim.NEUTRAL,"I have worked out the guard's puzzle.").also { stage++ }
+            801 -> npc("My, my. A wordsmith as well as a hero.").also { stage++ }
+            802 -> options("I am still trying to navigate the skavid caves.", "I am trying to get into the shamans' cave.", "It is going well.").also { stage++ }
+            803 -> when(buttonId) {
+                1 -> playerl(FaceAnim.NEUTRAL, "I am still trying to navigate the skavid caves.").also { stage++ }
+                2 -> playerl(FaceAnim.NEUTRAL,"I am trying to get into the shamans' cave.").also { stage = 805 }
+                3 -> playerl(FaceAnim.NEUTRAL,"It is going well.").also { stage = 815 }
+            }
+            804 -> npcl(FaceAnim.NEUTRAL, "Take some illumination with you or else it will be dark.").also { stage = END_DIALOGUE }
+            805 -> npcl(FaceAnim.THINKING, "Yes, it will be well guarded. Hmmm, let me see...").also { stage++ }
+            806 -> npcl(FaceAnim.FRIENDLY, "Ah yes, I gather some ogres are allergic to certain herbs. Now what was it? It had white berries and blue leaves...").also { stage++ }
+            807 -> npcl(FaceAnim.HAPPY, "Cave nightshade, that's it! You should try looking through some of the caves.").also { stage++ }
+            808 -> player(FaceAnim.HAPPY, "Alright!").also { stage++ }
+            809 -> npcl(FaceAnim.HAPPY, "And don't forget to look out for the dragons!").also { stage++ }
+            810 -> player(FaceAnim.PANICKED, "The WHAT?").also { stage++ }
+            811 -> npc("Dragons.").also { stage++ }
+            812 -> npcl(FaceAnim.FRIENDLY, "Didn't you know that the ogres keep blue dragons as pets and for magical ingredients?").also { stage++ }
+            813 -> npcl(FaceAnim.FRIENDLY, "Well, regardless, I'm sure a bold, brave adventurer such as yourself won't have any problems.").also { stage++ }
+            814 -> player(FaceAnim.THINKING, "Great...").also { stage = END_DIALOGUE }
+            815 -> npcl(FaceAnim.FRIENDLY, "That's good to hear. We are much closer to fixing the tower now.").also { stage = END_DIALOGUE }
         }
         return true
     }

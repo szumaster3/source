@@ -1,21 +1,24 @@
 package content.region.kandarin.quest.itwatchtower.handlers
 
-import core.game.dialogue.SequenceDialogue.npcLine
-import core.game.dialogue.SequenceDialogue.playerLine
-import core.game.dialogue.SequenceDialogue.sendSequenceDialogue
 import content.region.kandarin.quest.itwatchtower.dialogue.BattlementDialogue
+import content.region.kandarin.quest.itwatchtower.dialogue.CityGuardDialogue
 import content.region.kandarin.quest.itwatchtower.dialogue.OgreCityGateDialogue
 import core.api.*
 import core.api.quest.isQuestComplete
 import core.api.ui.closeDialogue
 import core.game.dialogue.FaceAnim
 import core.game.dialogue.SequenceDialogue.dialogueLine
+import core.game.dialogue.SequenceDialogue.npcLine
 import core.game.dialogue.SequenceDialogue.options
+import core.game.dialogue.SequenceDialogue.playerLine
+import core.game.dialogue.SequenceDialogue.sendSequenceDialogue
 import core.game.global.action.DoorActionHandler
 import core.game.interaction.IntType
 import core.game.interaction.InteractionListener
+import core.game.node.entity.npc.NPC
 import core.game.node.entity.player.Player
 import core.game.node.entity.player.link.TeleportManager
+import core.game.node.item.Item
 import core.game.world.map.Location
 import org.rs.consts.*
 
@@ -241,6 +244,71 @@ class WatchTowerListener : InteractionListener {
         }
 
         /*
+         * Handles talking to ogre guards near bridge.
+         */
+
+        on(NPCs.OGRE_GUARD_861, IntType.NPC, "talk-to") { player, node ->
+            sendNPCDialogue(player, node.id, "What do you want, small thing? Leave us alone!", FaceAnim.OLD_DEFAULT)
+            return@on true
+        }
+
+        /*
+         * Handles jump over the gap.
+         */
+
+        on(Scenery.GAP_2830, IntType.SCENERY, "jump-over") { player, _ ->
+            val npc = NPC(NPCs.OGRE_GUARD_861)
+            sendSequenceDialogue(
+                player,
+                npcLine(npc, FaceAnim.OLD_DEFAULT, "Oi! Little thing. If you want to cross here, you must", "pay me 20 gold pieces first!"),
+                playerLine(FaceAnim.HALF_ASKING, "You want me to give you 20 gold pieces to let me", "jump off a bridge?"),
+                npcLine(npc, FaceAnim.OLD_DEFAULT, "That's what I said, like it or lump it."),
+                options("Select an Option", "Okay, I'll pay it.", "Forget it, I'm not paying.") { selected ->
+                    when (selected) {
+                        1 -> {
+                            if (inInventory(player, Items.COINS_995, 20)) {
+                                removeItem(player, Item(Items.COINS_995, 20))
+                                sendSequenceDialogue(
+                                    player,
+                                    playerLine(FaceAnim.HALF_ASKING, "Okay, I'll pay it."),
+                                    npcLine(npc, FaceAnim.OLD_DEFAULT, "A wise choice, little thing."),
+                                ) {
+                                    sendPlayerDialogue(player, "Phew! I just made it.")
+                                    sendMessage(player, "You daringly jump across the chasm.")
+                                    forceMove(player, player.location, Location.create(2530, 3029, 0), 0, 120, null, Animations.CLIMB_JUMP_UP_5352) // Animations.JUMP_OBSTACLE_5355
+                                }
+                            } else {
+                                sendSequenceDialogue(
+                                    player,
+                                    npcLine(npc, FaceAnim.OLD_DEFAULT, "You don't have enough gold pieces!")
+                                )
+                            }
+                        }
+                        2 -> {
+                            sendSequenceDialogue(
+                                player,
+                                playerLine(FaceAnim.HALF_ASKING, "Forget it, I'm not paying."),
+                                npcLine(npc, FaceAnim.OLD_DEFAULT, "In that case you're not crossing.")
+                            )
+                        }
+                    }
+                }
+            )
+            return@on true
+        }
+
+        /*
+         * Handles reverse jump over the gap.
+         */
+
+        on(Scenery.GAP_2831, IntType.SCENERY, "jump-over") { player, _ ->
+            sendMessage(player, "You daringly jump across the chasm.")
+            sendPlayerDialogue(player, "I'm glad that was easier on the way back!")
+            forceMove(player, player.location, Location.create(2530, 3026, 0), 0, 120, null, Animations.CLIMB_JUMP_UP_5352) // Animations.JUMP_OBSTACLE_5355
+            return@on true
+        }
+
+        /*
          * Handles talking to ogre trader near rock cake stall.
          */
 
@@ -250,6 +318,24 @@ class WatchTowerListener : InteractionListener {
                 npc.attack(player)
             }
             return@on true
+        }
+
+        /*
+         * Handles talking to city guard.
+         */
+
+        on(NPCs.CITY_GUARD_862, IntType.NPC, "talk-to") { player, _ ->
+            openDialogue(player, CityGuardDialogue())
+            return@on true
+        }
+
+        /*
+         * Handles solving the riddle (gives death rune to city guard).
+         */
+
+        onUseWith(IntType.NPC, Items.DEATH_RUNE_560, NPCs.CITY_GUARD_862) { player, _, _ ->
+            openDialogue(player, CityGuardDialogue())
+            return@onUseWith true
         }
 
         onUseWith(IntType.NPC, Items.CAVE_NIGHTSHADE_2398, NPCs.ENCLAVE_GUARD_870) { _, _, _ ->
