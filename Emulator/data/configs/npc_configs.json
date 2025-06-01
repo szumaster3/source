@@ -8286,7 +8286,7 @@
     "id": "853"
   },
   {
-    "examine": "Very probably an ogre.\n",
+    "examine": "Very probably an ogre.",
     "name": "Grew",
     "id": "854"
   },
@@ -8316,30 +8316,86 @@
     "defence_animation": "0"
   },
   {
-    "weakness": "7",
     "examine": "An ogre that guards.",
-    "slayer_task": "64",
-    "magic_animation": "0",
-    "death_animation": "0",
+    "melee_animation": "359",
+    "range_animation": "359",
+    "combat_audio": "448,451,450",
+    "attack_speed": "6",
+    "magic_level": "1",
+    "respawn_delay": "25",
+    "defence_animation": "360",
+    "magic_animation": "359",
+    "death_animation": "361",
     "name": "Ogre guard",
-    "range_animation": "0",
+    "defence_level": "43",
+    "lifepoints": "60",
+    "strength_level": "43",
     "id": "859",
-    "defence_animation": "0"
+    "aggressive": "true",
+    "bonuses": "22,22,22,0,0,0,0,0,0,0,0,20,0,0,0",
+    "range_level": "1",
+    "attack_level": "43"
+  },
+  {
+    "examine": "These ogres guard the city.",
+    "melee_animation": "359",
+    "range_animation": "359",
+    "combat_audio": "448,451,450",
+    "attack_speed": "6",
+    "magic_level": "1",
+    "respawn_delay": "25",
+    "defence_animation": "360",
+    "magic_animation": "359",
+    "death_animation": "361",
+    "name": "Ogre guard",
+    "defence_level": "43",
+    "lifepoints": "60",
+    "strength_level": "43",
+    "id": "860",
+    "aggressive": "false",
+    "bonuses": "22,22,22,0,0,0,0,0,0,0,0,20,0,0,0",
+    "range_level": "1",
+    "attack_level": "43"
+  },
+  {
+    "examine": "These ogres guard the city.",
+    "melee_animation": "359",
+    "range_animation": "359",
+    "combat_audio": "448,451,450",
+    "attack_speed": "6",
+    "magic_level": "1",
+    "respawn_delay": "25",
+    "defence_animation": "360",
+    "magic_animation": "359",
+    "death_animation": "361",
+    "name": "Ogre guard",
+    "defence_level": "43",
+    "lifepoints": "60",
+    "strength_level": "43",
+    "id": "861",
+    "aggressive": "false",
+    "bonuses": "22,22,22,0,0,0,0,0,0,0,0,20,0,0,0",
+    "range_level": "1",
+    "attack_level": "43"
   },
   {
     "examine": "Tries to keep the peace.",
-    "slayer_task": "64",
-    "melee_animation": "2100",
-    "range_animation": "0",
-    "defence_animation": "0",
-    "weakness": "7",
-    "magic_animation": "0",
-    "death_animation": "8576",
-    "name": "City guard",
+    "melee_animation": "359",
+    "range_animation": "359",
+    "combat_audio": "448,451,450",
+    "attack_speed": "6",
+    "magic_level": "1",
+    "respawn_delay": "25",
+    "defence_animation": "360",
+    "magic_animation": "359",
+    "death_animation": "361",
+    "name": "Ogre guard",
     "defence_level": "58",
     "lifepoints": "331",
     "strength_level": "58",
     "id": "862",
+    "aggressive": "false",
+    "bonuses": "22,22,22,0,0,0,0,0,0,0,0,20,0,0,0",
     "range_level": "1",
     "attack_level": "58"
   },
@@ -34438,7 +34494,7 @@
     "id": "4562"
   },
   {
-    "examine": "A seller of crossbow parts.\n",
+    "examine": "A seller of crossbow parts.",
     "name": "Hura",
     "id": "4563"
   },
@@ -42907,7 +42963,7 @@
     "id": "5794"
   },
   {
-    "examine": "Sells cave goblin fast food.\n",
+    "examine": "Sells cave goblin fast food.",
     "name": "Tindar",
     "id": "5795"
   },
@@ -56032,7 +56088,7 @@
     "clue_level": "1"
   },
   {
-    "examine": "A buttoned-down examiner.\n",
+    "examine": "A buttoned-down examiner.",
     "name": "Professor Henry",
     "id": "7143"
   },

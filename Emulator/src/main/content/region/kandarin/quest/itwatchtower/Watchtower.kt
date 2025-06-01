@@ -1,5 +1,6 @@
 package content.region.kandarin.quest.itwatchtower
 
+import content.data.GameAttributes
 import core.api.*
 import core.game.node.entity.player.Player
 import core.game.node.entity.player.link.quest.Quest
@@ -84,6 +85,8 @@ class Watchtower : Quest(Quests.WATCHTOWER, 131, 130, 4, Vars.VARP_QUEST_WATCHTO
         drawReward(player, "5000 coins", ln)
         rewardXP(player, Skills.MAGIC, 15250.0)
         addItemOrDrop(player, Items.COINS_995, 5000)
+
+        removeAttributes(player, GameAttributes.WATCHTOWER_ROCK_CAKE)
     }
 
     override fun newInstance(`object`: Any?): Quest = this
