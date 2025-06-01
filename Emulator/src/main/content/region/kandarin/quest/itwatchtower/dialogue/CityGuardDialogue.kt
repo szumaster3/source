@@ -48,7 +48,7 @@ class CityGuardDialogue : DialogueFile() {
                 setAttribute(player!!, GameAttributes.WATCHTOWER_RIDDLE, true)
                 stage = END_DIALOGUE
             }
-            11 -> npc("Well, well. The imp has done it! Thanks for the rune;", "this is what you be needing...").also { stage++ }
+            11 -> npc(FaceAnim.OLD_DEFAULT,"Well, well. The imp has done it! Thanks for the rune;", "this is what you be needing...").also { stage++ }
             12 -> {
                 end()
                 addItemOrDrop(player!!, Items.SKAVID_MAP_2376, 1)

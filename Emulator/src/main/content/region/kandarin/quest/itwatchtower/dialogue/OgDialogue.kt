@@ -135,7 +135,7 @@ class OgDialogue(player: Player? = null) : Dialogue(player) {
             }
             19 -> {
                 end()
-                npc("It's a good job I have another part!")
+                npc(FaceAnim.OLD_DEFAULT,"It's a good job I have another part!")
                 addItem(player, Items.RELIC_PART_1_2373)
             }
 
