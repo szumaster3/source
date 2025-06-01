@@ -3,7 +3,6 @@ package content.region.kandarin.quest.itwatchtower.dialogue
 import content.data.GameAttributes
 import core.api.*
 import core.api.quest.getQuestStage
-import core.api.quest.isQuestComplete
 import core.game.dialogue.Dialogue
 import core.game.dialogue.FaceAnim
 import core.game.node.entity.npc.NPC

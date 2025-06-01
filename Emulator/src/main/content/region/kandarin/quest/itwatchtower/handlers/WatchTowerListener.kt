@@ -1,9 +1,11 @@
 package content.region.kandarin.quest.itwatchtower.handlers
 
+import content.region.kandarin.quest.itwatchtower.dialogue.OgreCityGateDialogue
 import core.api.*
 import core.api.quest.isQuestComplete
 import core.api.ui.closeDialogue
 import core.game.dialogue.FaceAnim
+import core.game.global.action.DoorActionHandler
 import core.game.interaction.IntType
 import core.game.interaction.InteractionListener
 import core.game.node.entity.player.Player
@@ -15,6 +17,10 @@ import org.rs.consts.Quests
 import org.rs.consts.Scenery
 
 class WatchTowerListener : InteractionListener {
+
+    companion object {
+        val OGRE_CITY_GATE = intArrayOf(Scenery.CITY_GATE_2788, Scenery.CITY_GATE_2789)
+    }
 
     override fun defineListeners() {
         val bushes =
@@ -146,6 +152,29 @@ class WatchTowerListener : InteractionListener {
                 player.attack(node)
             }
             return@on true
+        }
+
+        /*
+         * Handles move through west ogre city gates.
+         */
+
+        on(OGRE_CITY_GATE, IntType.SCENERY, "open") { player, node ->
+            if(player.location.x < 2504) {
+                sendNPCDialogue(player, NPCs.OGRE_GUARD_859, "It's the small creature; you may pass.", FaceAnim.OLD_DEFAULT)
+                DoorActionHandler.handleAutowalkDoor(player, node.asScenery())
+            } else {
+                openDialogue(player, OgreCityGateDialogue())
+            }
+            return@on true
+        }
+
+        /*
+         * Handles use the relic on ogre guards.
+         */
+
+        onUseWith(IntType.NPC, Items.OGRE_RELIC_2372, NPCs.OGRE_GUARD_859) { player, _, _ ->
+            openDialogue(player, OgreCityGateDialogue())
+            return@onUseWith true
         }
 
         onUseWith(IntType.NPC, Items.CAVE_NIGHTSHADE_2398, NPCs.ENCLAVE_GUARD_870) { _, _, _ ->
