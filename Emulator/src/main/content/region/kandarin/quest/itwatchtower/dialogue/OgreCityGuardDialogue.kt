@@ -1,5 +1,6 @@
 package content.region.kandarin.quest.itwatchtower.dialogue
 
+import content.region.kandarin.quest.itwatchtower.handlers.WatchtowerUtils
 import core.api.*
 import core.api.quest.getQuestStage
 import core.game.dialogue.Dialogue
@@ -42,7 +43,7 @@ class OgreCityGuardDialogue(player: Player? = null) : Dialogue(player) {
             1 -> npc(FaceAnim.OLD_DEFAULT, "Show me a sign of companionship, like a lost relic", "or somefing, and you may pass.").also { stage++ }
             2 -> player(FaceAnim.HALF_GUILTY, "I don't have anything.").also { stage = 3 }
             3 -> npc(FaceAnim.OLD_DEFAULT,"Why have you returned with no proof of companionship?", "Back to whence you came!").also { stage++ }
-            4 -> end().also { handleGatePassage(player!!, Location.create(2546, 3065), openGate = false) }
+            4 -> end().also { WatchtowerUtils.handleGatePassage(player!!, Location.create(2546, 3065), openGate = false) }
         }
         return true
     }
@@ -64,24 +65,9 @@ class OgreCityGateDialogue : DialogueFile() {
             }
 
             2 -> npc(FaceAnim.OLD_DEFAULT,"It's got the statue of Dalgroth. Welcome to Gu'Tanoth,", "friend of the ogres.").also { stage++ }
-            3 -> end().also { handleGatePassage(player!!, Location.create(2503, 3062, 0), openGate = true) }
+            3 -> end().also { WatchtowerUtils.handleGatePassage(player!!, Location.create(2503, 3062, 0), openGate = true) }
             4 -> npc(FaceAnim.OLD_DEFAULT,"Why have you returned with no proof of companionship?", "Back to whence you came!").also { stage++ }
-            5 -> end().also {handleGatePassage(player!!, Location.create(2546, 3065), openGate = false) }
+            5 -> end().also { WatchtowerUtils.handleGatePassage(player!!, Location.create(2546, 3065), openGate = false) }
         }
-    }
-}
-
-private fun handleGatePassage(player : Player, loc: Location, openGate: Boolean) {
-    lock(player, 4)
-    teleport(player, loc, TeleportManager.TeleportType.INSTANT)
-
-    if (openGate) {
-        var scenery = getScenery(2504, 3063, 0)
-        scenery?.asScenery()?.let { DoorActionHandler.handleAutowalkDoor(player, it) }
-    } else {
-        sendMessage(player, "The guard pushes you back down the hill.")
-        impact(player, 3, ImpactHandler.HitsplatType.NORMAL)
-        sendGraphics(Graphics.STUN_BIRDIES_ABOVE_HEAD_80, player.location)
-        sendChat(player, "Urrrrrgh!")
     }
 }

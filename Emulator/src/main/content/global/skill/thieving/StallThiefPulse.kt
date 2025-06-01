@@ -96,6 +96,10 @@ class StallThiefPulse(player: Player?, node: Scenery?, private val stall: Stall?
                 sendMessage(player, "You steal grapes from the grape stall.")
                 return true
             }
+            if(item.id == Items.ROCK_CAKE_2379) {
+                sendMessage(player, "You cautiously grab a cake from the stall.")
+                return true
+            }
             if (stall == Stall.CANDLES) {
                 return true
             }

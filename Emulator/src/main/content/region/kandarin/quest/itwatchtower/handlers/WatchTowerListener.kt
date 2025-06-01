@@ -1,5 +1,6 @@
 package content.region.kandarin.quest.itwatchtower.handlers
 
+import content.region.kandarin.quest.itwatchtower.dialogue.BattlementDialogue
 import content.region.kandarin.quest.itwatchtower.dialogue.OgreCityGateDialogue
 import core.api.*
 import core.api.quest.isQuestComplete
@@ -176,6 +177,18 @@ class WatchTowerListener : InteractionListener {
             openDialogue(player, OgreCityGateDialogue())
             return@onUseWith true
         }
+
+        /*
+         * Handles climb over battlement.
+         */
+
+        on(Scenery.BATTLEMENT_2832, IntType.SCENERY, "climb-over") { player, _ ->
+            openDialogue(player, BattlementDialogue())
+            return@on true
+        }
+
+
+
 
         onUseWith(IntType.NPC, Items.CAVE_NIGHTSHADE_2398, NPCs.ENCLAVE_GUARD_870) { _, _, _ ->
             return@onUseWith true

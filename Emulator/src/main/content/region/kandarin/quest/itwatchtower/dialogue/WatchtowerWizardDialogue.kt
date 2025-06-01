@@ -68,6 +68,22 @@ class WatchtowerWizardDialogue(player: Player? = null) : Dialogue(player) {
             return true
         }
 
+        val alreadyGive = items.any { (item, attr) ->
+            getAttribute(player, attr, false) && inInventory(player, item)
+        }
+
+        if (alreadyGive) {
+            player("An ogre gave me this...")
+            stage = 701
+            return true
+        }
+
+        if(questStage == 10) {
+            npc("Ah the warrior returns!")
+            stage = 702
+            return true
+        }
+
         if (questStage >= 1) {
             npc("Hello again. Did you find anything of interest?")
             stage = 30
@@ -222,7 +238,37 @@ class WatchtowerWizardDialogue(player: Player? = null) : Dialogue(player) {
             }
 
             700 -> npcl(FaceAnim.HAPPY, "Ah, it's part of an old ogre statue. I'll see if I can fix it up for you. It might come in handy. There may be more parts to find... I'll keep this for later.").also { stage = END_DIALOGUE }
+            701 -> npc("I already have that part...").also { stage = END_DIALOGUE }
 
+            702 -> npc("Have you found a way into Gu'Tanoth yet?").also { stage++ }
+            703 -> player("I can't get past the guards.").also { stage++ }
+            704 -> npc("Well, ogres dislike others apart from their kind", "What you need is some form of proof of friendship.", "Something to trick them into believing you are their friend").also { stage++ }
+            705 -> {
+                val hasRelic = hasAnItem(player, Items.OGRE_RELIC_2372).container != null
+                if(!hasRelic) {
+                    options("I have lost the relic you gave me.", "I will find my way in, no problem.").also { stage++ }
+                } else {
+                    npc("...Which shouldn't be too hard considering their intelligence!").also { stage = END_DIALOGUE }
+                }
+            }
+            706 -> options("I have lost the relic you gave me.", "I will find my way in, no problem.").also { stage++ }
+            707 -> when(buttonId) {
+                1 -> player("I have lost the relic you gave me.").also { stage++ }
+                2 -> player("I will find my way in, no problem.").also { stage = 710 }
+
+            }
+            708 -> npc("What! lost the relic ? How careless!", "It's a good job I copied that design then...").also { stage++ }
+            709 -> {
+                end()
+                if (freeSlots(player) == 0) {
+                    sendMessage(player, "You don't have enough inventory space.")
+                    return true
+                }
+                npc("You can take this copy instead, its just as good.")
+                addItem(player, Items.OGRE_RELIC_2372)
+                stage = END_DIALOGUE
+            }
+            710 -> npc("Yes, I'm sure you will...good luck.").also { stage = END_DIALOGUE }
         }
         return true
     }
