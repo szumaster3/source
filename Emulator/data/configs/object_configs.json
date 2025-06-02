@@ -15330,5 +15330,9 @@
   {
     "examine": "An empty barrel.",
     "ids": "16886"
+  },
+  {
+    "examine": "I wonder where this leads...",
+    "ids": "2823,2824"
   }
 ]

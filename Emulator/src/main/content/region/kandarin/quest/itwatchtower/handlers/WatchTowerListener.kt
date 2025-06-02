@@ -27,6 +27,8 @@ class WatchTowerListener : InteractionListener {
 
     companion object {
         val OGRE_CITY_GATE = intArrayOf(Scenery.CITY_GATE_2788, Scenery.CITY_GATE_2789)
+        val SKAVID_CAVE_ENTRANCE = (Scenery.CAVE_ENTRANCE_2805..Scenery.CAVE_ENTRANCE_2810).toIntArray()
+        val SKAVID_CAVE_EXIT = (Scenery.CAVE_EXIT_2817..Scenery.CAVE_EXIT_2822).toIntArray()
     }
 
     override fun defineListeners() {
@@ -55,17 +57,29 @@ class WatchTowerListener : InteractionListener {
 
         /*
          * Handles enter to skavid caves.
+         * https://imgur.com/a/JIt7MVO
          */
 
-        on(Scenery.CAVE_ENTRANCE_2806, IntType.SCENERY, "enter") { player, _ ->
+        on(SKAVID_CAVE_ENTRANCE, IntType.SCENERY, "enter") { player, node ->
             sendSequenceDialogue(
                 player,
                 dialogueLine("If your light source goes out down there you'll be in trouble! Are", "you sure you want to go in without a tinderbox?"),
                 options("Select an Option", "I'll be fine without a tinderbox.", "I'll come back with a tinderbox.") { selected ->
                     when (selected) {
                         1 -> {
-                            teleport(player, Location.create(2530, 9467, 0), TeleportManager.TeleportType.INSTANT)
-                            sendMessage(player, "You enter the cave...")
+                            val location = when(node.id){
+                                Scenery.CAVE_ENTRANCE_2805 -> Location(2498, 9418, 0)
+                                Scenery.CAVE_ENTRANCE_2806 -> Location(2530, 9467, 0)
+                                Scenery.CAVE_ENTRANCE_2807 -> Location(2518, 9454, 0)
+                                Scenery.CAVE_ENTRANCE_2808 -> Location(2498, 9451, 0)
+                                Scenery.CAVE_ENTRANCE_2809 -> Location(2504, 9440, 0)
+                                Scenery.CAVE_ENTRANCE_2810 -> Location(2522, 9411, 0)
+                                else -> null
+                            }
+                            if (location != null) {
+                                teleport(player, location, TeleportManager.TeleportType.INSTANT)
+                                sendMessage(player, "You enter the cave...")
+                            }
                         }
                         2 -> closeDialogue(player)
                     }
@@ -75,11 +89,32 @@ class WatchTowerListener : InteractionListener {
         }
 
         /*
+         * Handles hole entrance to Yanille (One-way).
+         */
+
+        on(Scenery.HOLE_2823, IntType.SCENERY, "climb-down") { player, _ ->
+            teleport(player, Location(2588, 3106, 0), TeleportManager.TeleportType.INSTANT)
+            return@on true
+        }
+
+        /*
          * Handles exit from north skavid caves.
          */
 
-        on(Scenery.CAVE_EXIT_2818, IntType.SCENERY, "leave") { player, _ ->
-            teleport(player, Location(2524, 3070, 0), TeleportManager.TeleportType.INSTANT)
+        on(SKAVID_CAVE_EXIT, IntType.SCENERY, "leave") { player, node ->
+            val location = when(node.id) {
+                Scenery.CAVE_EXIT_2817 -> Location(2563, 3024, 0)
+                Scenery.CAVE_EXIT_2818 -> Location(2524, 3070, 0)
+                Scenery.CAVE_EXIT_2819 -> Location(2541, 3054, 0)
+                Scenery.CAVE_EXIT_2820 -> Location(2554, 3054, 0)
+                Scenery.CAVE_EXIT_2821 -> Location(2552, 3035, 0)
+                Scenery.CAVE_EXIT_2822 -> Location(2529, 3012, 0)
+                else -> null
+            }
+
+            if (location != null) {
+                teleport(player, location, TeleportManager.TeleportType.INSTANT)
+            }
             return@on true
         }
 
