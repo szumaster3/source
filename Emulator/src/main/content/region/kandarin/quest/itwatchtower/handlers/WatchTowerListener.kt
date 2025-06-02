@@ -29,6 +29,7 @@ class WatchTowerListener : InteractionListener {
         val OGRE_CITY_GATE = intArrayOf(Scenery.CITY_GATE_2788, Scenery.CITY_GATE_2789)
         val SKAVID_CAVE_ENTRANCE = (Scenery.CAVE_ENTRANCE_2805..Scenery.CAVE_ENTRANCE_2810).toIntArray()
         val SKAVID_CAVE_EXIT = (Scenery.CAVE_EXIT_2817..Scenery.CAVE_EXIT_2822).toIntArray()
+        val ENTRANCE_LOCATION = arrayOf(Location(2563, 3024, 0), Location(2524, 3070, 0), Location(2541, 3054, 0), Location(2554, 3054, 0), Location(2552, 3035, 0), Location(2529, 3012, 0))
     }
 
     override fun defineListeners() {
@@ -61,21 +62,32 @@ class WatchTowerListener : InteractionListener {
          */
 
         on(SKAVID_CAVE_ENTRANCE, IntType.SCENERY, "enter") { player, node ->
+            val location = when(node.id){
+                Scenery.CAVE_ENTRANCE_2805 -> Location(2498, 9418, 0)
+                Scenery.CAVE_ENTRANCE_2806 -> Location(2530, 9467, 0)
+                Scenery.CAVE_ENTRANCE_2807 -> Location(2518, 9454, 0)
+                Scenery.CAVE_ENTRANCE_2808 -> Location(2498, 9451, 0)
+                Scenery.CAVE_ENTRANCE_2809 -> Location(2504, 9440, 0)
+                Scenery.CAVE_ENTRANCE_2810 -> Location(2522, 9411, 0)
+                else -> null
+            }
+
+            if(!inInventory(player, Items.SKAVID_MAP_2376)) {
+                lock(player, 6)
+                openInterface(player, Components.FADE_TO_BLACK_115)
+                sendMessage(player, "There's no way I can find my way through without a map of some kind.")
+                runTask(player, 6) {
+                    openInterface(player, Components.FADE_FROM_BLACK_170)
+                    teleport(player, ENTRANCE_LOCATION.random(), TeleportManager.TeleportType.INSTANT)
+                }
+            }
+
             sendSequenceDialogue(
                 player,
                 dialogueLine("If your light source goes out down there you'll be in trouble! Are", "you sure you want to go in without a tinderbox?"),
                 options("Select an Option", "I'll be fine without a tinderbox.", "I'll come back with a tinderbox.") { selected ->
                     when (selected) {
                         1 -> {
-                            val location = when(node.id){
-                                Scenery.CAVE_ENTRANCE_2805 -> Location(2498, 9418, 0)
-                                Scenery.CAVE_ENTRANCE_2806 -> Location(2530, 9467, 0)
-                                Scenery.CAVE_ENTRANCE_2807 -> Location(2518, 9454, 0)
-                                Scenery.CAVE_ENTRANCE_2808 -> Location(2498, 9451, 0)
-                                Scenery.CAVE_ENTRANCE_2809 -> Location(2504, 9440, 0)
-                                Scenery.CAVE_ENTRANCE_2810 -> Location(2522, 9411, 0)
-                                else -> null
-                            }
                             if (location != null) {
                                 teleport(player, location, TeleportManager.TeleportType.INSTANT)
                                 sendMessage(player, "You enter the cave...")
@@ -103,12 +115,12 @@ class WatchTowerListener : InteractionListener {
 
         on(SKAVID_CAVE_EXIT, IntType.SCENERY, "leave") { player, node ->
             val location = when(node.id) {
-                Scenery.CAVE_EXIT_2817 -> Location(2563, 3024, 0)
-                Scenery.CAVE_EXIT_2818 -> Location(2524, 3070, 0)
-                Scenery.CAVE_EXIT_2819 -> Location(2541, 3054, 0)
-                Scenery.CAVE_EXIT_2820 -> Location(2554, 3054, 0)
-                Scenery.CAVE_EXIT_2821 -> Location(2552, 3035, 0)
-                Scenery.CAVE_EXIT_2822 -> Location(2529, 3012, 0)
+                Scenery.CAVE_EXIT_2817 -> ENTRANCE_LOCATION[0]
+                Scenery.CAVE_EXIT_2818 -> ENTRANCE_LOCATION[1]
+                Scenery.CAVE_EXIT_2819 -> ENTRANCE_LOCATION[2]
+                Scenery.CAVE_EXIT_2820 -> ENTRANCE_LOCATION[3]
+                Scenery.CAVE_EXIT_2821 -> ENTRANCE_LOCATION[4]
+                Scenery.CAVE_EXIT_2822 -> ENTRANCE_LOCATION[5]
                 else -> null
             }
 
@@ -202,12 +214,16 @@ class WatchTowerListener : InteractionListener {
          */
 
         on(OGRE_CITY_GATE, IntType.SCENERY, "open") { player, node ->
-            if(player.location.x < 2504 || isQuestComplete(player, Quests.WATCHTOWER)) {
-                sendNPCDialogue(player, NPCs.OGRE_GUARD_859, "It's the small creature; you may pass.", FaceAnim.OLD_DEFAULT)
-                DoorActionHandler.handleAutowalkDoor(player, node.asScenery())
-            } else {
+            if (!getAttribute(player, GameAttributes.WATCHTOWER_GATE_UNLOCK, false)) {
                 openDialogue(player, OgreCityGateDialogue())
+                return@on true
             }
+
+            if (player.location.x < 2504) {
+                sendNPCDialogue(player, NPCs.OGRE_GUARD_859, "It's the small creature; you may pass.", FaceAnim.OLD_DEFAULT)
+            }
+
+            DoorActionHandler.handleAutowalkDoor(player, node.asScenery())
             return@on true
         }
 

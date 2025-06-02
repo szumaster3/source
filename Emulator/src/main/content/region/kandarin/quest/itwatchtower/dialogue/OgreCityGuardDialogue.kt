@@ -1,9 +1,11 @@
 package content.region.kandarin.quest.itwatchtower.dialogue
 
+import content.data.GameAttributes
 import content.region.kandarin.quest.itwatchtower.handlers.WatchtowerUtils
 import core.api.inInventory
 import core.api.openDialogue
 import core.api.quest.getQuestStage
+import core.api.setAttribute
 import core.game.dialogue.Dialogue
 import core.game.dialogue.DialogueFile
 import core.game.dialogue.FaceAnim
@@ -29,19 +31,14 @@ class OgreCityGuardDialogue(player: Player? = null) : Dialogue(player) {
         if(getQuestStage(player, Quests.WATCHTOWER) in 10..100) {
             openDialogue(player, OgreCityGateDialogue())
         } else {
-            npcl(FaceAnim.OLD_DEFAULT, "Stop, creature!")
+            npc(FaceAnim.OLD_DEFAULT, "Stop, creature! Only ogres and their friends allowed in", "this city. Show me a sign of companionship, like a lost", "relic or somefing, and you may pass.").also {
+                WatchtowerUtils.handleGatePassage(player!!, Location.create(2546, 3065, 0), openGate = false)
+            }
         }
         return true
     }
 
     override fun handle(interfaceId: Int, buttonId: Int, ): Boolean {
-        when (stage) {
-            0 -> npc(FaceAnim.OLD_ANGRY1, "Only ogres and their friends allowed in this city.").also { stage++ }
-            1 -> npc(FaceAnim.OLD_DEFAULT, "Show me a sign of companionship, like a lost relic", "or somefing, and you may pass.").also { stage++ }
-            2 -> player(FaceAnim.HALF_GUILTY, "I don't have anything.").also { stage = 3 }
-            3 -> npc(FaceAnim.OLD_DEFAULT,"Why have you returned with no proof of companionship?", "Back to whence you came!").also { stage++ }
-            4 -> end().also { WatchtowerUtils.handleGatePassage(player!!, Location.create(2546, 3065, 0), openGate = false) }
-        }
         return true
     }
 
@@ -62,7 +59,11 @@ class OgreCityGateDialogue : DialogueFile() {
             }
 
             2 -> npc(FaceAnim.OLD_DEFAULT,"It's got the statue of Dalgroth. Welcome to Gu'Tanoth,", "friend of the ogres.").also { stage++ }
-            3 -> end().also { WatchtowerUtils.handleGatePassage(player!!, Location.create(2503, 3062, 0), openGate = true) }
+            3 -> {
+                end()
+                WatchtowerUtils.handleGatePassage(player!!, Location.create(2503, 3062, 0), openGate = true)
+                setAttribute(player!!, GameAttributes.WATCHTOWER_GATE_UNLOCK, true)
+            }
             4 -> npc(FaceAnim.OLD_DEFAULT,"Why have you returned with no proof of companionship?", "Back to whence you came!").also { stage++ }
             5 -> end().also { WatchtowerUtils.handleGatePassage(player!!, Location.create(2546, 3065, 0), openGate = false) }
         }
