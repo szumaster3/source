@@ -86,7 +86,7 @@ class WatchtowerWizardDialogue(player: Player? = null) : Dialogue(player) {
             return true
         }
 
-        if(questStage == 10) {
+        if(questStage in 10..20) {
             npc("Ah the warrior returns!")
             stage = 702
             return true
