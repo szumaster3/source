@@ -30,7 +30,7 @@ class Watchtower : Quest(Quests.WATCHTOWER, 131, 130, 4, Vars.VARP_QUEST_WATCHTO
             line(player, "!!Level 14 Herblore??", line++, hasLevelStat(player, Skills.HERBLORE, 14))
             line(player, "!!Level 15 Thieving??", line++, hasLevelStat(player, Skills.THIEVING, 15))
             line(player, "!!Level 25 Agility??", line++, hasLevelStat(player, Skills.AGILITY, 25))
-            line(player, "The north west guard wants a sign of !!friendship??.", line++)
+            line(player, "The north west guard wants a !!sign of friendship??.", line++)
             limitScrolling(player, line, true)
         }
 

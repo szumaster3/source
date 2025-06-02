@@ -1,82 +1,88 @@
-package content.global.skill.agility.shortcuts
+package content.global.handlers.scenery
 
-import core.api.*
-import core.game.interaction.IntType
-import core.game.interaction.InteractionListener
+import content.global.skill.agility.AgilityHandler.forceWalk
+import core.api.animateScenery
+import core.api.inInventory
+import core.api.playGlobalAudio
+import core.api.sendMessage
+import core.cache.def.impl.SceneryDefinition
+import core.game.interaction.NodeUsageEvent
+import core.game.interaction.OptionHandler
+import core.game.interaction.UseWithHandler
 import core.game.node.Node
 import core.game.node.entity.player.Player
 import core.game.node.scenery.SceneryBuilder
 import core.game.world.map.Location
-import org.rs.consts.*
+import core.game.world.update.flag.context.Animation
+import core.plugin.Initializable
+import core.plugin.Plugin
+import org.rs.consts.Animations
+import org.rs.consts.Items
+import org.rs.consts.Scenery
+import org.rs.consts.Sounds
 
-class RopeSwingShortcut : InteractionListener {
+@Initializable
+class RopeSwingShortcut : OptionHandler() {
 
-    override fun defineListeners() {
-
-        /*
-         * Handles use rope on branch.
-         */
-
-        onUseWith(IntType.SCENERY, Items.ROPE_954, Scenery.BRANCH_2326) { player, used, with ->
-            if (!inInventory(player, used.id)) {
-                sendMessage(player, "You need a rope to do that.")
-                return@onUseWith true
-            }
-
-            val branch = with.asScenery()
-            if (branch.isActive) {
-                removeItem(player, used.asItem())
-                faceLocation(player, branch.location)
-                sendMessage(player, "You tie the rope to the tree...")
-                playAudio(player, Sounds.TIGHTROPE_2495)
-                animate(player, Animations.SUMMON_ROPE_SWING_775)
-                SceneryBuilder.replace(branch, branch.transform(Scenery.ROPESWING_2325))
-            }
-
-            ropeSwing(player, branch, Location(2505, 3087, 0))
-            return@onUseWith true
-        }
+    override fun newInstance(arg: Any?): Plugin<Any> {
 
         /*
-         * Handles rope swing.
+         * Handles interaction with branch.
          */
 
-        on(ROPE_SCENERY, IntType.SCENERY, "swing-on") { player, node ->
-            if (!player.location.withinDistance(node.location, 2)) {
-                sendMessage(player, "You cannot do that from here.")
-                return@on true
+        UseWithHandler.addHandler(
+            Scenery.BRANCH_2326,
+            UseWithHandler.OBJECT_TYPE,
+            object : UseWithHandler(Items.ROPE_954) {
+                override fun newInstance(arg: Any?): Plugin<Any> = this
+
+                override fun handle(event: NodeUsageEvent): Boolean {
+                    val `object` = event.usedWith.asScenery()
+                    if (`object`.isActive) SceneryBuilder.replace(`object`, `object`.transform(2325))
+                    if (!inInventory(event.player, event.usedItem.id, 1)) {
+                        sendMessage(event.player, "You need a rope to do that.")
+                        return true
+                    }
+                    playGlobalAudio(event.player.location, Sounds.TIGHTROPE_2495)
+                    event.player.inventory.remove(event.usedItem)
+                    sendMessage(event.player, "You tie the rope to the tree...")
+                    return true
+                }
             }
+        )
 
-            val end = when (node.id) {
-                2325 -> Location(2505, 3087, 0)
-                2324 -> Location(2511, 3096, 0)
-                else -> return@on true
-            }
+        /*
+         * Handles ropeswing interaction.
+         */
 
-            ropeSwing(player, node, end)
-            return@on true
-        }
+        SceneryDefinition.forId(Scenery.ROPESWING_2325).handlers["option:swing-on"] = this
+        SceneryDefinition.forId(Scenery.ROPESWING_2324).handlers["option:swing-on"] = this
+        return this
     }
 
-    /**
-     * Rope swing interaction.
-     */
-    private fun ropeSwing(player: Player, node: Node, destination: Location) {
-        playAudio(player, Sounds.SWING_ACROSS_2494)
-        animateScenery(node.asScenery(), ROPE_ANIMATION)
-
-        val start = when (node.id) {
-            2324 -> Location(2511, 3092, 0)
-            else -> Location(2501, 3087, 0)
+    override fun handle(player: Player, node: Node, option: String): Boolean {
+        if (!player.location.withinDistance(node.location, 2)) {
+            sendMessage(player, "You cannot do that from here.")
+            return true
         }
 
-        forceMove(player, start, destination, 0, 60, null, Animations.ROPE_SWING_751) {
-            sendMessage(player, "You skillfully swing across.")
-        }
+        val end = if (node.id == 2325) Location(2505, 3087, 0) else Location(2511, 3096, 0)
+        playGlobalAudio(player.location, Sounds.SWING_ACROSS_2494)
+        animateScenery(player, node.asScenery(), 497, true)
+        forceWalk(
+            player,
+            0,
+            player.location,
+            end,
+            Animation.create(Animations.SWING_ACROSS_OBSTACLE_3130),
+            50,
+            22.0,
+            "You skillfully swing across.",
+            1
+        )
+        return true
     }
 
-    companion object {
-        private val ROPE_ANIMATION = 497
-        private val ROPE_SCENERY = intArrayOf(Scenery.ROPESWING_2324, Scenery.ROPESWING_2325)
-    }
+    override fun getDestination(node: Node, n: Node): Location =
+        if (n.id == Scenery.ROPESWING_2324) Location(2511, 3092, 0) else Location(2501, 3087, 0)
 }
