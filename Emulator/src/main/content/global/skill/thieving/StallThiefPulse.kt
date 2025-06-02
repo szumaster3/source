@@ -70,13 +70,14 @@ class StallThiefPulse(player: Player?, node: Scenery?, private val stall: Stall?
         if (ticks == 0) {
             animate(player, ANIMATION)
             lockInteractions(player, 2)
-            sendMessage(player, "You attempt to steal some $goods from the stall.")
+            if(node?.id != 2793) {
+                sendMessage(player, "You attempt to steal some $goods from the stall.")
+            }
         }
+
         if (++ticks % 3 != 0) {
             return false
         }
-
-        val stallName = stall?.fullIDs?.firstOrNull()?.let { getSceneryName(it) }
 
         val success = success()
         if (success) {

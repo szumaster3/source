@@ -1,16 +1,14 @@
-package content.global.handlers.scenery
+package content.global.skill.agility.shortcuts
 
-import content.global.skill.agility.AgilityHandler.forceWalk
-import core.api.animateScenery
-import core.api.inInventory
-import core.api.playGlobalAudio
-import core.api.sendMessage
+import core.api.*
+import content.global.skill.agility.AgilityHandler
 import core.cache.def.impl.SceneryDefinition
 import core.game.interaction.NodeUsageEvent
 import core.game.interaction.OptionHandler
 import core.game.interaction.UseWithHandler
 import core.game.node.Node
 import core.game.node.entity.player.Player
+import core.game.node.entity.skill.Skills
 import core.game.node.scenery.SceneryBuilder
 import core.game.world.map.Location
 import core.game.world.update.flag.context.Animation
@@ -37,19 +35,32 @@ class RopeSwingShortcut : OptionHandler() {
                 override fun newInstance(arg: Any?): Plugin<Any> = this
 
                 override fun handle(event: NodeUsageEvent): Boolean {
+                    val player = event.player
                     val `object` = event.usedWith.asScenery()
                     if (`object`.isActive) SceneryBuilder.replace(`object`, `object`.transform(2325))
-                    if (!inInventory(event.player, event.usedItem.id, 1)) {
-                        sendMessage(event.player, "You need a rope to do that.")
+
+                    if (!inInventory(player, event.usedItem.id, 1)) {
+                        sendMessage(player, "You need a rope to do that.")
                         return true
                     }
-                    playGlobalAudio(event.player.location, Sounds.TIGHTROPE_2495)
-                    event.player.inventory.remove(event.usedItem)
-                    sendMessage(event.player, "You tie the rope to the tree...")
+
+                    // https://classic.runescape.wiki/w/Tree_Swing
+                    if (getStatLevel(player, Skills.AGILITY) < 30) {
+                        sendDialogue(player, "You need an agility level of 30 to negotiate this obstacle.")
+                        return true
+                    }
+
+                    if (`object`.isActive) {
+                        SceneryBuilder.replace(`object`, `object`.transform(Scenery.ROPESWING_2325))
+                    }
+
+                    removeItem(player, event.usedItem)
+                    playGlobalAudio(player.location, Sounds.TIGHTROPE_2495)
+                    animate(player, Animations.SUMMON_ROPE_SWING_775, true)
+                    sendMessage(player, "You tie the rope to the tree...")
                     return true
                 }
-            }
-        )
+            })
 
         /*
          * Handles ropeswing interaction.
@@ -66,17 +77,21 @@ class RopeSwingShortcut : OptionHandler() {
             return true
         }
 
+        val experience = if (node.id == Scenery.ROPESWING_2324) 0.0 else 12.5
         val end = if (node.id == 2325) Location(2505, 3087, 0) else Location(2511, 3096, 0)
-        playGlobalAudio(player.location, Sounds.SWING_ACROSS_2494)
+
+        faceLocation(player, end.location)
+        playGlobalAudio(player.location, Sounds.SWING_ACROSS_2494, 1)
         animateScenery(player, node.asScenery(), 497, true)
-        forceWalk(
+
+        AgilityHandler.forceWalk(
             player,
             0,
             player.location,
             end,
             Animation.create(Animations.SWING_ACROSS_OBSTACLE_3130),
             50,
-            22.0,
+            experience,
             "You skillfully swing across.",
             1
         )
