@@ -82518,13 +82518,6 @@
     "archery_ticket_price": "0",
     "id": "9719"
   },
-    {
-    "examine": "A scroll with some writing on it.",
-    "durability": null,
-    "name": "Scroll",
-    "archery_ticket_price": "0",
-    "id": "9721"
-  },
   {
     "examine": "A crane claw.",
     "durability": null,
@@ -82532,6 +82525,13 @@
     "weight": "1",
     "archery_ticket_price": "0",
     "id": "9720"
+  },
+  {
+    "examine": "A scroll with some writing on it.",
+    "durability": null,
+    "name": "Scroll",
+    "archery_ticket_price": "0",
+    "id": "9721"
   },
   {
     "examine": "A pipe that belongs in a cannon stand.",
@@ -93844,8 +93844,8 @@
     "equipment_slot": "3",
     "destroy_message": "You can get another one by visiting the cave near the Fishing guild. A friendly ghost will replace it for you. You must be wearing a Ring of visibility, or you cannot get it back.",
     "stand_anim": "7047",
-    "name": "Shadow sword",
     "attack_audios": "3414,3412,3413,3414",
+    "name": "Shadow sword",
     "tradeable": "false",
     "run_anim": "7039",
     "archery_ticket_price": "0",
@@ -114415,9 +114415,9 @@
   {
     "destroy_message": "Drorkar can give you another copy.",
     "examine": "You should deliver this to Brother Bordiss in the Monastery near Ice Mountain.",
-    "destroy": "true",
     "durability": null,
     "name": "Letter",
+    "destroy": "true",
     "id": "13229"
   },
   {
