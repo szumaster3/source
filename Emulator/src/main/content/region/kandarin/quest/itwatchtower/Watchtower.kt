@@ -59,7 +59,7 @@ class Watchtower : Quest(Quests.WATCHTOWER, 131, 130, 4, Vars.VARP_QUEST_WATCHTO
             line(player, "I found my way into the skavid caves.", line++)
         }
 
-        if (stage >= 99) {
+        if (stage >= 50) {
             line(player, "I used some cave nightshade to distract the enclave guard.", line++)
             line(player, "I need to defeat the ogre shamans and find the other crystals.", line++)
             line(player, "I tried to defeat the shamans, but they are protected by powerful magics!", line++)

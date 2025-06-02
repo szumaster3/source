@@ -1,5 +1,6 @@
 package content.region.kandarin.quest.itwatchtower.dialogue
 
+import content.data.GameAttributes
 import core.api.*
 import core.api.quest.getQuestStage
 import core.api.quest.setQuestStage
@@ -30,7 +31,18 @@ class ScaredSkavidDialogue(player: Player? = null) : Dialogue(player) {
 
     override fun open(vararg args: Any?): Boolean {
         npc = args[0] as NPC
-        npc(FaceAnim.OLD_DEFAULT, "Tanath cur, tanath cur!").also { stage++ }
+        if(getQuestStage(player, Quests.WATCHTOWER) in 25..40) {
+            npcl(FaceAnim.OLD_DEFAULT, "Master, how are you doing learning our language?")
+            stage = 18
+            return true
+        }
+
+        if(getQuestStage(player, Quests.WATCHTOWER) >= 45) {
+            npc(FaceAnim.OLD_DEFAULT, "Master, my kinsmen tell me you have learned skavid.", "You should speak to the ad ones in their cave.")
+            return true
+        }
+
+        npc(FaceAnim.OLD_DEFAULT, "Tanath cur, tanath cur!")
         return true
     }
 
@@ -55,7 +67,7 @@ class ScaredSkavidDialogue(player: Player? = null) : Dialogue(player) {
             12 -> npc(FaceAnim.OLD_DEFAULT, "I'll tells you where that things you wants is. The mad", "skavids have it in their cave in the city.").also { stage++ }
             13 -> npc(FaceAnim.OLD_NEUTRAL, "You will have to learn skavid, otherwise they will not", "talks to you. Here, I'll tell you what you need to", "know...").also { stage++ }
             14 -> {
-                lock(player, 4)
+                lock(player, 5)
                 val ogreChieftain = NPC.create(NPCs.OGRE_CHIEFTAIN_5174, Location.create(2500, 9434, 0), Direction.SOUTH_WEST)
                 submitIndividualPulse(
                     player,
@@ -64,17 +76,17 @@ class ScaredSkavidDialogue(player: Player? = null) : Dialogue(player) {
                         override fun pulse(): Boolean {
                             when (counter++) {
                                 0 -> ogreChieftain.init()
-                                1 -> {
+                                2 -> {
                                     visualize(ogreChieftain, 359, 86) // 2101,2102
                                     sendChat(ogreChieftain, "You shut your mouth! Don't tell them anything!")
                                 }
-                                2 -> {
+                                3 -> {
                                     animate(npc!!, 5356)
                                     sendChat(npc,"Tanath cur, tanath cur!")
                                 }
-                                3 -> {
+                                4 -> {
                                     sendGraphics(86, ogreChieftain.location)
-                                    // setQuestStage(player, Quests.WATCHTOWER, 25)
+                                    setQuestStage(player, Quests.WATCHTOWER, 25)
                                     ogreChieftain.clear()
                                     npc(FaceAnim.OLD_NEUTRAL, "I cannot help you, but the others can.").also { stage = 15 }
                                     return true
@@ -88,6 +100,10 @@ class ScaredSkavidDialogue(player: Player? = null) : Dialogue(player) {
             15 -> npc(FaceAnim.OLD_NEUTRAL, "Let me tells you the most common skavid words:").also { stage++ }
             16 -> npc(FaceAnim.OLD_NEUTRAL, "Ar, nod, gor, ig and cur.").also { stage++ }
             17 -> npc(FaceAnim.OLD_NEUTRAL, "Those will gets you started.").also { stage = END_DIALOGUE }
+            18 -> player(FaceAnim.NEUTRAL, "I am studying the speech of your kind...").also {
+                setAttribute(player, GameAttributes.WATCHTOWER_SKAVID_UPSET, 0)
+                stage = END_DIALOGUE
+            }
         }
         return true
     }

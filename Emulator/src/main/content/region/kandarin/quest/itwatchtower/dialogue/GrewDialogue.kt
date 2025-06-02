@@ -25,7 +25,7 @@ class GrewDialogue(player: Player? = null) : Dialogue(player) {
     override fun open(vararg args: Any?): Boolean {
         val questStage = getQuestStage(player, Quests.WATCHTOWER)
 
-        if (questStage in 10..100) {
+        if (questStage == 100) {
             sendMessage(player, "The ogre is not interested in you anymore.")
             return true
         }

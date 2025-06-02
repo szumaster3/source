@@ -28,7 +28,7 @@ class TobanDialogue(player: Player? = null) : Dialogue(player) {
 
         val questStage = getQuestStage(player, Quests.WATCHTOWER)
 
-        if (questStage in 10..100) {
+        if (questStage == 100) {
             sendMessage(player, "The ogre is not interested in you anymore.")
             return true
         }
