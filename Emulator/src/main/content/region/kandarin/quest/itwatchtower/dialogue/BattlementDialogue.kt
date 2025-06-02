@@ -6,6 +6,7 @@ import core.api.*
 import core.game.dialogue.DialogueFile
 import core.game.dialogue.FaceAnim
 import core.game.dialogue.Topic
+import core.game.node.entity.combat.ImpactHandler
 import core.game.node.entity.npc.NPC
 import core.game.world.map.Location
 import core.tools.END_DIALOGUE
@@ -51,14 +52,8 @@ class BattlementDialogue : DialogueFile() {
             12 -> {
                 end()
                 npc(FaceAnim.OLD_DEFAULT, "Grrrrr!")
-
-                val p = player
-                val n = npc
-
-                if (p != null && n != null) {
-                    val localNpc = findLocalNPC(p, n.id)
-                    localNpc?.attack(p)
-                }
+                animate(npc!!, 359)
+                impact(player!!, 3, ImpactHandler.HitsplatType.NORMAL)
             }
             13 -> {
                 if(!inInventory(player!!, Items.ROCK_CAKE_2379)) {

@@ -92,9 +92,6 @@ class CityGuardDialogue : DialogueFile() {
                 }
             }
             23 -> player(FaceAnim.HALF_THINKING, "Oh, that map....").also { stage = END_DIALOGUE }
-
-
-
         }
     }
 }
