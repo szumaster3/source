@@ -40,18 +40,25 @@ class Watchtower : Quest(Quests.WATCHTOWER, 131, 130, 4, Vars.VARP_QUEST_WATCHTO
         }
 
         if (stage == 2) {
+            line(player, "I accepted the challenge of finding the lost crystals.", line++, true)
+            line++
             if(inInventory(player, Items.FINGERNAILS_2384)) {
                 line(player, "I found some !!fingernails?? as evidence.", line++)
                 line(player, "I should take them to the !!Watchtower wizard??.", line++)
                 line++
             }
-            line(player, "I need to search the skavid caves.", line++)
             line++
         }
 
+        if (stage == 20) {
+            line(player, "I found some !!fingernails?? as evidence.", line++, true)
+            line(player, "I should take them to the !!Watchtower wizard??.", line++, true)
+            line++
+            line(player, "I was given !!a map?? by the guard.", line++)
+            line(player, "I need to search the !!skavid caves??.", line++)
+        }
+
         if (stage >= 99) {
-            line(player, "I was given a map by the guard.", line++)
-            line(player, "I need to search the skavid caves.", line++)
             line(player, "I found my way into the skavid caves.", line++)
             line(player, "I used some cave nightshade to distract the enclave guard.", line++)
             line(player, "I need to defeat the ogre shamans and find the other crystals.", line++)

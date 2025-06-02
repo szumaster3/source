@@ -1,10 +1,12 @@
 package content.region.kandarin.quest.itwatchtower.handlers
 
 import content.data.GameAttributes
+import content.data.LightSource
 import content.region.kandarin.quest.itwatchtower.dialogue.BattlementDialogue
 import content.region.kandarin.quest.itwatchtower.dialogue.CityGuardDialogue
 import content.region.kandarin.quest.itwatchtower.dialogue.OgreCityGateDialogue
 import core.api.*
+import core.api.quest.getQuestStage
 import core.api.quest.isQuestComplete
 import core.api.ui.closeDialogue
 import core.game.dialogue.FaceAnim
@@ -72,7 +74,7 @@ class WatchTowerListener : InteractionListener {
                 else -> null
             }
 
-            if(!inInventory(player, Items.SKAVID_MAP_2376)) {
+            if(!inInventory(player, Items.SKAVID_MAP_2376) || getQuestStage(player, Quests.WATCHTOWER) < 10) {
                 lock(player, 6)
                 openInterface(player, Components.FADE_TO_BLACK_115)
                 sendMessage(player, "There's no way I can find my way through without a map of some kind.")
@@ -80,6 +82,7 @@ class WatchTowerListener : InteractionListener {
                     openInterface(player, Components.FADE_FROM_BLACK_170)
                     teleport(player, ENTRANCE_LOCATION.random(), TeleportManager.TeleportType.INSTANT)
                 }
+                return@on true
             }
 
             sendSequenceDialogue(
@@ -89,7 +92,14 @@ class WatchTowerListener : InteractionListener {
                     when (selected) {
                         1 -> {
                             if (location != null) {
-                                teleport(player, location, TeleportManager.TeleportType.INSTANT)
+                                if(!LightSource.hasActiveLightSource(player)){
+                                    teleport(player, Location(2498, 9451, 0), TeleportManager.TeleportType.INSTANT)
+                                    registerLogoutListener(player, "skavid_cave") {
+                                        removeAttribute(player, GameAttributes.WATCHTOWER_DARK_AREA)
+                                    }
+                                } else {
+                                    teleport(player, location, TeleportManager.TeleportType.INSTANT)
+                                }
                                 sendMessage(player, "You enter the cave...")
                             }
                         }
@@ -114,6 +124,10 @@ class WatchTowerListener : InteractionListener {
          */
 
         on(SKAVID_CAVE_EXIT, IntType.SCENERY, "leave") { player, node ->
+            if(getAttribute(player, GameAttributes.WATCHTOWER_DARK_AREA, false)) {
+                sendMessage(player, "You need to find other way to exit from there.")
+                return@on true
+            }
             val location = when(node.id) {
                 Scenery.CAVE_EXIT_2817 -> ENTRANCE_LOCATION[0]
                 Scenery.CAVE_EXIT_2818 -> ENTRANCE_LOCATION[1]
@@ -126,6 +140,22 @@ class WatchTowerListener : InteractionListener {
 
             if (location != null) {
                 teleport(player, location, TeleportManager.TeleportType.INSTANT)
+            }
+            return@on true
+        }
+
+        /*
+         * Handles exit the cave without lit.
+         */
+
+        on(Scenery.ROCK_2837, IntType.SCENERY, "search") { player, _ ->
+            sendMessage(player, "You search the rock...")
+            sendMessage(player, "You uncover a tunnel entrance.")
+            lock(player, 3)
+            runTask(player, 2) {
+                sendPlayerDialogue(player, "Phew! At last I'm out..." + "Next time I will take some light!")
+                teleport(player, Location(2554, 3054, 0), TeleportManager.TeleportType.INSTANT)
+                removeAttribute(player, GameAttributes.WATCHTOWER_DARK_AREA)
             }
             return@on true
         }
