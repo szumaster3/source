@@ -1,6 +1,9 @@
 package content.global.skill.agility.shortcuts
 
-import core.api.*
+import core.api.animate
+import core.api.location
+import core.api.setVarbit
+import core.api.teleport
 import core.game.interaction.IntType
 import core.game.interaction.InteractionListener
 import core.game.system.task.Pulse

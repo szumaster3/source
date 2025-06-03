@@ -1,7 +1,6 @@
 package content.global.skill.agility.shortcuts
 
 import content.global.skill.agility.AgilityHandler
-import core.api.lock
 import core.game.interaction.IntType
 import core.game.interaction.InteractionListener
 import core.game.world.map.Direction
@@ -16,6 +15,7 @@ class LumberyardFenceShortcut : InteractionListener {
 
     override fun defineListeners() {
         on(brokenFence, IntType.SCENERY, "squeeze-under") { player, _ ->
+
             AgilityHandler.forceWalk(
                 player,
                 0,
@@ -25,6 +25,7 @@ class LumberyardFenceShortcut : InteractionListener {
                 15,
                 0.0,
                 null,
+                1
             )
             return@on true
         }

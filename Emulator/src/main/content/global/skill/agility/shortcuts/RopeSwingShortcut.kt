@@ -1,7 +1,7 @@
 package content.global.skill.agility.shortcuts
 
-import core.api.*
 import content.global.skill.agility.AgilityHandler
+import core.api.*
 import core.cache.def.impl.SceneryDefinition
 import core.game.interaction.NodeUsageEvent
 import core.game.interaction.OptionHandler

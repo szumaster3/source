@@ -2,12 +2,9 @@ package content.global.skill.agility.shortcuts
 
 import content.global.skill.agility.AgilityHandler
 import core.api.hasLevelDyn
-import core.api.queueScript
 import core.api.sendMessage
-import core.api.stopExecuting
 import core.game.interaction.IntType
 import core.game.interaction.InteractionListener
-import core.game.interaction.QueueStrength
 import core.game.node.entity.skill.Skills
 import core.game.world.map.Direction
 import core.game.world.update.flag.context.Animation
@@ -21,6 +18,7 @@ class LowFenceShortcut : InteractionListener {
                 sendMessage(player, "You need an agility level of at least 25 to do this.")
                 return@on true
             }
+
             AgilityHandler.forceWalk(
                 player,
                 -1,
@@ -30,6 +28,7 @@ class LowFenceShortcut : InteractionListener {
                 10,
                 0.0,
                 null,
+                1
             )
             return@on true
         }

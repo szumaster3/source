@@ -160,33 +160,33 @@ class OgreGuardSouthEastGateDialogue : DialogueFile() {
                 }
 
                 if (getAttribute(player!!, GameAttributes.WATCHTOWER_BRING_GOLD, false)) {
-                    npc(FaceAnim.OLD_DEFAULT, "Creature, did you bring me the gold?").also { stage = 7 }
+                    npc(FaceAnim.OLD_DEFAULT, "Creature, did you bring me the gold?").also { stage = 6 }
                 } else {
                     npc(FaceAnim.OLD_DEFAULT, "Halt!").also { stage++ }
                 }
             }
             1 -> npc(FaceAnim.OLD_DEFAULT,"You cannot pass here.").also { stage++ }
-            3 -> player(FaceAnim.HALF_WORRIED, "I am a friend to ogres.").also { stage++ }
-            4 -> npc(FaceAnim.OLD_DEFAULT,"You will be my friend only with gold.").also { stage++ }
-            5 -> npcl(FaceAnim.OLD_DEFAULT, "Bring me a bar of pure gold and i will let you pass.").also { stage++ }
-            6 -> {
+            2 -> player(FaceAnim.HALF_WORRIED, "I am a friend to ogres.").also { stage++ }
+            3 -> npc(FaceAnim.OLD_DEFAULT,"You will be my friend only with gold.").also { stage++ }
+            4 -> npcl(FaceAnim.OLD_DEFAULT, "Bring me a bar of pure gold and i will let you pass.").also { stage++ }
+            5 -> {
                 end()
                 npc(FaceAnim.OLD_ANGRY1,"For now - begone!")
                 sendMessage(player!!, "The guard pushes you outside the city.")
                 handleGatePassage(player!!, Location.create(2546, 3065, 0), openGate = false)
                 setAttribute(player!!, GameAttributes.WATCHTOWER_BRING_GOLD, true)
             }
-            7 -> if(removeItem(player!!, Items.GOLD_BAR_2357)) {
+            6 -> if(removeItem(player!!, Items.GOLD_BAR_2357)) {
                 player("Here it is!").also { stage++ }
             } else {
-                player("No I don't have it.").also { stage = 9 }
+                player("No I don't have it.").also { stage = 8 }
             }
-            8 -> npc(FaceAnim.OLD_NEUTRAL, "It's brought it! On your way.").also {
+            7 -> npc(FaceAnim.OLD_NEUTRAL, "It's brought it! On your way.").also {
                 setAttribute(player!!, GameAttributes.WATCHTOWER_GOLD_GATE_UNLOCK, true)
                 stage = END_DIALOGUE
             }
-            9 -> npc(FaceAnim.OLD_DEFAULT, "No gold, no passage!").also { stage++ }
-            10 -> npc(FaceAnim.OLD_ANGRY1, "Get out of this city!").also {
+            8 -> npc(FaceAnim.OLD_DEFAULT, "No gold, no passage!").also { stage++ }
+            9 -> npc(FaceAnim.OLD_ANGRY1, "Get out of this city!").also {
                 handleGatePassage(player!!, Location.create(2546, 3065, 0), openGate = false)
                 stage = END_DIALOGUE
             }

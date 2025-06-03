@@ -28,6 +28,7 @@ class SinclairMansionLogShortcut : InteractionListener {
             val start = player.location
             val end = start.transform(0, if (fromSouth) 4 else -4, 0)
 
+            var fail = AgilityHandler.hasFailed(player, 48, 0.1)
             val failLocation = Location(if (fromSouth) 2723 else 2721, 3594)
             val failLand = Location(if (fromSouth) 2726 else 2718, 3596)
 
@@ -36,10 +37,10 @@ class SinclairMansionLogShortcut : InteractionListener {
             face(player, node)
             playAudio(player, Sounds.LOG_BALANCE_2470)
 
-            if (AgilityHandler.hasFailed(player, 48, 0.1)) {
+            if (fail) {
                 handleFailure(player, start, failLocation, failLand)
             } else {
-                AgilityHandler.forceWalk(player, -1, start, end, logBalanceAnimation, 10, 0.0, null, 0).endAnimation = Animation.RESET
+                AgilityHandler.forceWalk(player, -1, start, end, logBalanceAnimation, 10, 0.0, null, 1).endAnimation = Animation.RESET
                 if (!player.achievementDiaryManager.getDiary(DiaryType.SEERS_VILLAGE)!!.isComplete(1, 0)) {
                     player.achievementDiaryManager.getDiary(DiaryType.SEERS_VILLAGE)!!.updateTask(player, 1, 0, true)
                 }

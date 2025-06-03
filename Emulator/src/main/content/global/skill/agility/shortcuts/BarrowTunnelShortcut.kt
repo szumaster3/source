@@ -3,7 +3,6 @@ package content.global.skill.agility.shortcuts
 import core.api.teleport
 import core.game.interaction.IntType
 import core.game.interaction.InteractionListener
-import core.game.node.entity.player.Player
 import core.game.world.map.Location
 import org.rs.consts.Scenery
 
