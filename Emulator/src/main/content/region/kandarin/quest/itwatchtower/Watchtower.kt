@@ -13,10 +13,8 @@ import org.rs.consts.Vars
 
 @Initializable
 class Watchtower : Quest(Quests.WATCHTOWER, 131, 130, 4, Vars.VARP_QUEST_WATCHTOWER_PROGRESS_212, 0, 1, 13) {
-    override fun drawJournal(
-        player: Player,
-        stage: Int,
-    ) {
+
+    override fun drawJournal(player: Player, stage: Int, ) {
         super.drawJournal(player, stage)
         var line = 12
 
@@ -54,30 +52,46 @@ class Watchtower : Quest(Quests.WATCHTOWER, 131, 130, 4, Vars.VARP_QUEST_WATCHTO
             line(player, "I found some !!fingernails?? as evidence.", line++, true)
             line(player, "I should take them to the !!Watchtower wizard??.", line++, true)
             line++
-            line(player, "I was given !!a map?? by the guard.", line++)
-            line(player, "I need to search the !!skavid caves??.", line++)
-            line(player, "I found my way into the skavid caves.", line++)
+            line(player, "I was given !!a map?? by the guard.", line++, true)
         }
 
-        if (stage >= 50) {
-            line(player, "I used some cave nightshade to distract the enclave guard.", line++)
+        if(stage == 10) {
+            line(player, "I need to search the !!skavid caves??.", line++, true)
+            line(player, "I found my way into the skavid caves.", line++, true)
+        }
+
+        if (stage == 60) {
+            line(player, "I used some cave nightshade to distract the enclave guard.", line++, true)
             line(player, "I need to defeat the ogre shamans and find the other crystals.", line++)
+        }
+
+        if(stage == 70) {
             line(player, "I tried to defeat the shamans, but they are protected by powerful magics!", line++)
             line(player, "I should speak with the Watchtower wizard to see if he has any advice for me.", line++)
-            line(player, "I have made the ogre potion.", line++)
-            line(player, "I gave the potion to the wizard. He infused it into a magic ogre potion.", line++)
+        }
+
+        if(stage == 80) {
+            line(player, "I have made the ogre potion.", line++, true)
+        }
+
+        if(stage == 85) {
+            line(player, "I gave the potion to the wizard. He infused it into a magic ogre potion.", line++, true)
             line(player, "I need to defeat the ogre shamans.", line++)
-            line(player, "I killed all the ogre shamans.", line++)
+        }
+
+        if(stage == 90) {
+            line(player, "I killed all the ogre shamans.", line++, true)
             line(player, "I need to return all the crystals to the Watchtower wizard.", line++)
-            line(player, "I helped the wizards in Yanille, and rescued the lost crystals.", line++)
-            line(player, "I defeated the ogres and their minions.", line++)
-            line(player, "I read the scroll and gained a new teleport spell.", line++)
-            line(player, "I can return to the Watchtower at any time. My task here is done.", line++)
         }
 
         if (stage == 100) {
+            line(player, "I helped the wizards in Yanille, and rescued the lost crystals.", line++, true)
+            line(player, "I defeated the ogres and their minions.", line++)
+            line(player, "I read the scroll and gained a new teleport spell.", line++, getAttribute(player, GameAttributes.WATCHTOWER_TELEPORT, false))
             line++
-            line(player, "<col=FF0000>QUEST COMPLETE!", line, false)
+            line(player, "<col=FF0000>QUEST COMPLETE!</col>", line, false)
+            line++
+            line(player, "I can return to the Watchtower at any time. My task here is done.", line++)
             limitScrolling(player, line, false)
         }
     }
@@ -92,15 +106,8 @@ class Watchtower : Quest(Quests.WATCHTOWER, 131, 130, 4, Vars.VARP_QUEST_WATCHTO
         drawReward(player, "5000 coins", ln)
         rewardXP(player, Skills.MAGIC, 15250.0)
         addItemOrDrop(player, Items.COINS_995, 5000)
-
         removeAttributes(player, GameAttributes.WATCHTOWER_ROCK_CAKE)
     }
 
     override fun newInstance(`object`: Any?): Quest = this
 }
-// 4 quest points
-// 15,250 Magic experience
-// 5,000 coins
-// A spell scroll, which will teach you how to use the Watchtower Teleport spell
-// Access to Gu'Tanoth and the Ogre Enclave
-// 2 Treasure Hunter keys (Ironman accounts will not receive these)
