@@ -1,6 +1,5 @@
 package content.global.skill.herblore
 
-import content.global.skill.herblore.potions.GenericPotion
 import core.api.*
 import core.api.quest.isQuestComplete
 import core.game.node.entity.player.Player

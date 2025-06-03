@@ -1,6 +1,5 @@
-package content.global.skill.herblore.potions
+package content.global.skill.herblore
 
-import content.global.skill.herblore.GrindItem
 import org.rs.consts.Items
 
 /**
@@ -14,10 +13,10 @@ enum class FinishedPotion(
     val potion: Int
 ) {
     ATTACK_POTION(UnfinishedPotion.GUAM, Items.EYE_OF_NEWT_221, 3, 25.0, Items.ATTACK_POTION3_121),
-    OGRE_POTION(UnfinishedPotion.GUAM, Items.JANGERBERRIES_247, 14, 10.0, Items.VIAL_2390),
     ANTIDOTE_POTION(UnfinishedPotion.MARRENTILL, Items.UNICORN_HORN_DUST_235, 5, 37.5, Items.ANTIPOISON3_175),
     RELIC_BALM(UnfinishedPotion.ROGUE_PURSE, Items.CLEAN_SNAKE_WEED_1526, 8, 0.0, Items.RELICYMS_BALM3_4844),
     STRENGTH_POTION(UnfinishedPotion.TARROMIN, Items.LIMPWURT_ROOT_225, 12, 50.0, Items.STRENGTH_POTION3_115),
+    OGRE_POTION(UnfinishedPotion.GUAM, Items.JANGERBERRIES_247, 14, 10.0, Items.VIAL_2390),
     RESTORE_POTION(UnfinishedPotion.HARRALANDER, Items.RED_SPIDERS_EGGS_223, 22, 62.5, Items.RESTORE_POTION3_127),
     ENERGY_POTION(UnfinishedPotion.HARRALANDER, Items.CHOCOLATE_DUST_1975, 26, 67.5, Items.ENERGY_POTION3_3010),
     DEFENCE_POTION(UnfinishedPotion.RANARR, Items.WHITE_BERRIES_239, 30, 45.0, Items.DEFENCE_POTION3_133),
