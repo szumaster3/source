@@ -1,16 +1,15 @@
 package content.global.skill.herblore.potions
 
-import content.global.skill.herblore.GrindItem
+import content.global.skill.herblore.GrindingItem
 import core.game.node.item.Item
 import org.rs.consts.Items
-import java.util.*
 
 /**
  * Represents finished potions in the Herblore skill.
  */
 enum class FinishedPotion(val unfinished: UnfinishedPotion, val ingredient: Item, val level: Int, val experience: Double, val potion: Item, ) {
     ATTACK_POTION(UnfinishedPotion.GUAM, Item(Items.EYE_OF_NEWT_221), 3, 25.0, Item(Items.ATTACK_POTION3_121)),
-    JANGERBERRY_POTION(UnfinishedPotion.GUAM, Item(Items.JANGERBERRIES_247), 14, 10.0, Item(Items.VIAL_2390)),
+    OGRE_POTION(UnfinishedPotion.GUAM, Item(Items.JANGERBERRIES_247), 14, 10.0, Item(Items.VIAL_2390)),
     ANTIPOISON_POTION(UnfinishedPotion.MARRENTILL, Item(Items.UNICORN_HORN_DUST_235), 5, 37.5, Item(Items.ANTIPOISON3_175)),
     RELICYM_BALM(UnfinishedPotion.ROGUE_PURSE, Item(Items.CLEAN_SNAKE_WEED_1526), 8, 0.0, Item(Items.RELICYMS_BALM3_4844)),
     STRENGTH_POTION(UnfinishedPotion.TARROMIN, Item(Items.LIMPWURT_ROOT_225), 12, 50.0, Item(Items.STRENGTH_POTION3_115)),
@@ -34,7 +33,7 @@ enum class FinishedPotion(val unfinished: UnfinishedPotion, val ingredient: Item
     SUPER_RANGING_POTION(UnfinishedPotion.DWARF_WEED, Item(Items.WINE_OF_ZAMORAK_245), 72, 162.5, Item(Items.RANGING_POTION3_169)),
     SUPER_MAGIC(UnfinishedPotion.LANTADYME, Item(Items.POTATO_CACTUS_3138), 76, 172.5, Item(Items.MAGIC_POTION3_3042)),
     ZAMORAK_BREW(UnfinishedPotion.TORSTOL, Item(Items.JANGERBERRIES_247), 78, 175.0, Item(Items.ZAMORAK_BREW3_189)),
-    SARADOMIN_BREW(UnfinishedPotion.TOADFLAX, GrindItem.BIRDS_NEST.product, 81, 180.0, Item(Items.SARADOMIN_BREW3_6687)),
+    SARADOMIN_BREW(UnfinishedPotion.TOADFLAX, Item(GrindingItem.BIRDS_NEST.items.first()), 81, 180.0, Item(Items.SARADOMIN_BREW3_6687)),
     STRONG_WEAPON_POISON(UnfinishedPotion.STRONG_WEAPON_POISON, Item(Items.RED_SPIDERS_EGGS_223), 73, 165.0, Item(Items.WEAPON_POISON_PLUS_5937)),
     SUPER_STRONG_WEAPON_POISON(UnfinishedPotion.SUPER_STRONG_WEAPON_POISON, Item(Items.POISON_IVY_BERRIES_6018), 82, 190.0, Item(Items.WEAPON_POISON_PLUS_PLUS_5940)),
     STRONG_ANTI_POISON(UnfinishedPotion.STRONG_ANTIPOISON, Item(Items.YEW_ROOTS_6049), 68, 155.0, Item(Items.ANTIPOISON_PLUS3_5945)),
@@ -44,15 +43,12 @@ enum class FinishedPotion(val unfinished: UnfinishedPotion, val ingredient: Item
 
     companion object {
         /**
-         * Gets the finished potion for the given unfinished potion and ingredient, or null if none.
+         * Gets the [FinishedPotion] for the [UnfinishedPotion] and [ingredient], or null if none.
          */
-        fun getPotion(unf: Item, ingredient: Item, ): FinishedPotion? =
-            Arrays
-                .stream(values())
-                .filter { potion: FinishedPotion? ->
-                    potion!!.unfinished.potion.id == unf.id &&
-                            potion.ingredient.id == ingredient.id
-                }.findFirst()
-                .orElse(null)
+        fun getPotion(unf: Item, ingredient: Item): FinishedPotion? {
+            return values().firstOrNull {
+                it.unfinished.potion.id == unf.id && it.ingredient.id == ingredient.id
+            }
+        }
     }
 }

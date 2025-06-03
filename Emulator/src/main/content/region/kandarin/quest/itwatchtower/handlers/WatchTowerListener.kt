@@ -524,6 +524,31 @@ class WatchTowerListener : InteractionListener {
             return@onUseWith true
         }
 
+        /*
+         * Handles using ground bat bones on vial of water.
+         */
+
+        onUseWith(IntType.ITEM, Items.GROUND_BAT_BONES_2391, Items.VIAL_OF_WATER_227) { player, used, with ->
+            if(removeItem(player, used.asItem())){
+                replaceSlot(player, with.index, Item(Items.VIAL_229, 1))
+                sendMessage(player, "The water from your vial evaporate.")
+            }
+            return@onUseWith true
+        }
+
+
+        /*
+         * Handles creating potion.
+         */
+
+        onUseWith(IntType.ITEM, Items.GROUND_BAT_BONES_2391, Items.VIAL_2390) { player, used, with ->
+            if(removeItem(player, used.asItem()) && removeItem(player, with.asItem())){
+                addItem(player, Items.POTION_2394, 1)
+                sendMessage(player, "You produce a strong potion.")
+            }
+            return@onUseWith true
+        }
+
     }
 
     private fun searchBush(player: Player, item: Pair<Int, String>?): Boolean {
