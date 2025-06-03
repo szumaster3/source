@@ -3,6 +3,7 @@ package content.region.kandarin.quest.itwatchtower.dialogue
 import content.data.GameAttributes
 import core.api.*
 import core.api.item.allInInventory
+import core.api.quest.finishQuest
 import core.api.quest.getQuestStage
 import core.api.quest.setQuestStage
 import core.game.dialogue.Dialogue
@@ -35,6 +36,25 @@ class WatchtowerWizardDialogue(player: Player? = null) : Dialogue(player) {
             stage = 100
             return true
         }
+
+        if(questStage == 75 && npc.id == NPCs.WIZARD_5195) {
+            player(FaceAnim.HALF_ASKING, "Any chance of advice about this potion?")
+            stage = 905
+            return true
+        }
+
+        if(questStage == 85 && npc.id == NPCs.WIZARD_5195) {
+            player(FaceAnim.HALF_ASKING, "Any chance of a hand?")
+            stage = 947
+            return true
+        }
+
+        if(questStage == 95 && npc.id == NPCs.WIZARD_5195) {
+            player(FaceAnim.HALF_ASKING, "What should I do now?")
+            stage = 1300
+            return true
+        }
+
 
         if(questStage == 100 && npc.id == NPCs.WIZARD_5195) {
             npc("All's well that ends well.")
@@ -92,6 +112,30 @@ class WatchtowerWizardDialogue(player: Player? = null) : Dialogue(player) {
             return true
         }
 
+        if(questStage == 60) {
+            player("I have found the cave of ogre shaman, but I cannot", "touch them!")
+            stage = 900
+            return true
+        }
+
+        if(questStage == 75) {
+            npc(FaceAnim.HALF_ASKING, "Any more news?")
+            stage = 940
+            return true
+        }
+
+        if(questStage == 85) {
+            npc("Hello again. Did the potion work?")
+            stage = 945
+            return true
+        }
+
+        if(questStage == 90) {
+            npc("Hello again. Did the potion work?")
+            stage = 948
+            return true
+        }
+
         if(getAttribute(player!!, GameAttributes.WATCHTOWER_RIDDLE, false) || inInventory(player!!, Items.SKAVID_MAP_2376)) {
             npc("How is the quest going?")
             stage = 800
@@ -100,7 +144,7 @@ class WatchtowerWizardDialogue(player: Player? = null) : Dialogue(player) {
 
         if(questStage == 100) {
             npcl(FaceAnim.HAPPY, "Greetings, friend. I trust all is well with you? Yanille is safe at last!")
-            stage = 1000
+            stage = 1100
             return true
         }
 
@@ -310,20 +354,111 @@ class WatchtowerWizardDialogue(player: Player? = null) : Dialogue(player) {
             814 -> player(FaceAnim.THINKING, "Great...").also { stage = END_DIALOGUE }
             815 -> npcl(FaceAnim.FRIENDLY, "That's good to hear. We are much closer to fixing the tower now.").also { stage = END_DIALOGUE }
 
-            1000 -> showTopics(
-                IfTopic("Do you have any more quests for me?", 1001, getAttribute(player, GameAttributes.WATCHTOWER_TELEPORT, false), false),
+            900 -> npc(FaceAnim.NEUTRAL, "That is because of their magical powers. We must fight", "them with their own methods; do not speak to them! I", "suggest a potion...").also { stage++ }
+            901 -> npc(FaceAnim.NEUTRAL, "Collect a guam leaf, add some jangerberries, then mix in", "some ground bat bones.").also { stage++ }
+            902 -> npc(FaceAnim.NEUTRAL, "It is essential to return it to me before you use it, so", "that I can empower it with my magic.").also { stage++ }
+            903 -> npc(FaceAnim.NEUTRAL, "Be very careful how you mix it as it is extremely", "volatile. Mixing ingredients of this type in the wrong", "order can cause explosions!").also { stage++ }
+            904 -> npc(FaceAnim.NEUTRAL, "I hope you've been brushing up Herblore and Magic? I", "must warn you, only experienced magicians can use the", "potion. It is too dangerous in the hands of the unskilled.").also {
+                setQuestStage(player, Quests.WATCHTOWER, 75)
+                stage = END_DIALOGUE
+            }
+
+            905 -> npc(FaceAnim.NOD_NO, "Nope. Try the Watchtower Wizard.").also { stage = END_DIALOGUE }
+            940 -> if(removeItem(player, Items.MAGIC_OGRE_POTION_2395)) {
+                player("I have made the potion.").also { stage++ }
+            } else {
+                playerl(FaceAnim.HALF_ASKING, "Can you tell me again what I need for the potion?").also { stage = 950 }
+            }
+            941 -> npc(FaceAnim.FRIENDLY, "That's great news; let me infuse it with magic...").also { stage++ }
+            942 -> {
+                lock(player, 2)
+                sendMessage(player, "The wizard mumbles strange words over the liquid...")
+                runTask(player, 2) {
+                    npc(FaceAnim.NEUTRAL, "Here it is - a dangerous substance. I must remind you", "that this potion can only be used if your Magic level is", "high enough.")
+                    stage = 943
+                }
+            }
+
+            943 -> player(FaceAnim.ASKING, "How high is high enough?").also { stage++ }
+            944 -> npc(FaceAnim.NEUTRAL, "Well, if you can cast Bones to Bananas, or any spells", "beyond that, you should be alright.").also { stage = END_DIALOGUE }
+
+            945 -> playerl(FaceAnim.HALF_GUILTY, "I am still working to rid us of the shamans...").also { stage++ }
+            946 -> npc(FaceAnim.FRIENDLY,"May you have success in your task.").also { stage = END_DIALOGUE }
+            947 -> npc(FaceAnim.FRIENDLY,"Well, you could ask the Watchtower Wizard for one.").also { stage = END_DIALOGUE }
+
+            948 -> player(FaceAnim.HAPPY,"Indeed it did! I wiped out those ogre shamans!").also { stage++ }
+            949 -> npc(FaceAnim.HAPPY, "Magnificent! At last you've brought all the crystals.").also { stage = 1200 }
+
+            950 -> npcl(FaceAnim.FRIENDLY, "Yes indeed, let me see, what was it again...").also { stage++ }
+            951 -> {
+                if (inInventory(player, Items.CLEAN_GUAM_249)) {
+                    npcl(FaceAnim.FRIENDLY,"You need a guam leaf.").also { stage = 960 }
+                } else {
+                    npcl(FaceAnim.FRIENDLY,"You will also need a guam leaf. That goes into the mix first.").also { stage = 970 }
+                }
+            }
+            960 -> playerl(FaceAnim.HALF_GUILTY, "I have one right here.").also { stage++ }
+            961 -> npcl(FaceAnim.FRIENDLY,"Wonderful! You will need to add that first.").also { stage = 980 }
+            970 -> playerl(FaceAnim.HALF_GUILTY, "What is the final ingredient?").also { stage = 980 }
+            980 -> {
+                if (inInventory(player, Items.JANGERBERRIES_247)) {
+                    npcl(FaceAnim.FRIENDLY,"You need some jangerberries.").also { stage = 990 }
+                } else {
+                    npcl(FaceAnim.FRIENDLY,"You will also need some jangerberries. Those go into the mix before the final ingredient.").also { stage = 1000 }
+                }
+            }
+            990 -> playerl(FaceAnim.HALF_GUILTY, "I have some of those.").also { stage++ }
+            991 -> npcl(FaceAnim.FRIENDLY,"Wonderful! You will need to add those after the guam leaf has gone in, but before the other ingredient.").also { stage = 1010 }
+            1000 -> playerl(FaceAnim.HALF_GUILTY, "What is the final ingredient?").also { stage = 1010 }
+            1010 -> npcl(FaceAnim.FRIENDLY,"The final ingredient is ground bat bones.").also { stage++ }
+            1011 -> {
+                when {
+                    inInventory(player, Items.GROUND_BAT_BONES_2391) -> {
+                        playerl(FaceAnim.HALF_GUILTY, "Are these ground up well enough?").also { stage = 1020 }
+                    }
+                    inInventory(player, Items.BAT_BONES_530) -> {
+                        playerl(FaceAnim.HALF_GUILTY, "I have some bat bones; how can I grind them?").also { stage = 1030 }
+                    }
+                    else -> {
+                        npcl(FaceAnim.FRIENDLY,"You will need to find some bat bones and grind them using a pestle and mortar.").also { stage = END_DIALOGUE }
+                    }
+                }
+            }
+            1020 -> npcl(FaceAnim.FRIENDLY,"Yes, those will do nicely.").also { stage++ }
+            1021 -> npcl(FaceAnim.FRIENDLY,"When you have mixed the potion correctly, then I can empower the potion with magic and the ogre shamans can be destroyed.").also { stage = END_DIALOGUE }
+            1030 -> npcl(FaceAnim.FRIENDLY,"A pestle and mortar will more than do the trick.").also { stage++ }
+            1031 -> npcl(FaceAnim.FRIENDLY,"When you have mixed the potion correctly, then I can empower the potion with magic and the ogre shamans can be destroyed.").also { stage = END_DIALOGUE }
+
+            1100 -> showTopics(
+                IfTopic("Do you have any more quests for me?", 1101, getAttribute(player, GameAttributes.WATCHTOWER_TELEPORT, false), false),
                 IfTopic("I lost the scroll you gave me.", 1002, !getAttribute(player, GameAttributes.WATCHTOWER_TELEPORT, false), false),
-                Topic("That's okay.", 1003, false)
+                Topic("That's okay.", 1103, false)
             )
-            1001 -> npcl(FaceAnim.HALF_THINKING, "More quests? No, indeed, adventurer. You have done us a great service, already.").also { stage = END_DIALOGUE }
-            1002 -> if(inInventory(player, Items.SPELL_SCROLL_2396)) {
+            1101 -> npcl(FaceAnim.HALF_THINKING, "More quests? No, indeed, adventurer. You have done us a great service, already.").also { stage = END_DIALOGUE }
+            1102 -> if(inInventory(player, Items.SPELL_SCROLL_2396)) {
                 npcl(FaceAnim.LAUGH, "Ho, ho, ho! A comedian to the finish. There it is, in your backpack!")
                 stage = END_DIALOGUE
             } else {
                 npcl(FaceAnim.THINKING, "Never mind, have another...")
                 addItem(player, Items.SPELL_SCROLL_2396, 1)
             }
-            1003 -> npcl(FaceAnim.FRIENDLY, "We are always in your debt; do come and visit us again.").also { stage = END_DIALOGUE }
+            1103 -> npcl(FaceAnim.FRIENDLY, "We are always in your debt; do come and visit us again.").also { stage = END_DIALOGUE }
+
+            1200 -> npc(FaceAnim.NEUTRAL, "Now the shield generator can be activated and, once", "again, Yanille will be safe from the threat of the ogres.").also { stage++ }
+            1201 -> npc(FaceAnim.NEUTRAL, "Put the crystals on the pillars there and throw the lever", "to activate the system.").also {
+                setQuestStage(player, Quests.WATCHTOWER, 95)
+                stage = END_DIALOGUE
+            }
+
+            1300 -> npcl(FaceAnim.NEUTRAL, "You will need to speak to the Watchtower Wizard. Seriously, he's the one in charge here.").also { stage = END_DIALOGUE }
+            1400 -> npc("Marvellous!, It works! The town will now be safe.").also { stage++ }
+            1401 -> npc("Your help was invaluable. Take this payment as a token", "of my gratitude.").also { stage++ }
+            1402 -> npc("Also, let me improve your Magic level for you.").also { stage++ }
+            1403 -> npc(" Here is a special item for you - it's a new spell. Read", "the scroll and you will be able to teleport yourself here.").also { stage++ }
+            1404 -> {
+                end()
+                finishQuest(player, Quests.WATCHTOWER)
+            }
         }
         return true
     }

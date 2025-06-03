@@ -73,7 +73,7 @@ class EnclaveCutscene(player: Player) : Cutscene(player) {
             }
             9 -> {
                 end {
-                    // setQuestStage(player, Quests.WATCHTOWER, 60)
+                    setQuestStage(player, Quests.WATCHTOWER, 60)
                 }
             }
 
