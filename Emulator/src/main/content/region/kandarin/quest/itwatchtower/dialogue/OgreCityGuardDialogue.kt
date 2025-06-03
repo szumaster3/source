@@ -27,25 +27,29 @@ import org.rs.consts.*
 @Initializable
 class OgreCityGuardDialogue(player: Player? = null) : Dialogue(player) {
 
-    override fun open(vararg args: Any?): Boolean {
-        npc = args[0] as NPC
-        if(getQuestStage(player, Quests.WATCHTOWER) in 10..100) {
-            openDialogue(player, OgreCityGateDialogue())
-        } else {
-            npc(FaceAnim.OLD_DEFAULT, "Stop, creature! Only ogres and their friends allowed in", "this city. Show me a sign of companionship, like a lost", "relic or somefing, and you may pass.").also {
-                handleGatePassage(player!!, Location.create(2546, 3065, 0), openGate = false)
-            }
-        }
-        return true
-    }
-
     override fun handle(interfaceId: Int, buttonId: Int, ): Boolean {
+        val stage = getQuestStage(player, Quests.WATCHTOWER)
+
+        if (stage in 10..100) {
+            end()
+            openDialogue(
+                player,
+                when (npc.id) {
+                    NPCs.OGRE_GUARD_859 -> OgreGuardNorthWestGateDialogue()
+                    else -> OgreGuardSouthEastGateDialogue()
+                }
+            )
+        } else {
+            npc(FaceAnim.OLD_DEFAULT, "Stop, creature! Only ogres and their friends allowed in", "this city. Show me a sign of companionship, like a lost", "relic or somefing, and you may pass.")
+            sendMessage(player, "The guard pushes you back down the hill.")
+            handleGatePassage(player!!, Location.create(2546, 3065, 0), openGate = false)
+        }
         return true
     }
 
     override fun newInstance(player: Player?): Dialogue = OgreCityGuardDialogue(player)
 
-    override fun getIds(): IntArray = intArrayOf(NPCs.OGRE_GUARD_859)
+    override fun getIds(): IntArray = intArrayOf(NPCs.OGRE_GUARD_859, NPCs.OGRE_GUARD_858)
 }
 
 /**
@@ -78,7 +82,11 @@ class BattlementDialogue : DialogueFile() {
                 Topic("I tire of ogres, prepare to die!", 12)
             )
             8 -> npc(FaceAnim.OLD_DEFAULT, "Back to whence you came!").also { stage++ }
-            9 -> end().also { handleGatePassage(player!!, Location.create(2546, 3065), openGate = false) }
+            9 -> {
+                end()
+                sendMessage(player!!, "The guard pushes you out of the city.")
+                handleGatePassage(player!!, Location.create(2546, 3065), openGate = false)
+            }
             10 -> npc(FaceAnim.OLD_DEFAULT, "Well, well, look at this. My favourite: rock cake! Okay,", "we will let it through.").also { stage++ }
             11 -> {
                 endFile()
@@ -105,9 +113,9 @@ class BattlementDialogue : DialogueFile() {
 }
 
 /**
- * Represents the Ogre Guards near gates dialogue (extension).
+ * Represents the Ogre guard dialogue (North-western gates).
  */
-class OgreCityGateDialogue : DialogueFile() {
+class OgreGuardNorthWestGateDialogue : DialogueFile() {
     override fun handle(componentID: Int, buttonID: Int) {
         npc = NPC(NPCs.OGRE_GUARD_859)
         when(stage) {
@@ -123,10 +131,67 @@ class OgreCityGateDialogue : DialogueFile() {
                 end()
                 handleGatePassage(player!!, Location.create(2503, 3062, 0), openGate = true)
                 setAttribute(player!!, GameAttributes.WATCHTOWER_GATE_UNLOCK, true)
+                stage = END_DIALOGUE
             }
             4 -> npc(FaceAnim.OLD_DEFAULT,"Why have you returned with no proof of companionship?", "Back to whence you came!").also { stage++ }
-            5 -> end().also { handleGatePassage(player!!, Location.create(2546, 3065, 0), openGate = false) }
+            5 -> {
+                end()
+                sendMessage(player!!, "The guard pushes you back down the hill.")
+                handleGatePassage(player!!, Location.create(2546, 3065, 0), openGate = false)
+                stage = END_DIALOGUE
+            }
         }
+    }
+}
+
+/**
+ * Represents the Ogre guard dialogue (South-eastern gates).
+ */
+class OgreGuardSouthEastGateDialogue : DialogueFile() {
+    //https://classic.runescape.wiki/w/Transcript:Ogre_guard#Ogre_guarding_the_south-eastern_gate
+    override fun handle(componentID: Int, buttonID: Int) {
+        npc = NPC(NPCs.OGRE_GUARD_858)
+        when(stage) {
+            0 -> {
+                if (getAttribute(player!!, GameAttributes.WATCHTOWER_GOLD_GATE_UNLOCK, false)) {
+                    npc(FaceAnim.OLD_DEFAULT, "I know you creature, you may pass")
+                    stage = END_DIALOGUE
+                    return
+                }
+
+                if (getAttribute(player!!, GameAttributes.WATCHTOWER_BRING_GOLD, false)) {
+                    npc(FaceAnim.OLD_DEFAULT, "Creature, did you bring me the gold?").also { stage = 7 }
+                } else {
+                    npc(FaceAnim.OLD_DEFAULT, "Halt!").also { stage++ }
+                }
+            }
+            1 -> npc(FaceAnim.OLD_DEFAULT,"You cannot pass here.").also { stage++ }
+            3 -> player(FaceAnim.HALF_WORRIED, "I am a friend to ogres.").also { stage++ }
+            4 -> npc(FaceAnim.OLD_DEFAULT,"You will be my friend only with gold.").also { stage++ }
+            5 -> npcl(FaceAnim.OLD_DEFAULT, "Bring me a bar of pure gold and i will let you pass.").also { stage++ }
+            6 -> {
+                end()
+                npc(FaceAnim.OLD_ANGRY1,"For now - begone!")
+                sendMessage(player!!, "The guard pushes you outside the city.")
+                handleGatePassage(player!!, Location.create(2546, 3065, 0), openGate = false)
+                setAttribute(player!!, GameAttributes.WATCHTOWER_BRING_GOLD, true)
+            }
+            7 -> if(removeItem(player!!, Items.GOLD_BAR_2357)) {
+                player("Here it is!").also { stage++ }
+            } else {
+                player("No I don't have it.").also { stage = 9 }
+            }
+            8 -> npc(FaceAnim.OLD_NEUTRAL, "It's brought it! On your way.").also {
+                setAttribute(player!!, GameAttributes.WATCHTOWER_GOLD_GATE_UNLOCK, true)
+                stage = END_DIALOGUE
+            }
+            9 -> npc(FaceAnim.OLD_DEFAULT, "No gold, no passage!").also { stage++ }
+            10 -> npc(FaceAnim.OLD_ANGRY1, "Get out of this city!").also {
+                handleGatePassage(player!!, Location.create(2546, 3065, 0), openGate = false)
+                stage = END_DIALOGUE
+            }
+        }
+
     }
 }
 
@@ -149,7 +214,6 @@ private fun handleGatePassage(player: Player, loc: Location, openGate: Boolean) 
         queueScript(player, 1, QueueStrength.SOFT) { stage : Int ->
             when(stage) {
                 0 -> {
-                    sendMessage(player, "The guard pushes you back down the hill.")
                     openInterface(player, Components.FADE_FROM_BLACK_170)
                     return@queueScript delayScript(player, 6)
                 }

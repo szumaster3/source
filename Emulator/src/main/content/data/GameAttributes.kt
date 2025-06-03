@@ -360,6 +360,8 @@ internal object GameAttributes {
     const val WATCHTOWER_RIDDLE = "/save:quest:watchtower:ogre_riddle"
 
     const val WATCHTOWER_GATE_UNLOCK = "/save:quest:watchtower:ogre_gate"
+    const val WATCHTOWER_BRING_GOLD = "/save:quest:watchtower:bring_gold_to_the_guard"
+    const val WATCHTOWER_GOLD_GATE_UNLOCK = "/save:quest:watchtower:ogre_gold_gate"
     const val WATCHTOWER_DARK_AREA = "quest:watchtower:dark_section"
     const val WATCHTOWER_SKAVID_UPSET = "quest:watchtower:upset_skavid"
 

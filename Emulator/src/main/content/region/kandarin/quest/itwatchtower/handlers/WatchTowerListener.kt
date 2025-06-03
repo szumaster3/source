@@ -4,7 +4,8 @@ import content.data.GameAttributes
 import content.data.LightSource
 import content.region.kandarin.quest.itwatchtower.dialogue.BattlementDialogue
 import content.region.kandarin.quest.itwatchtower.dialogue.CityGuardDialogue
-import content.region.kandarin.quest.itwatchtower.dialogue.OgreCityGateDialogue
+import content.region.kandarin.quest.itwatchtower.dialogue.OgreGuardNorthWestGateDialogue
+import content.region.kandarin.quest.itwatchtower.dialogue.OgreGuardSouthEastGateDialogue
 import core.api.*
 import core.api.quest.getQuestStage
 import core.api.quest.isQuestComplete
@@ -28,7 +29,8 @@ import org.rs.consts.*
 class WatchTowerListener : InteractionListener {
 
     companion object {
-        val OGRE_CITY_GATE = intArrayOf(Scenery.CITY_GATE_2788, Scenery.CITY_GATE_2789)
+        val OGRE_CITY_NW_GATE = intArrayOf(Scenery.CITY_GATE_2788, Scenery.CITY_GATE_2789)
+        val OGRE_CITY_SE_GATE = intArrayOf(Scenery.CITY_GATE_2786, Scenery.CITY_GATE_2787)
         val SKAVID_CAVE_ENTRANCE = (Scenery.CAVE_ENTRANCE_2805..Scenery.CAVE_ENTRANCE_2810).toIntArray()
         val SKAVID_CAVE_EXIT = (Scenery.CAVE_EXIT_2817..Scenery.CAVE_EXIT_2822).toIntArray()
         val ENTRANCE_LOCATION = arrayOf(Location(2563, 3024, 0), Location(2524, 3070, 0), Location(2541, 3054, 0), Location(2554, 3054, 0), Location(2552, 3035, 0), Location(2529, 3012, 0))
@@ -227,7 +229,7 @@ class WatchTowerListener : InteractionListener {
         }
 
         /*
-         * Handles attack option after quest for gorad.
+         * Handles Gorad NPC attack option.
          */
 
         on(NPCs.GORAD_856, IntType.NPC, "attack") { player, node ->
@@ -240,12 +242,12 @@ class WatchTowerListener : InteractionListener {
         }
 
         /*
-         * Handles move through west ogre city gates.
+         * Handles move through north-west ogre city gates.
          */
 
-        on(OGRE_CITY_GATE, IntType.SCENERY, "open") { player, node ->
+        on(OGRE_CITY_NW_GATE, IntType.SCENERY, "open") { player, node ->
             if (!getAttribute(player, GameAttributes.WATCHTOWER_GATE_UNLOCK, false)) {
-                openDialogue(player, OgreCityGateDialogue())
+                openDialogue(player, OgreGuardNorthWestGateDialogue())
                 return@on true
             }
 
@@ -258,11 +260,33 @@ class WatchTowerListener : InteractionListener {
         }
 
         /*
+         * Handles move through south-east ogre city gates.
+         */
+
+        on(OGRE_CITY_SE_GATE, IntType.SCENERY, "open") { player, node ->
+            if (!getAttribute(player, GameAttributes.WATCHTOWER_GOLD_GATE_UNLOCK, false)) {
+                openDialogue(player, OgreGuardSouthEastGateDialogue())
+                return@on true
+            }
+            DoorActionHandler.handleAutowalkDoor(player, node.asScenery())
+            return@on true
+        }
+
+        /*
          * Handles use the relic on ogre guards.
          */
 
         onUseWith(IntType.NPC, Items.OGRE_RELIC_2372, NPCs.OGRE_GUARD_859) { player, _, _ ->
-            openDialogue(player, OgreCityGateDialogue())
+            openDialogue(player, OgreGuardNorthWestGateDialogue())
+            return@onUseWith true
+        }
+
+        /*
+         * Handles use the gold bar on ogre city guards.
+         */
+
+        onUseWith(IntType.NPC, Items.GOLD_BAR_2357, NPCs.OGRE_GUARD_858) { player, _, _ ->
+            openDialogue(player, OgreGuardSouthEastGateDialogue())
             return@onUseWith true
         }
 
@@ -370,7 +394,10 @@ class WatchTowerListener : InteractionListener {
                             sendSequenceDialogue(
                                 player,
                                 playerLine(FaceAnim.HALF_ASKING, "Forget it, I'm not paying."),
-                                npcLine(npc, FaceAnim.OLD_DEFAULT, "In that case you're not crossing.")
+                                npcLine(npc, FaceAnim.OLD_DEFAULT, "In that case you're not crossing."),
+                                onComplete = {
+                                    sendMessage(player, "The guard blocks your path.")
+                                }
                             )
                         }
                     }
