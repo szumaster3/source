@@ -21,21 +21,16 @@ class LowFenceShortcut : InteractionListener {
                 sendMessage(player, "You need an agility level of at least 25 to do this.")
                 return@on true
             }
-
-            queueScript(player, 1, QueueStrength.SOFT) {
-                AgilityHandler.forceWalk(
-                    player,
-                    -1,
-                    player.location,
-                    player.location.transform(if (player.location.x == 3473) Direction.EAST else Direction.WEST, 1),
-                    Animation(Animations.JUMP_OVER_OBSTACLE_6132),
-                    10,
-                    0.0,
-                    null,
-                )
-                return@queueScript stopExecuting(player)
-            }
-
+            AgilityHandler.forceWalk(
+                player,
+                -1,
+                player.location,
+                player.location.transform(if (player.location.x == 3473) Direction.EAST else Direction.WEST, 1),
+                Animation(Animations.JUMP_OVER_OBSTACLE_6132),
+                10,
+                0.0,
+                null,
+            )
             return@on true
         }
     }

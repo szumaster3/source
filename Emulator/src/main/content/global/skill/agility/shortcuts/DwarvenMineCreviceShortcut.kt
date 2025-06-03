@@ -17,21 +17,19 @@ class DwarvenMineCreviceShortcut : InteractionListener {
                 return@on true
             }
 
-            val destination =
-                if (player.location == Location(3035, 9806, 0)) {
-                    Location(3028, 9806, 0)
-                } else {
-                    Location(3035, 9806, 0)
-                }
+            val from = player.location
+            val to = if (from == Location(3035, 9806, 0)) Location(3028, 9806, 0) else Location(3035, 9806, 0)
 
             lock(player, 8)
             face(player, node)
             animate(player, Animations.DUCK_UNDER_2240)
             playAudio(player, Sounds.SQUEEZE_THROUGH_ROCKS_1310)
-            forceMove(player, player.location, destination, 0, 240, null, Animations.HUMAN_TURNS_INVISIBLE_2590)
+            forceMove(player, from, to, 0, 240, null, Animations.HUMAN_TURNS_INVISIBLE_2590)
+
             runTask(player, 7) {
                 animate(player, Animations.DUCK_UNDER_2240)
             }
+
             return@on true
         }
     }

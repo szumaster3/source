@@ -11,7 +11,6 @@ class CombatTrainingCampShortcut : InteractionListener {
     override fun defineListeners() {
         on(Scenery.LOOSE_RAILING_19171, IntType.SCENERY, "squeeze-through") { player, node ->
             val start = if (player.location.x <= 2522) node.location else node.location.transform(1, 0, 0)
-            player.lock(1)
             AgilityHandler.forceWalk(
                 player,
                 -1,

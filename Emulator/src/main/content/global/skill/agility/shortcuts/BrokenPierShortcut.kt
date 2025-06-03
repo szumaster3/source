@@ -15,7 +15,6 @@ import org.rs.consts.Scenery
 class BrokenPierShortcut : InteractionListener {
     override fun defineListeners() {
         on(Scenery.BROKEN_PIER_41531, IntType.SCENERY, "step") { player, _ ->
-            val animationDelay = Animation(Animations.JUMP_BRIDGE_769).duration
             if (!isDiaryComplete(player, DiaryType.FREMENNIK, 1)) {
                 sendMessage(player, "You need to claim the reward for the medium Fremennik diary to use this shortcut.")
                 return@on true
@@ -25,39 +24,9 @@ class BrokenPierShortcut : InteractionListener {
                 return@on true
             }
 
-            queueScript(player, 1, QueueStrength.NORMAL) { stage: Int ->
-                when (stage) {
-                    0 -> {
-                        AgilityHandler.forceWalk(
-                            player,
-                            -1,
-                            Location(2572, 3862, 0),
-                            Location(2573, 3862, 0),
-                            Animation(Animations.JUMP_BRIDGE_769),
-                            animationCycles(Animations.JUMP_BRIDGE_769),
-                            0.0,
-                            null,
-                        )
-                        return@queueScript delayScript(player, animationDelay)
-                    }
-
-                    1 -> {
-                        AgilityHandler.forceWalk(
-                            player,
-                            -1,
-                            player.location,
-                            Location(2576, 3862, 0),
-                            Animation(Animations.JUMP_OVER_OBSTACLE_6132),
-                            animationCycles(Animations.JUMP_OVER_OBSTACLE_6132),
-                            0.0,
-                            null,
-                        )
-                        return@queueScript stopExecuting(player)
-                    }
-
-                    else -> return@queueScript stopExecuting(player)
-                }
-            }
+            val animationDelay = Animation(Animations.JUMP_BRIDGE_769).duration
+            AgilityHandler.forceWalk(player, -1, Location(2572, 3862, 0), Location(2573, 3862, 0), Animation(Animations.JUMP_BRIDGE_769), animationCycles(Animations.JUMP_BRIDGE_769), 0.0, null)
+            AgilityHandler.forceWalk(player, -1, player.location, Location(2576, 3862, 0), Animation(Animations.JUMP_OVER_OBSTACLE_6132), animationCycles(Animations.JUMP_OVER_OBSTACLE_6132), 0.0, null, animationDelay)
             return@on true
         }
     }

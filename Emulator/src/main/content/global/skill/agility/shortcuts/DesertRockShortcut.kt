@@ -22,8 +22,6 @@ class DesertRockShortcut : InteractionListener {
         }
 
         on(ROCK, IntType.SCENERY, "climb down") { player, _ ->
-            lock(player, 1000)
-            lockInteractions(player, 1000)
             GameWorld.Pulser.submit(
                 object : Pulse() {
                     var counter = 0

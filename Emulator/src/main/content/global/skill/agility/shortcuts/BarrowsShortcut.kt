@@ -22,13 +22,6 @@ class BarrowsShortcut : InteractionListener {
                 sendDialogue(player, "Um... those vampyres don't look very nice. I'm not going through here.")
                 return@on true
             }
-            handleShortcut(player)
-            return@on true
-        }
-    }
-
-    private fun handleShortcut(player: Player) {
-        queueScript(player, 1, QueueStrength.SOFT) {
             val direction = if (player.location.y < 3264) Direction.NORTH else Direction.SOUTH
             AgilityHandler.forceWalk(
                 player,
@@ -40,7 +33,7 @@ class BarrowsShortcut : InteractionListener {
                 0.0,
                 null,
             )
-            return@queueScript stopExecuting(player)
+            return@on true
         }
     }
 }
