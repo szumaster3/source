@@ -1,9 +1,11 @@
 package core.cache.crypto
 
 /**
- * The ISAACCipher class implements the ISAAC (Indirection, Shift, Accumulate, Add, and Count) cipher algorithm.
- * This cipher is primarily used for random number generation in cryptographic applications.
- * The class uses a set of internal memory and results to generate pseudo-random numbers.
+ * ISAAC cipher implementation based on Bob Jenkins' original algorithm.
+ * See: http://en.wikipedia.org/wiki/ISAAC_(cipher)
+ * Source: http://www.burtleburtle.net/bob/java/rand/Rand.java
+ *
+ * @author Graham Edgecombe
  */
 class ISAACCipher(
     seed: IntArray,

@@ -6,9 +6,7 @@ package core.cache
  * @property id the id.
  * @constructor Create empty Cache index.
  */
-enum class CacheIndex(
-    val id: Int,
-) {
+enum class CacheIndex(val id: Int, ) {
     ANIMATIONS(0),
     SKELETONS(1),
     CONFIGURATION(2),

@@ -1,26 +1,11 @@
 package core.cache.crypto
 
 /**
- * The type Isaac pair.
- */
-class ISAACPair
-/**
- * Instantiates a new Isaac pair.
+ * Represents a ISAAC key pair, for both input and output.
  *
- * @param input  the input
- * @param output the output
+ * @author Discardedx2
  */
-(
-    /**
-     * Gets input.
-     *
-     * @return the input
-     */
+class ISAACPair(
     val input: ISAACCipher,
-    /**
-     * Gets output.
-     *
-     * @return the output
-     */
     @JvmField val output: ISAACCipher,
 )
