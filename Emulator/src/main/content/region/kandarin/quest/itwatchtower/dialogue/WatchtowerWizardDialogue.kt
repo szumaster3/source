@@ -384,7 +384,7 @@ class WatchtowerWizardDialogue(player: Player? = null) : Dialogue(player) {
 
             945 -> playerl(FaceAnim.HALF_GUILTY, "I am still working to rid us of the shamans...").also { stage++ }
             946 -> npc(FaceAnim.FRIENDLY,"May you have success in your task.").also { stage = END_DIALOGUE }
-            947 -> npc(FaceAnim.FRIENDLY,"Well, you could ask the Watchtower Wizard for one.").also { stage = END_DIALOGUE }
+            947 -> npcl(FaceAnim.FRIENDLY,"Well, you could ask the Watchtower Wizard for one.").also { stage = END_DIALOGUE }
 
             948 -> player(FaceAnim.HAPPY,"Indeed it did! I wiped out those ogre shamans!").also { stage++ }
             949 -> npc(FaceAnim.HAPPY, "Magnificent! At last you've brought all the crystals.").also { stage = 1200 }
@@ -439,6 +439,7 @@ class WatchtowerWizardDialogue(player: Player? = null) : Dialogue(player) {
                 npcl(FaceAnim.LAUGH, "Ho, ho, ho! A comedian to the finish. There it is, in your backpack!")
                 stage = END_DIALOGUE
             } else {
+                end()
                 npcl(FaceAnim.THINKING, "Never mind, have another...")
                 addItem(player, Items.SPELL_SCROLL_2396, 1)
             }
