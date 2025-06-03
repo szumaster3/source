@@ -2,6 +2,9 @@ package content.region.kandarin.quest.itwatchtower.handlers
 
 import content.data.GameAttributes
 import content.data.LightSource
+import content.global.handlers.iface.warning.WarningManager
+import content.global.handlers.iface.warning.Warnings
+import content.region.kandarin.quest.itwatchtower.cutscene.EnclaveCutscene
 import content.region.kandarin.quest.itwatchtower.dialogue.BattlementDialogue
 import content.region.kandarin.quest.itwatchtower.dialogue.CityGuardDialogue
 import content.region.kandarin.quest.itwatchtower.dialogue.OgreGuardNorthWestGateDialogue
@@ -466,7 +469,31 @@ class WatchTowerListener : InteractionListener {
             return@on true
         }
 
-        onUseWith(IntType.NPC, Items.CAVE_NIGHTSHADE_2398, NPCs.ENCLAVE_GUARD_870) { _, _, _ ->
+        /*
+         * Handles entrance to enclave cave.
+         */
+
+        on(Scenery.CAVE_ENTRANCE_2804, IntType.SCENERY, "enter") { player, _ ->
+            sendNPCDialogue(player, NPCs.ENCLAVE_GUARD_870, "No you don't!", FaceAnim.OLD_DEFAULT)
+            return@on true
+        }
+
+        /*
+         * Handles using cave nightshade on an enclave guard.
+         */
+
+        onUseWith(IntType.NPC, Items.CAVE_NIGHTSHADE_2398, NPCs.ENCLAVE_GUARD_870) { player, _, with ->
+            sendSequenceDialogue(player,
+                npcLine(with.asNpc(), FaceAnim.OLD_DEFAULT, "What is this? Arrrrgh! I cannot stand this plant! Argh,", "it burns! It burns!"),
+                onComplete = {
+                    if (!WarningManager.isDisabled(player, Warnings.WATCHTOWER_SHAMAN_CAVE)) {
+                        WarningManager.openWarning(player, Warnings.WATCHTOWER_SHAMAN_CAVE)
+                    } else {
+                        EnclaveCutscene(player).start(true)
+                    }
+                    sendMessage(player, "You run past the guard while he's busy.")
+                }
+            )
             return@onUseWith true
         }
     }
