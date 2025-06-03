@@ -27,7 +27,7 @@ class GrindItemListener : InteractionListener {
             val handler = object : SkillDialogueHandler(player, SkillDialogue.ONE_OPTION, grindItem.product) {
 
                 override fun create(amount: Int, index: Int) {
-                    player.pulseManager.run(object : SkillPulse<Item>(player, with.asItem()) {
+                    player.pulseManager.run(object : SkillPulse<Item>(player, Item(grindItem.product)) {
                         var remaining = amount
 
                         init {
