@@ -1,11 +1,9 @@
 package content.global.skill.herblore.potions
 
-import core.game.node.item.Item
-
 /**
  * Represents a generic potion.
  */
-class GenericPotion(val base: Item?, val ingredient: Item?, val level: Int, val experience: Double, val product: Item?) {
+class GenericPotion(val base: Int, val ingredient: Int, val level: Int, val experience: Double, val product: Int?) {
     companion object {
         /**
          * Transforms an unfinished potion into a generic potion.

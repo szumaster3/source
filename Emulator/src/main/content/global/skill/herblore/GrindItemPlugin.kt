@@ -23,7 +23,7 @@ import kotlin.math.roundToInt
 class GrindItemPlugin : UseWithHandler(Items.PESTLE_AND_MORTAR_233) {
 
     override fun newInstance(arg: Any?): Plugin<Any>? {
-        for (grind in GrindingItem.values()) {
+        for (grind in GrindItem.values()) {
             for (i in grind.items) {
                 addHandler(i, ITEM_TYPE, this)
             }
@@ -32,7 +32,7 @@ class GrindItemPlugin : UseWithHandler(Items.PESTLE_AND_MORTAR_233) {
     }
 
     override fun handle(event: NodeUsageEvent): Boolean {
-        val grind = GrindingItem.forID(if (event.usedItem.id == 233) event.baseItem.id else event.usedItem.id)
+        val grind = GrindItem.forID(if (event.usedItem.id == 233) event.baseItem.id else event.usedItem.id)
         val handler = object : SkillDialogueHandler(event.player, SkillDialogue.ONE_OPTION, grind!!.product) {
             override fun create(amount: Int, index: Int) {
                 player.pulseManager.run(object : SkillPulse<Item>(player, event.usedItem) {
@@ -68,11 +68,11 @@ class GrindItemPlugin : UseWithHandler(Items.PESTLE_AND_MORTAR_233) {
                                 amountInInventory(player, FISHING_BAIT)
                             }
                             if (removeItem(player, Item(node.id, quantity))) {
-                                addItem(player, GrindingItem.forID(node.id)!!.product, quantity)
+                                addItem(player, GrindItem.forID(node.id)!!.product, quantity)
                             }
                         } else {
                             if (removeItem(player, Item(node.id, 1))) {
-                                addItem(player, GrindingItem.forID(node.id)!!.product)
+                                addItem(player, GrindItem.forID(node.id)!!.product)
                             }
                         }
                         amt--

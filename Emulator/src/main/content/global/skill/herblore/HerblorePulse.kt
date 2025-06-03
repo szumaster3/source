@@ -30,21 +30,20 @@ class HerblorePulse(player: Player?, node: Item?, private var amount: Int, priva
 
         val watchtowerPotions = intArrayOf(Items.VIAL_2389, Items.VIAL_2390, Items.POTION_2394)
         potion.product?.let {
-            if (watchtowerPotions.contains(it.id) && !isQuestComplete(player, Quests.WATCHTOWER)) {
+            if (watchtowerPotions.contains(it) && !isQuestComplete(player, Quests.WATCHTOWER)) {
                 sendMessage(player, "Hmmm...perhaps I shouldn't try to mix these items together.")
                 sendMessage(player, "It might have unpredictable results...")
                 return false
             }
         }
 
-        return inInventory(player, potion.base?.id ?: return false) &&
-                inInventory(player, potion.ingredient?.id ?: return false)
+        return inInventory(player, potion.base ?: return false) && inInventory(player, potion.ingredient ?: return false)
     }
 
     override fun animate() {}
 
     override fun reward(): Boolean {
-        val isUnfinished = potion.base?.id == VIAL_OF_WATER
+        val isUnfinished = potion.base == VIAL_OF_WATER
 
         if (initialAmount == 1 && delay == 1) {
             animate(player, ANIMATION)
@@ -69,9 +68,9 @@ class HerblorePulse(player: Player?, node: Item?, private var amount: Int, priva
 
         if (cycles == 0) animate(player, ANIMATION)
 
-        if (inInventory(player, base.id) && inInventory(player, ingredient.id) && player.inventory.remove(base, ingredient)) {
-            addItem(player, product.id)
-            val herb = ingredient.name.lowercase().replace("clean", "").trim()
+        if (inInventory(player, base) && inInventory(player, ingredient) && player.inventory.remove(base.asItem(), ingredient.asItem())) {
+            addItem(player, product)
+            val herb = getItemName(ingredient).lowercase().replace("clean", "").trim()
             sendMessage(player, "You put the $herb into the vial of water.")
             playAudio(player, Sounds.GRIND_2608)
 
@@ -87,10 +86,11 @@ class HerblorePulse(player: Player?, node: Item?, private var amount: Int, priva
         val ingredient = potion.ingredient ?: return
         val product = potion.product ?: return
 
-        if (inInventory(player, base.id) && inInventory(player, ingredient.id) && player.inventory.remove(base, ingredient)) {
-            addItem(player, product.id)
+        if (inInventory(player, base) && inInventory(player, ingredient) && player.inventory.remove(base.asItem(), ingredient.asItem())) {
+            addItem(player, product)
             rewardXP(player, Skills.HERBLORE, potion.experience)
-            sendMessage(player, "You mix the ${ingredient.name.lowercase()} into your potion.")
+                val item =  getItemName(ingredient).lowercase()
+            sendMessage(player, "You mix the $item into your potion.")
 
             playAudio(player, Sounds.GRIND_2608)
             animate(player, ANIMATION)

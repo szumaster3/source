@@ -5,7 +5,7 @@ import org.rs.consts.Items
 /**
  * Represents an item that can be ground down.
  */
-enum class GrindingItem(val items: Set<Int>, val product: Int, val message: String) {
+enum class GrindItem(val items: Set<Int>, val product: Int, val message: String) {
     UNICORN_HORN(setOf(Items.UNICORN_HORN_237), Items.UNICORN_HORN_DUST_235, "You grind the Unicorn horn to dust."),
     KEBBIT_TEETH(setOf(Items.KEBBIT_TEETH_10109), Items.KEBBIT_TEETH_DUST_10111, "You grind the Kebbit teeth to dust."),
     BIRDS_NEST(setOf(Items.BIRDS_NEST_5070, Items.BIRDS_NEST_5071, Items.BIRDS_NEST_5072, Items.BIRDS_NEST_5073, Items.BIRDS_NEST_5074, Items.BIRDS_NEST_5075), Items.CRUSHED_NEST_6693, "You grind the Bird's nest down."),
@@ -27,14 +27,14 @@ enum class GrindingItem(val items: Set<Int>, val product: Int, val message: Stri
     GUAM_LEAF(setOf(Items.CLEAN_GUAM_249), Items.GROUND_GUAM_6681, "You grind down the guam.");
 
     companion object {
-        private val map: Map<Int, GrindingItem> = values().flatMap {
+        private val map: Map<Int, GrindItem> = values().flatMap {
             grindItem -> grindItem.items.map { it to grindItem }
         }.toMap()
 
         /**
-         * Finds the [GrindingItem] for given item id.
+         * Finds the [GrindItem] for given item id.
          */
         @JvmStatic
-        fun forID(item: Int): GrindingItem? = map[item]
+        fun forID(id: Int): GrindItem? = map[id]
     }
 }
