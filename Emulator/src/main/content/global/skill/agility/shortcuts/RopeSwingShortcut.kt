@@ -44,9 +44,8 @@ class RopeSwingShortcut : OptionHandler() {
                         return true
                     }
 
-                    // https://classic.runescape.wiki/w/Tree_Swing
-                    if (getStatLevel(player, Skills.AGILITY) < 30) {
-                        sendDialogue(player, "You need an agility level of 30 to negotiate this obstacle.")
+                    if (getStatLevel(player, Skills.AGILITY) < 10) {
+                        sendDialogue(player, "You need an agility level of 10 to negotiate this obstacle.")
                         return true
                     }
 
