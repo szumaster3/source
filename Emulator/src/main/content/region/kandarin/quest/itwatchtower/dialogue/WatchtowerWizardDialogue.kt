@@ -364,10 +364,15 @@ class WatchtowerWizardDialogue(player: Player? = null) : Dialogue(player) {
             }
 
             905 -> npc(FaceAnim.NOD_NO, "Nope. Try the Watchtower Wizard.").also { stage = END_DIALOGUE }
-            940 -> if(removeItem(player, Items.MAGIC_OGRE_POTION_2395)) {
-                player("I have made the potion.").also { stage++ }
-            } else {
-                playerl(FaceAnim.HALF_ASKING, "Can you tell me again what I need for the potion?").also { stage = 950 }
+            940 -> {
+                if(removeItem(player, Items.POTION_2394)) {
+                    addItem(player, Items.MAGIC_OGRE_POTION_2395)
+                    player("I have made the potion.")
+                    stage = 941
+                } else {
+                    playerl(FaceAnim.HALF_ASKING, "Can you tell me again what I need for the potion?")
+                    stage = 950
+                }
             }
             941 -> npc(FaceAnim.FRIENDLY, "That's great news; let me infuse it with magic...").also { stage++ }
             942 -> {

@@ -10,6 +10,7 @@ import java.util.*
  */
 enum class FinishedPotion(val unfinished: UnfinishedPotion, val ingredient: Item, val level: Int, val experience: Double, val potion: Item, ) {
     ATTACK_POTION(UnfinishedPotion.GUAM, Item(Items.EYE_OF_NEWT_221), 3, 25.0, Item(Items.ATTACK_POTION3_121)),
+    VIAL_JANGERBERRIES_AND_GUAM_LEAVES(UnfinishedPotion.GUAM, Item(Items.JANGERBERRIES_247), 14, 10.0, Item(Items.VIAL_2390)),
     ANTIPOISON_POTION(UnfinishedPotion.MARRENTILL, Item(Items.UNICORN_HORN_DUST_235), 5, 37.5, Item(Items.ANTIPOISON3_175)),
     RELICYM_BALM(UnfinishedPotion.ROGUE_PURSE, Item(Items.CLEAN_SNAKE_WEED_1526), 8, 0.0, Item(Items.RELICYMS_BALM3_4844)),
     STRENGTH_POTION(UnfinishedPotion.TARROMIN, Item(Items.LIMPWURT_ROOT_225), 12, 50.0, Item(Items.STRENGTH_POTION3_115)),

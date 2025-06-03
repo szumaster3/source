@@ -24375,9 +24375,9 @@
     "id": "2388"
   },
   {
-    "destroy_message": "You can reclaim this item from the place you found it.",
+    "destroy_message": "This item will likely break if you put it down here, and you will have to go looking for another.",
     "shop_price": "5",
-    "examine": "An empty glass vial.",
+    "examine": "An infusion of water and jangerberries.",
     "grand_exchange_price": "1",
     "durability": null,
     "name": "Vial",
@@ -24386,9 +24386,9 @@
     "id": "2389"
   },
   {
-    "destroy_message": "You can reclaim this item from the place you found it.",
+    "destroy_message": "This item will likely break if you put it down here, and you will have to go looking for another.",
     "shop_price": "5",
-    "examine": "An empty glass vial.",
+    "examine": "A mixture of jangerberries and a guam leaf in a vial.",
     "grand_exchange_price": "1",
     "durability": null,
     "name": "Vial",
@@ -24427,8 +24427,8 @@
     "id": "2393"
   },
   {
-    "destroy_message": "You can reclaim this item from the place you found it.",
-    "examine": "This is meant to be good for spots.",
+    "destroy_message": "This item will likely break if you put it down here, and you will have to go looking for another.",
+    "examine": "A strange brew.",
     "grand_exchange_price": "157",
     "durability": null,
     "name": "Potion",

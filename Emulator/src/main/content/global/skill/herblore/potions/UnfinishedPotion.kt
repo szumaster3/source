@@ -11,6 +11,8 @@ import java.util.*
  */
 enum class UnfinishedPotion(val base: Item, val ingredient: Item, val level: Int, val potion: Item, ) {
     GUAM(HerblorePulse.VIAL_OF_WATER, Herbs.GUAM.product, 3, Item(Items.GUAM_POTIONUNF_91)),
+    JANGERBERRIES(HerblorePulse.VIAL_OF_WATER, Item(Items.JANGERBERRIES_247), 1, Item(Items.VIAL_2389)),
+    MAGIC_OGRE(HerblorePulse.WATCHTOWER_VIAL, Item(Items.GROUND_BAT_BONES_2391), 14, Item(Items.POTION_2394)),
     ROGUE_PURSE(HerblorePulse.VIAL_OF_WATER, Herbs.ROGUES_PUSE.product, 3, Item(Items.ROGUES_PURSE_POTIONUNF_4840)),
     MARRENTILL(HerblorePulse.VIAL_OF_WATER, Herbs.MARRENTILL.product, 5, Item(Items.MARRENTILL_POTIONUNF_93)),
     TARROMIN(HerblorePulse.VIAL_OF_WATER, Herbs.TARROMIN.product, 12, Item(Items.TARROMIN_POTIONUNF_95)),

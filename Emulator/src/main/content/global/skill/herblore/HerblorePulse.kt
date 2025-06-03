@@ -36,7 +36,7 @@ class HerblorePulse(
     override fun animate() {}
 
     override fun reward(): Boolean {
-        if (potion.base!!.id == VIAL_OF_WATER.id) {
+        if (potion.base!!.id == VIAL_OF_WATER.id || potion.base.id == WATCHTOWER_VIAL.id) {
             if (initialAmount == 1 && delay == 1) {
                 animate(player, ANIMATION)
                 delay = 3
@@ -107,7 +107,7 @@ class HerblorePulse(
 
     companion object {
         @JvmField val VIAL_OF_WATER = Item(Items.VIAL_OF_WATER_227)
-
+        @JvmField val WATCHTOWER_VIAL = Item(Items.VIAL_2390)
         @JvmField val COCONUT_MILK = Item(Items.COCONUT_MILK_5935)
         private const val ANIMATION = Animations.MIX_POTION_363
     }
