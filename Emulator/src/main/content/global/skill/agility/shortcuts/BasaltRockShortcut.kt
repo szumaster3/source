@@ -51,7 +51,9 @@ class BasaltRockShortcut : AgilityShortcut {
 
         submitWorldPulse(object : Pulse(1, player) {
             override fun pulse(): Boolean {
-                val (id, _, pointA, pointB) = path
+                val id = path.id
+                val pointA = path.from
+                val pointB = path.to
 
                 val (start, end) = when (player.location) {
                     pointA -> Pair(pointA, pointB)
