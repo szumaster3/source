@@ -3,6 +3,7 @@ package content.global.skill.herblore
 import core.api.addItem
 import core.api.amountInInventory
 import core.api.removeItem
+import core.api.ui.repositionChild
 import core.game.dialogue.SkillDialogueHandler
 import core.game.interaction.IntType
 import core.game.interaction.InteractionListener
@@ -10,6 +11,7 @@ import core.game.node.entity.skill.SkillPulse
 import core.game.node.item.Item
 import core.game.world.update.flag.context.Animation
 import org.rs.consts.Animations
+import org.rs.consts.Components
 import org.rs.consts.Items
 import kotlin.math.ceil
 import kotlin.math.roundToInt
@@ -73,7 +75,7 @@ class GrindItemListener : InteractionListener {
                 }
             }
             handler.open()
-            // PacketRepository.send(RepositionChild::class.java, ChildPositionContext(player, 309, 2, 210, 15))
+            repositionChild(player, Components.SKILL_MULTI1_309, 2, 210, 15)
             return@onUseWith true
         }
     }
