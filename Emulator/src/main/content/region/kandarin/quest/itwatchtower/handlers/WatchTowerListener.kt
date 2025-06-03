@@ -22,6 +22,7 @@ import core.game.dialogue.SequenceDialogue.sendSequenceDialogue
 import core.game.global.action.DoorActionHandler
 import core.game.interaction.IntType
 import core.game.interaction.InteractionListener
+import core.game.node.entity.combat.ImpactHandler
 import core.game.node.entity.npc.NPC
 import core.game.node.entity.player.Player
 import core.game.node.entity.player.link.TeleportManager
@@ -37,6 +38,7 @@ class WatchTowerListener : InteractionListener {
         val SKAVID_CAVE_ENTRANCE = (Scenery.CAVE_ENTRANCE_2805..Scenery.CAVE_ENTRANCE_2810).toIntArray()
         val SKAVID_CAVE_EXIT = (Scenery.CAVE_EXIT_2817..Scenery.CAVE_EXIT_2822).toIntArray()
         val ENTRANCE_LOCATION = arrayOf(Location(2563, 3024, 0), Location(2524, 3070, 0), Location(2541, 3054, 0), Location(2554, 3054, 0), Location(2552, 3035, 0), Location(2529, 3012, 0))
+        val OGRE_POTIONS = intArrayOf(Items.POTION_2394,Items.VIAL_2389, Items.VIAL_2390)
     }
 
     override fun defineListeners() {
@@ -496,6 +498,32 @@ class WatchTowerListener : InteractionListener {
             )
             return@onUseWith true
         }
+
+        /*
+         * Handles bad mix of magic ogre potion.
+         */
+
+        onUseWith(IntType.ITEM, Items.CLEAN_GUAM_249, Items.VIAL_2389) { player, used, with ->
+            if(removeItem(player, used.asItem()) && removeItem(player, with.asItem())) {
+                impact(player, 5, ImpactHandler.HitsplatType.NORMAL)
+                sendGraphics(Graphics.FIRE_WAVE_IMPACT_157, player.location)
+                addItem(player, Items.VIAL_229)
+            }
+            return@onUseWith true
+        }
+
+        /*
+         * Handles using Ogre potion on Watchtower wizard after the quest.
+         */
+
+        onUseWith(IntType.NPC, OGRE_POTIONS, NPCs.WATCHTOWER_WIZARD_872) { player, _, with ->
+            sendSequenceDialogue(player,
+                npcLine(with.asNpc(), FaceAnim.HALF_ASKING, "Another potion? Ooo no, I don't think so..."),
+                npcLine(with.asNpc(), FaceAnim.NOD_NO, "I can't let you use this anymore, it is just too dangerous", "I'd better take it from you before you injure yourself.")
+            )
+            return@onUseWith true
+        }
+
     }
 
     private fun searchBush(player: Player, item: Pair<Int, String>?): Boolean {

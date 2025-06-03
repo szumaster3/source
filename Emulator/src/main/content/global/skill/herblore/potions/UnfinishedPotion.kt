@@ -9,9 +9,10 @@ import java.util.*
 /**
  * Represents an unfinished potions.
  */
-enum class UnfinishedPotion(val base: Item, val ingredient: Item, val level: Int, val potion: Item, ) {
+enum class UnfinishedPotion(val base: Item, val ingredient: Item, val level: Int, val potion: Item) {
+    EVAPORATE(HerblorePulse.VIAL_OF_WATER, Item(Items.GROUND_BAT_BONES_2391), 0, Item(Items.VIAL_229)),
     GUAM(HerblorePulse.VIAL_OF_WATER, Herbs.GUAM.product, 3, Item(Items.GUAM_POTIONUNF_91)),
-    JANGERBERRIES(HerblorePulse.VIAL_OF_WATER, Item(Items.JANGERBERRIES_247), 1, Item(Items.VIAL_2389)),
+    JANGERBERRY(HerblorePulse.VIAL_OF_WATER, Item(Items.JANGERBERRIES_247), 1, Item(Items.VIAL_2389)),
     MAGIC_OGRE(HerblorePulse.WATCHTOWER_VIAL, Item(Items.GROUND_BAT_BONES_2391), 14, Item(Items.POTION_2394)),
     ROGUE_PURSE(HerblorePulse.VIAL_OF_WATER, Herbs.ROGUES_PUSE.product, 3, Item(Items.ROGUES_PURSE_POTIONUNF_4840)),
     MARRENTILL(HerblorePulse.VIAL_OF_WATER, Herbs.MARRENTILL.product, 5, Item(Items.MARRENTILL_POTIONUNF_93)),

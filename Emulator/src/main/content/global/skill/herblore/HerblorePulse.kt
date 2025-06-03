@@ -30,6 +30,16 @@ class HerblorePulse(
             sendMessage(player, "You need a Herblore level of at least " + potion.level + " in order to do this.")
             return false
         }
+        val watchtowerPotions = intArrayOf(Items.VIAL_2389, Items.VIAL_2390, Items.POTION_2394)
+
+        potion.product?.let {
+            if (watchtowerPotions.contains(it.id) && !isQuestComplete(player, Quests.WATCHTOWER)) {
+                sendMessage(player, "Hmmm...perhaps I shouldn't try to mix these items together.")
+                sendMessage(player, "It might have unpredictable results...")
+                return false
+            }
+        }
+
         return inInventory(player, potion.base!!.id) && inInventory(player, potion.ingredient!!.id)
     }
 
