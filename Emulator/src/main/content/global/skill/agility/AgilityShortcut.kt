@@ -3,6 +3,7 @@ package content.global.skill.agility
 import core.api.getStatLevel
 import core.api.inEquipment
 import core.api.sendMessage
+import core.api.utils.Vector
 import core.cache.def.impl.SceneryDefinition
 import core.game.interaction.OptionHandler
 import core.game.node.Node
@@ -15,14 +16,14 @@ import core.plugin.Plugin
 import org.rs.consts.Items
 
 /**
- * Represents a base class for agility shortcuts in the game.
+ * Base class for agility shortcuts.
  *
- * @property ids Object ids associated with this shortcut (nullable).
+ * @property ids The shortcut scenery object IDs.
  * @property level Required agility level.
- * @property experience Experience gained upon success.
- * @property canFail Whether this shortcut can fail.
- * @property failChance Chance of failure (0.0 to 1.0).
- * @property options Interaction options (nullable).
+ * @property experience Experience reward.
+ * @property canFail Whether the shortcut can fail.
+ * @property failChance Chance to fail (0.0–1.0).
+ * @property options Interaction options.
  *
  * @author Woah
  */
@@ -35,8 +36,9 @@ abstract class AgilityShortcut(
     vararg val options: String?
 ) : OptionHandler() {
 
-    constructor(ids: IntArray?, level: Int, experience: Double, vararg options: String?) :
-            this(ids, level, experience, false, 0.0, *options)
+    constructor(ids: IntArray?, level: Int, experience: Double, vararg options: String?) : this(
+        ids, level, experience, false, 0.0, *options
+    )
 
     @Throws(Throwable::class)
     override fun newInstance(arg: Any?): Plugin<Any> {
@@ -45,48 +47,43 @@ abstract class AgilityShortcut(
     }
 
     override fun handle(player: Player, node: Node, option: String): Boolean {
-        if (!checkRequirements(player)) {
-            return true
-        }
+        if (!checkRequirements(player)) return true
         run(player, node.asScenery(), option, checkFail(player, node.asScenery(), option))
         return true
     }
 
     /**
-     * Runs the shortcut logic.
+     * Executes the shortcut logic.
      *
      * @param player The player using the shortcut.
      * @param scenery The obstacle scenery.
-     * @param option The chosen interaction option.
+     * @param option The interaction option.
      * @param failed Whether the attempt failed.
      */
     abstract fun run(player: Player, scenery: Scenery, option: String, failed: Boolean)
 
     /**
-     * Checks if the player meets the agility and equipment requirements.
-     *
-     * @param player The player to check.
-     * @return True if requirements are met, false otherwise.
+     * Checks if the player meets requirements.
      */
     open fun checkRequirements(player: Player): Boolean {
-        if (getStatLevel(player, Skills.AGILITY) < level) {
-            sendMessage(player, "You need an agility level of at least $level to negotiate this obstacle.")
-            return false
-        }
         if (inEquipment(player, Items.SLED_4084, 1)) {
             sendMessage(player, "You can't do that on a sled.")
+            return false
+        }
+        if (getStatLevel(player, Skills.AGILITY) < level) {
+            sendMessage(player, "You need an agility level of at least $level to negotiate this obstacle.")
             return false
         }
         return true
     }
 
     /**
-     * Check if the shortcut attempt has failed based on chance.
+     * Check if the shortcut attempt failed based on the [failChance].
      *
      * @param player The player attempting the shortcut.
      * @param scenery The obstacle scenery.
      * @param option The chosen interaction option.
-     * @return True if the attempt failed, false otherwise.
+     * @return `True` if the attempt failed, `false` otherwise.
      */
     private fun checkFail(player: Player, scenery: Scenery, option: String): Boolean {
         if (!canFail) return false
@@ -94,67 +91,43 @@ abstract class AgilityShortcut(
     }
 
     /**
-     * Registers this shortcut's handlers to its associated object definitions.
+     * Registers shortcut handlers to associated scenery objects.
      *
      * @param shortcut The agility shortcut instance.
      */
-    open fun configure(shortcut: AgilityShortcut) {
-        shortcut.ids?.forEach { objectId ->
-            val def = SceneryDefinition.forId(objectId)
-            shortcut.options.forEach { opt ->
-                if (opt != null) {
-                    def.handlers["option:$opt"] = shortcut
-                }
+    fun configure(shortcut: AgilityShortcut) {
+        shortcut.ids?.forEach { id ->
+            val def = SceneryDefinition.forId(id)
+            shortcut.options.filterNotNull().forEach { op ->
+                def.handlers["option:$op"] = shortcut
             }
         }
     }
 
     /**
-     * Returns the mirrored direction for object orientation.
+     * Returns the given direction rotated 90 degrees clockwise.
      *
      * @param direction The original direction.
-     * @return The mirrored direction.
+     * @return The rotated direction.
      */
-    protected fun getObjectDirection(direction: Direction): Direction = when (direction) {
-        Direction.NORTH -> Direction.EAST
-        Direction.SOUTH -> Direction.WEST
-        Direction.EAST -> Direction.NORTH
-        Direction.WEST -> Direction.SOUTH
-        Direction.NORTH_WEST -> Direction.NORTH_EAST
-        Direction.NORTH_EAST -> Direction.SOUTH_EAST
-        Direction.SOUTH_WEST -> Direction.NORTH_WEST
-        Direction.SOUTH_EAST -> Direction.SOUTH_WEST
+    protected fun getObjectDirection(direction: Direction): Direction {
+        val x = direction.stepX
+        val y = direction.stepY
+        return Direction.getDirection(y, -x)
     }
 
     /**
-     * Calculates destination location after moving through a pipe obstacle.
+     * Calculates the target location after moving a given number of steps through a pipe obstacle.
      *
-     * @param player The player.
-     * @param scenery The obstacle.
-     * @param steps Number of tiles to move.
-     * @return The target location.
+     * @param player The player moving.
+     * @param scenery The pipe obstacle.
+     * @param steps Number of steps to move.
+     * @return The destination location.
      */
     fun pipeDestination(player: Player, scenery: Scenery, steps: Int): Location {
         player.faceLocation(scenery.location)
-        var diffX = scenery.location.x - player.location.x
-        diffX = diffX.coerceIn(-1, 1)
-        var diffY = scenery.location.y - player.location.y
-        diffY = diffY.coerceIn(-1, 1)
-        return player.location.transform(diffX * steps, diffY * steps, 0)
-    }
-
-    /**
-     * Calculates destination location based on step count and difference in position.
-     *
-     * @param player The player.
-     * @param scenery The obstacle.
-     * @param steps Number of tiles to move.
-     * @return The target location.
-     */
-    fun agilityDestination(player: Player, scenery: Scenery, steps: Int): Location {
-        player.faceLocation(scenery.location)
-        val diffX = scenery.location.x - player.location.x
-        val diffY = scenery.location.y - player.location.y
-        return player.location.transform(diffX * steps, diffY * steps, 0)
+        val origin = Vector(player.location)
+        val direction = Vector.betweenLocs(player.location, scenery.location).normalized()
+        return (origin + direction * steps).toLocation()
     }
 }
