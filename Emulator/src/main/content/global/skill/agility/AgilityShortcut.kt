@@ -3,7 +3,6 @@ package content.global.skill.agility
 import core.api.getStatLevel
 import core.api.inEquipment
 import core.api.sendMessage
-import core.api.utils.Vector
 import core.cache.def.impl.SceneryDefinition
 import core.game.interaction.OptionHandler
 import core.game.node.Node
@@ -16,14 +15,14 @@ import core.plugin.Plugin
 import org.rs.consts.Items
 
 /**
- * Base class for agility shortcuts.
+ * Represents a base class for agility shortcuts in the game.
  *
- * @property ids The shortcut scenery object IDs.
+ * @property ids Object ids associated with this shortcut (nullable).
  * @property level Required agility level.
- * @property experience Experience reward.
- * @property canFail Whether the shortcut can fail.
- * @property failChance Chance to fail (0.0–1.0).
- * @property options Interaction options.
+ * @property experience Experience gained upon success.
+ * @property canFail Whether this shortcut can fail.
+ * @property failChance Chance of failure (0.0 to 1.0).
+ * @property options Interaction options (nullable).
  *
  * @author Woah
  */
@@ -36,9 +35,8 @@ abstract class AgilityShortcut(
     vararg val options: String?
 ) : OptionHandler() {
 
-    constructor(ids: IntArray?, level: Int, experience: Double, vararg options: String?) : this(
-        ids, level, experience, false, 0.0, *options
-    )
+    constructor(ids: IntArray?, level: Int, experience: Double, vararg options: String?) :
+            this(ids, level, experience, false, 0.0, *options)
 
     @Throws(Throwable::class)
     override fun newInstance(arg: Any?): Plugin<Any> {
@@ -63,7 +61,10 @@ abstract class AgilityShortcut(
     abstract fun run(player: Player, scenery: Scenery, option: String, failed: Boolean)
 
     /**
-     * Checks if the player meets requirements.
+     * Checks if the player meets the agility and equipment requirements.
+     *
+     * @param player The player to check.
+     * @return True if requirements are met, false otherwise.
      */
     open fun checkRequirements(player: Player): Boolean {
         if (inEquipment(player, Items.SLED_4084, 1)) {
@@ -78,12 +79,12 @@ abstract class AgilityShortcut(
     }
 
     /**
-     * Check if the shortcut attempt failed based on the [failChance].
+     * Check if the shortcut attempt has failed based on chance.
      *
      * @param player The player attempting the shortcut.
      * @param scenery The obstacle scenery.
      * @param option The chosen interaction option.
-     * @return `True` if the attempt failed, `false` otherwise.
+     * @return True if the attempt failed, false otherwise.
      */
     private fun checkFail(player: Player, scenery: Scenery, option: String): Boolean {
         if (!canFail) return false
@@ -91,43 +92,67 @@ abstract class AgilityShortcut(
     }
 
     /**
-     * Registers shortcut handlers to associated scenery objects.
+     * Registers this shortcut's handlers to its associated object definitions.
      *
      * @param shortcut The agility shortcut instance.
      */
-    fun configure(shortcut: AgilityShortcut) {
-        shortcut.ids?.forEach { id ->
-            val def = SceneryDefinition.forId(id)
-            shortcut.options.filterNotNull().forEach { op ->
-                def.handlers["option:$op"] = shortcut
+    open fun configure(shortcut: AgilityShortcut) {
+        shortcut.ids?.forEach { objectId ->
+            val def = SceneryDefinition.forId(objectId)
+            shortcut.options.forEach { opt ->
+                if (opt != null) {
+                    def.handlers["option:$opt"] = shortcut
+                }
             }
         }
     }
 
     /**
-     * Returns the given direction rotated 90 degrees clockwise.
+     * Returns the mirrored direction for object orientation.
      *
      * @param direction The original direction.
-     * @return The rotated direction.
+     * @return The mirrored direction.
      */
-    protected fun getObjectDirection(direction: Direction): Direction {
-        val x = direction.stepX
-        val y = direction.stepY
-        return Direction.getDirection(y, -x)
+    protected fun getObjectDirection(direction: Direction): Direction = when (direction) {
+        Direction.NORTH -> Direction.EAST
+        Direction.SOUTH -> Direction.WEST
+        Direction.EAST -> Direction.NORTH
+        Direction.WEST -> Direction.SOUTH
+        Direction.NORTH_WEST -> Direction.NORTH_EAST
+        Direction.NORTH_EAST -> Direction.SOUTH_EAST
+        Direction.SOUTH_WEST -> Direction.NORTH_WEST
+        Direction.SOUTH_EAST -> Direction.SOUTH_WEST
     }
 
     /**
-     * Calculates the target location after moving a given number of steps through a pipe obstacle.
+     * Calculates destination location after moving through a pipe obstacle.
      *
-     * @param player The player moving.
-     * @param scenery The pipe obstacle.
-     * @param steps Number of steps to move.
-     * @return The destination location.
+     * @param player The player.
+     * @param scenery The obstacle.
+     * @param steps Number of tiles to move.
+     * @return The target location.
      */
     fun pipeDestination(player: Player, scenery: Scenery, steps: Int): Location {
         player.faceLocation(scenery.location)
-        val origin = Vector(player.location)
-        val direction = Vector.betweenLocs(player.location, scenery.location).normalized()
-        return (origin + direction * steps).toLocation()
+        var diffX = scenery.location.x - player.location.x
+        diffX = diffX.coerceIn(-1, 1)
+        var diffY = scenery.location.y - player.location.y
+        diffY = diffY.coerceIn(-1, 1)
+        return player.location.transform(diffX * steps, diffY * steps, 0)
+    }
+
+    /**
+     * Calculates destination location based on step count and difference in position.
+     *
+     * @param player The player.
+     * @param scenery The obstacle.
+     * @param steps Number of tiles to move.
+     * @return The target location.
+     */
+    fun agilityDestination(player: Player, scenery: Scenery, steps: Int): Location {
+        player.faceLocation(scenery.location)
+        val diffX = scenery.location.x - player.location.x
+        val diffY = scenery.location.y - player.location.y
+        return player.location.transform(diffX * steps, diffY * steps, 0)
     }
 }

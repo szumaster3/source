@@ -16,9 +16,6 @@ class Vector(
     val x: Double,
     val y: Double,
 ) {
-
-    constructor(location: Location) : this(location.x.toDouble(), location.y.toDouble())
-
     /**
      * Returns a new normalized vector (a unit vector) with the same direction as the current vector.
      * The normalized vector has a magnitude of 1.
