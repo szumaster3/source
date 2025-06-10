@@ -77,44 +77,43 @@ class BattlefieldNPC(
     override fun getIds(): IntArray = ID
 
     companion object {
-        private val ID =
-            intArrayOf(
-                NPCs.KHAZARD_TROOPER_2245,
-                NPCs.KHAZARD_TROOPER_2246,
-                NPCs.GNOME_67,
-                NPCs.MOUNTED_TERRORBIRD_GNOME_1752,
-                NPCs.GNOME_TROOP_2247,
-                NPCs.GNOME_2249,
-                NPCs.GNOME_2250,
-                NPCs.GNOME_2251,
-                NPCs.TORTOISE_3808,
-                NPCs.MOUNTED_TERRORBIRD_GNOME_6109,
-            )
-        private val GNOMES =
-            intArrayOf(
-                NPCs.GNOME_67,
-                NPCs.MOUNTED_TERRORBIRD_GNOME_1752,
-                NPCs.GNOME_TROOP_2247,
-                NPCs.GNOME_2249,
-                NPCs.GNOME_2250,
-                NPCs.GNOME_2251,
-                NPCs.TORTOISE_3808,
-                NPCs.MOUNTED_TERRORBIRD_GNOME_6109,
-            )
-        private val TROOPERS = intArrayOf(NPCs.KHAZARD_TROOPER_2245, NPCs.KHAZARD_TROOPER_2246)
-        private val TROOPERS_FORCE_CHAT =
-            arrayOf(
-                "Get off of me, ya little pest!",
-                "Die, you filthy goblin!",
-                "Victory will be ours!",
-                "We will crush you!",
-            )
-        private val GNOMES_FORCE_CHAT =
-            arrayOf(
-                "Stop right there, Khazard scum!",
-                "Tally Ho!",
-                "We are the true force of the battlefield!",
-                "Feel the wrath of the goblins!",
-            )
+        private val ID = intArrayOf(
+            NPCs.KHAZARD_TROOPER_2245,
+            NPCs.KHAZARD_TROOPER_2246,
+            NPCs.GNOME_67,
+            NPCs.MOUNTED_TERRORBIRD_GNOME_1752,
+            NPCs.GNOME_TROOP_2247,
+            NPCs.GNOME_2249,
+            NPCs.GNOME_2250,
+            NPCs.GNOME_2251,
+            NPCs.TORTOISE_3808,
+            NPCs.MOUNTED_TERRORBIRD_GNOME_6109
+        )
+        private val GNOMES = intArrayOf(
+            NPCs.GNOME_67,
+            NPCs.MOUNTED_TERRORBIRD_GNOME_1752,
+            NPCs.GNOME_TROOP_2247,
+            NPCs.GNOME_2249,
+            NPCs.GNOME_2250,
+            NPCs.GNOME_2251,
+            NPCs.TORTOISE_3808,
+            NPCs.MOUNTED_TERRORBIRD_GNOME_6109
+        )
+        private val TROOPERS = intArrayOf(
+            NPCs.KHAZARD_TROOPER_2245,
+            NPCs.KHAZARD_TROOPER_2246
+        )
+        private val TROOPERS_FORCE_CHAT = arrayOf(
+            "Get off of me, ya little pest!",
+            "Die, you filthy goblin!",
+            "Victory will be ours!",
+            "We will crush you!"
+        )
+        private val GNOMES_FORCE_CHAT = arrayOf(
+            "Stop right there, Khazard scum!",
+            "Tally Ho!",
+            "We are the true force of the battlefield!",
+            "Feel the wrath of the goblins!"
+        )
     }
 }

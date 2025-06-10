@@ -3,53 +3,76 @@ package content.region.kandarin.handlers.khazard
 import content.data.items.BrokenItem
 import content.region.kandarin.dialogue.TindelMerchantDialogue
 import core.api.*
+import core.cache.def.impl.NPCDefinition
+import core.cache.def.impl.SceneryDefinition
 import core.game.dialogue.FaceAnim
-import core.game.interaction.IntType
-import core.game.interaction.InteractionListener
+import core.game.interaction.OptionHandler
+import core.game.node.Node
 import core.game.node.entity.player.Player
-import core.game.node.entity.skill.Skills
 import core.game.node.item.Item
 import core.game.world.map.Location
+import core.plugin.Initializable
+import core.plugin.Plugin
 import core.tools.RandomFunction
 import org.rs.consts.Items
 import org.rs.consts.NPCs
 import org.rs.consts.Scenery
 import org.rs.consts.Sounds
 
-class TindelMerchantListener : InteractionListener {
-    override fun defineListeners() {
+/**
+ * Handles interaction for the Tindel Merchant NPC
+ * and related scenery in Port Khazard.
+ */
+@Initializable
+class TindelMerchantPlugin : OptionHandler() {
 
-        /*
-         * Handles ring the bell at Port Khazard.
-         */
+    override fun newInstance(arg: Any?): Plugin<Any> {
+        NPCDefinition.forId(TINDEL).handlers["option:talk-to"] = this
+        NPCDefinition.forId(TINDEL).handlers["option:Give-Sword"] = this
 
-        on(ANTIQUE_SHOP_STALL, IntType.SCENERY, "ring-bell") { player, _ ->
-            playGlobalAudio(player.location, BELL_SOUND)
-            sendDialogue(player, "You ring for attention.")
-            runTask(player, 1) {
-                openDialogue(player, TindelMerchantDialogue())
+        SceneryDefinition.forId(ANTIQUE_SHOP_STALL).handlers["option:ring-bell"] = this
+        return this
+    }
+
+    override fun handle(player: Player, node: Node, option: String): Boolean {
+        val optionLower = option.lowercase()
+
+        return when (node.id) {
+            ANTIQUE_SHOP_STALL -> {
+                if (optionLower == "ring-bell") {
+                    playGlobalAudio(player.location, BELL_SOUND)
+                    sendDialogue(player, "You ring for attention.")
+                    runTask(player, 1) {
+                        openDialogue(player, TindelMerchantDialogue())
+                    }
+                    true
+                } else false
             }
-            return@on true
-        }
 
-        /*
-         * Handles interaction options with Tindel Merchant NPCs.
-         */
+            TINDEL -> {
+                when (optionLower) {
+                    "talk-to" -> {
+                        openDialogue(player, TindelMerchantDialogue())
+                        true
+                    }
 
-        on(TINDEL, IntType.NPC, "talk-to", "Give-Sword") { player, _ ->
-            when (getUsedOption(player)) {
-                "talk-to" -> openDialogue(player, TindelMerchantDialogue())
-                "give-sword" -> exchangeRustyWeapon(player)
-                else -> sendMessage(player, "You can't reach!")
+                    "give-sword" -> exchangeRustyWeapon(player)
+                    else -> false
+                }
             }
-            return@on true
+
+            else -> false
         }
     }
 
-    override fun defineDestinationOverrides() {
-        setDest(IntType.NPC, intArrayOf(TINDEL), "talk-to", "give-sword") { _, _ ->
-            return@setDest Location(2678, 3152, 0)
+    override fun getDestination(n: Node?, node: Node?): Location? {
+        val targetId = when (node) {
+            is Node -> node.asNpc().id
+            else -> return null
         }
+        return if (targetId == TINDEL) {
+            Location(2678, 3152, 0)
+        } else null
     }
 
     companion object {
@@ -60,9 +83,6 @@ class TindelMerchantListener : InteractionListener {
         private const val RUSTY_SCIMITAR = Items.RUSTY_SCIMITAR_6721
         private const val FAKE_COINS = Items.COINS_8896
 
-        /**
-         * Roll success for rusty weapons exchange.
-         */
         fun success(player: Player, skill: Int): Boolean {
             val level = player.getSkills().getLevel(skill).toDouble()
             val minChance = 50.0
@@ -70,23 +90,21 @@ class TindelMerchantListener : InteractionListener {
             val maxLevel = 99.0
 
             val successChance = minChance + (level - 1) * (maxChance - minChance) / (maxLevel - 1)
-
             val roll = RandomFunction.random(0.0, 100.0)
             return roll < successChance
         }
 
-        /**
-         * Exchanges a rusty items for a random repaired weapon.
-         *
-         * @param player The player.
-         * @return item.
-         */
         fun exchangeRustyWeapon(player: Player): Boolean {
             val rustyItemId = when {
                 inInventory(player, RUSTY_SWORD) -> RUSTY_SWORD
                 inInventory(player, RUSTY_SCIMITAR) -> RUSTY_SCIMITAR
                 else -> {
-                    sendNPCDialogue(player, TINDEL, "Sorry my friend, but you don't seem to have any swords that need to be identified.", FaceAnim.HALF_GUILTY)
+                    sendNPCDialogue(
+                        player,
+                        TINDEL,
+                        "Sorry my friend, but you don't seem to have any swords that need to be identified.",
+                        FaceAnim.HALF_GUILTY
+                    )
                     return false
                 }
             }
@@ -108,12 +126,7 @@ class TindelMerchantListener : InteractionListener {
                     RUSTY_SWORD -> BrokenItem.EquipmentType.SWORDS
                     RUSTY_SCIMITAR -> BrokenItem.EquipmentType.SCIMITARS
                     else -> null
-                }
-
-                if (equipmentType == null) {
-                    sendNPCDialogue(player, TINDEL, "Sorry my friend, but you don't seem to have any swords that need to be identified.", FaceAnim.HALF_GUILTY)
-                    return@addDialogueAction
-                }
+                } ?: return@addDialogueAction
 
                 val rustyItem = Item(rustyItemId, 1)
                 val repairedItem = BrokenItem.getRepair(equipmentType)
@@ -122,17 +135,22 @@ class TindelMerchantListener : InteractionListener {
                 removeItem(player, Item(Items.COINS_995, 100))
                 removeItem(player, rustyItem)
 
-                val success = success(player, Skills.SMITHING)
-
+                val success = success(player, core.game.node.entity.skill.Skills.SMITHING)
                 if (success) {
                     sendItemDialogue(player, repairedItem.id, "Tindel gives you a $itemName.")
                     addItem(player, repairedItem.id, 1)
                 } else {
-                    sendNPCDialogue(player, TINDEL, "Sorry my friend, but the item wasn't worth anything. I've disposed of it for you.", FaceAnim.HALF_GUILTY)
+                    sendNPCDialogue(
+                        player,
+                        TINDEL,
+                        "Sorry my friend, but the item wasn't worth anything. I've disposed of it for you.",
+                        FaceAnim.HALF_GUILTY
+                    )
                 }
             }
 
             return true
         }
     }
+
 }
