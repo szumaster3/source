@@ -9,14 +9,15 @@ import org.rs.consts.Animations
 import org.rs.consts.Items
 import kotlin.math.min
 
+/**
+ * Handles the smithing of barbarian weapons.
+ */
 class BarbSmithingPulse(
     player: Player?,
     val weapon: BarbarianWeapon,
     var amount: Int,
     var button: Int,
 ) : SkillPulse<Item>(player, null) {
-    val hasta = weapon.hastaId
-    val spear = weapon.spearId
 
     override fun checkRequirements(): Boolean {
         if (getStatLevel(player, Skills.SMITHING) < weapon.requiredLevel) {
@@ -44,10 +45,8 @@ class BarbSmithingPulse(
 
     override fun start() {
         super.start()
-        val bar = Item(weapon.requiredBar)
-        val wood = Item(weapon.requiredWood)
-        val barsAmount = player.inventory.getAmount(bar)
-        val woodAmount: Int = player.inventory.getAmount(wood)
+        val barsAmount = player.inventory.getAmount(Item(weapon.requiredBar))
+        val woodAmount = player.inventory.getAmount(Item(weapon.requiredWood))
         amount = min(min(barsAmount, woodAmount), amount)
     }
 
@@ -61,17 +60,12 @@ class BarbSmithingPulse(
             return false
         }
 
-        var index = button
+        val itemToMake = if (button == 0) weapon.spearId else weapon.hastaId
+
         if (player.inventory.remove(Item(weapon.requiredBar, 1)) &&
-            player.inventory.remove(
-                Item(
-                    weapon.requiredWood,
-                    1,
-                ),
-            )
-        ) {
-            sendMessage(player, "You make a ${getItemName(if (index == 0) spear else hasta)}.")
-            player.inventory.add(Item(if (index == 0) spear else hasta, 1))
+            player.inventory.remove(Item(weapon.requiredWood, 1))) {
+            sendMessage(player, "You make a ${getItemName(itemToMake)}.")
+            player.inventory.add(Item(itemToMake, 1))
             rewardXP(player, Skills.SMITHING, weapon.experience)
             amount--
             return amount == 0

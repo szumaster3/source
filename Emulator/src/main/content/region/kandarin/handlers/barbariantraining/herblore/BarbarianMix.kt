@@ -40,10 +40,7 @@ enum class BarbarianMix(
 
     companion object {
         /**
-         * Finds a [BarbarianMix] based on the item ID.
-         *
-         * @param id The item ID of the base potion.
-         * @return The corresponding [BarbarianMix], or `null` if no match is found.
+         * Get [BarbarianMix] based on the item id.
          */
         fun forId(id: Int): BarbarianMix? = values().find { it.item == id }
     }

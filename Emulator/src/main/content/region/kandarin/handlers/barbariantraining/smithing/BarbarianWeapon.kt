@@ -3,7 +3,7 @@ package content.region.kandarin.handlers.barbariantraining.smithing
 import org.rs.consts.Items
 
 /**
- * Represents the barbarian weapons.
+ * Represents barbarian weapons.
  */
 enum class BarbarianWeapon(
     val requiredWood: Int,
@@ -24,15 +24,12 @@ enum class BarbarianWeapon(
 
     companion object {
         /**
-         * A map that associates the required bar ID with the corresponding [BarbarianWeapon].
+         * Maps bar id to barbarian weapon.
          */
         val product: Map<Int, BarbarianWeapon> = values().associateBy { it.requiredBar }
 
         /**
-         * Returns a [BarbarianWeapon] corresponding to the given bar ID.
-         *
-         * @param id The ID of the required bar.
-         * @return The corresponding [BarbarianWeapon], or `null` if no weapon exists for the given ID.
+         * Returns the barbarian weapon matching the bar id.
          */
         fun getWeapon(id: Int): BarbarianWeapon? = product[id]
     }

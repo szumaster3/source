@@ -69,11 +69,7 @@ class NecromancerNPC : NPCBehavior(NPCs.INVRIGAR_THE_NECROMANCER_173, NPCs.NECRO
     }
 
     /**
-     * Attempts to spawn a summoned zombie near the target player.
-     *
-     * @param entity The [NecromancerNPC] (source of summoned zombies).
-     * @param npc The behavior instance (used for tracking summoned state).
-     * @param victim The player to summon the zombie near.
+     * Attempts to spawn a summoned zombie near the player.
      */
     private fun rollZombieSpawn(entity: Entity, npc: NecromancerNPC, victim: Entity) {
         if (summonedZombieCounter >= 3) return

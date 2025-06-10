@@ -67,8 +67,6 @@ class SummonedZombieNPC @JvmOverloads constructor(id: Int = NPCs.SUMMONED_ZOMBIE
 
     /**
      * Teleports the [SummonedZombieNPC] to the victim.
-     *
-     * @param location The target location to summon the zombie.
      */
     private fun summon(location: Location) {
         isInvisible = true
