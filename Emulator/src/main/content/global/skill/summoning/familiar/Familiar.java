@@ -93,6 +93,8 @@ public abstract class Familiar extends NPC implements Plugin<Object> {
      */
     protected List<SkillBonus> boosts = new ArrayList<>(20);
     private final int attackStyle;
+    private final double pointsPerTick;
+    private double fracDrain = 0.0;
     private boolean firstCall = true;
 
     /**
@@ -115,6 +117,14 @@ public abstract class Familiar extends NPC implements Plugin<Object> {
         this.specialCost = specialCost;
         this.combatFamiliar = NPCDefinition.forId(getOriginalId() + 1).getName().equals(getName());
         this.attackStyle = attackStyle;
+
+        if (pouchId == -1) {
+            this.pointsPerTick = 0.0;
+        } else {
+            int drain = pouch.getRequiredLevel() - pouch.getSummonCost() + 1;
+            this.pointsPerTick = (double) drain / maximumTicks;
+        }
+
     }
 
     /**
@@ -161,9 +171,15 @@ public abstract class Familiar extends NPC implements Plugin<Object> {
 
     @Override
     public void handleTickActions() {
-        if (ticks-- % 50 == 0) {
+        ticks--;
+        fracDrain += pointsPerTick;
+        if (fracDrain > 1.0 && ticks > 0) {
+            fracDrain -= 1.0;
             updateSpecialPoints(-15);
             owner.getSkills().updateLevel(Skills.SUMMONING, -1, 0);
+        }
+        if (ticks % 50 == 0) {
+            updateSpecialPoints(-15);
             if (!getText().isEmpty()) {
                 super.sendChat(getText());
             }

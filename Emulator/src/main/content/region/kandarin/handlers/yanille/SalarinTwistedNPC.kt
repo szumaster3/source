@@ -9,7 +9,8 @@ import org.rs.consts.NPCs
 
 @Initializable
 class SalarinTwistedNPC : AbstractNPC {
-    val SPELL_IDS = intArrayOf(1, 4, 6, 8)
+
+    private val SPELL_IDS = intArrayOf(1, 4, 6, 8)
 
     constructor() : super(-1, null)
 

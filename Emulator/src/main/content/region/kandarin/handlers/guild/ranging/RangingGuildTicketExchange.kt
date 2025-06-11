@@ -11,12 +11,7 @@ import org.rs.consts.Components
 import org.rs.consts.Items
 
 /**
- * Ticket exchange.
- *
- * @param item      The item to be exchanged.
- * @param tickets   The number of tickets required for the exchange.
- * @param slot      The slot number of the exchange.
- * @param value     The value of the exchange.
+ * Ranging guild ticket exchange rewards.
  */
 enum class RangingGuildTicketExchange(
     val item: Item,

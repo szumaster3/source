@@ -15,10 +15,7 @@ import org.rs.consts.Animations
 import org.rs.consts.NPCs
 
 @Initializable
-class IgnatiusVulcanNPC(
-    id: Int = 0,
-    location: Location? = null,
-) : AbstractNPC(id, location) {
+class IgnatiusVulcanNPC(id: Int = 0, location: Location? = null, ) : AbstractNPC(id, location) {
     private var lastFire = 0
 
     override fun construct(
@@ -40,10 +37,7 @@ class IgnatiusVulcanNPC(
     companion object {
         private val ANIMATION = Animation(Animations.TINDERBOX_733, Priority.HIGH)
 
-        fun createFire(
-            npc: NPC,
-            location: Location?,
-        ) {
+        fun createFire(npc: NPC, location: Location?, ) {
             npc.walkingQueue.reset()
             npc.animator.forceAnimation(ANIMATION)
             if (getObject(location!!) == null) {
