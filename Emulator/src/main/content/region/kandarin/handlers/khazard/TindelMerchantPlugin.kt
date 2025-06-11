@@ -76,7 +76,7 @@ class TindelMerchantPlugin : OptionHandler(), InteractionListener {
         private const val COINS = Items.COINS_995
         private const val COINS_REQUIRED = 100
 
-        fun success(player: Player, skill: Int): Boolean {
+        private fun success(player: Player, skill: Int): Boolean {
             val level = player.getSkills().getLevel(skill).toDouble()
             val minChance = 50.0
             val maxChance = 100.0
@@ -87,7 +87,7 @@ class TindelMerchantPlugin : OptionHandler(), InteractionListener {
             return roll < successChance
         }
 
-        fun exchangeRustyWeapon(player: Player) {
+        private fun exchangeRustyWeapon(player: Player) {
             val inventory = player.inventory
             val weaponType = when {
                 inventory.contains(SWORD, 1) -> SWORD
