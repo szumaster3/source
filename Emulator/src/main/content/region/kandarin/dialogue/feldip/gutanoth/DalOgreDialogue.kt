@@ -1,4 +1,4 @@
-package content.region.kandarin.dialogue.gutanoth
+package content.region.kandarin.dialogue.feldip.gutanoth
 
 import core.game.dialogue.Dialogue
 import core.game.dialogue.FaceAnim

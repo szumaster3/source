@@ -1,7 +1,7 @@
 package content.region.kandarin.handlers.khazard
 
 import content.data.items.BrokenItem
-import content.region.kandarin.dialogue.TindelMerchantDialogue
+import content.region.kandarin.dialogue.khazard.TindelMerchantDialogue
 import core.api.*
 import core.cache.def.impl.NPCDefinition
 import core.cache.def.impl.SceneryDefinition
@@ -20,8 +20,7 @@ import org.rs.consts.Scenery
 import org.rs.consts.Sounds
 
 /**
- * Handles interaction for the Tindel Merchant NPC
- * and related scenery in Port Khazard.
+ * Handles the exchange of rusty weapons.
  */
 @Initializable
 class TindelMerchantPlugin : OptionHandler() {

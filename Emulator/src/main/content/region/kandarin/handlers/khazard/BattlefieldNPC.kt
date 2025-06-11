@@ -9,6 +9,9 @@ import core.plugin.Initializable
 import core.tools.RandomFunction
 import org.rs.consts.NPCs
 
+/**
+ * Handles NPCs combat in the Kandarin battlefield.
+ */
 @Initializable
 class BattlefieldNPC(
     id: Int = 0,
@@ -17,6 +20,9 @@ class BattlefieldNPC(
     private var nextActionTime = 0L
     private var isGnome = false
 
+    /**
+     * Constructs a new instance of [BattlefieldNPC] with the given id and location.
+     */
     override fun construct(
         id: Int,
         location: Location,
@@ -77,6 +83,9 @@ class BattlefieldNPC(
     override fun getIds(): IntArray = ID
 
     companion object {
+        /**
+         * NPC ids handled by this class.
+         */
         private val ID = intArrayOf(
             NPCs.KHAZARD_TROOPER_2245,
             NPCs.KHAZARD_TROOPER_2246,
@@ -89,6 +98,10 @@ class BattlefieldNPC(
             NPCs.TORTOISE_3808,
             NPCs.MOUNTED_TERRORBIRD_GNOME_6109
         )
+
+        /**
+         * Represents the Gnomes faction.
+         */
         private val GNOMES = intArrayOf(
             NPCs.GNOME_67,
             NPCs.MOUNTED_TERRORBIRD_GNOME_1752,
@@ -99,16 +112,28 @@ class BattlefieldNPC(
             NPCs.TORTOISE_3808,
             NPCs.MOUNTED_TERRORBIRD_GNOME_6109
         )
+
+        /**
+         * Represents the Khazard Troopers faction.
+         */
         private val TROOPERS = intArrayOf(
             NPCs.KHAZARD_TROOPER_2245,
             NPCs.KHAZARD_TROOPER_2246
         )
+
+        /**
+         * Combat chat lines for Khazard Troopers.
+         */
         private val TROOPERS_FORCE_CHAT = arrayOf(
             "Get off of me, ya little pest!",
             "Die, you filthy goblin!",
             "Victory will be ours!",
             "We will crush you!"
         )
+
+        /**
+         * Combat chat lines for Gnomes.
+         */
         private val GNOMES_FORCE_CHAT = arrayOf(
             "Stop right there, Khazard scum!",
             "Tally Ho!",

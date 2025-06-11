@@ -1,4 +1,4 @@
-package content.region.kandarin.dialogue.gutanoth
+package content.region.kandarin.dialogue.feldip.gutanoth
 
 import core.api.interaction.openNpcShop
 import core.game.dialogue.Dialogue

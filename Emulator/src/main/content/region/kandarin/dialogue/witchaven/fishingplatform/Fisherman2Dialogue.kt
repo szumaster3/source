@@ -1,4 +1,4 @@
-package content.region.kandarin.dialogue.fishingplatform
+package content.region.kandarin.dialogue.witchaven.fishingplatform
 
 import core.api.sendDialogue
 import core.game.dialogue.Dialogue
