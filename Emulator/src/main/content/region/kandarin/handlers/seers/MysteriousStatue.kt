@@ -28,18 +28,7 @@ class MysteriousStatue : MapArea {
      */
     var n: Vector3d = Vector3d(0.0, 0.0, 1.0)
 
-    /**
-     * Called when an [Entity] takes a step within the statue's map area.
-     *
-     * @param entity The entity that moved.
-     * @param location The entity's current location.
-     * @param lastLocation The entity's previous location.
-     */
-    override fun entityStep(
-        entity: Entity,
-        location: Location,
-        lastLocation: Location,
-    ) {
+    override fun entityStep(entity: Entity, location: Location, lastLocation: Location, ) {
         if (entity is Player) {
             val player = entity.asPlayer()
 
@@ -71,10 +60,7 @@ class MysteriousStatue : MapArea {
         }
     }
 
-    override fun areaLeave(
-        entity: Entity,
-        logout: Boolean,
-    ) {
+    override fun areaLeave(entity: Entity, logout: Boolean, ) {
         if (entity is Player) {
             removeAttribute(entity.asPlayer(), "diary:seers:statue-walk-start")
         }

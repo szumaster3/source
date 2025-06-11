@@ -10,9 +10,8 @@ import core.plugin.Initializable
 import core.plugin.Plugin
 
 @Initializable
-class StoneCircle :
-    MapZone(STONE_CIRCLE, true),
-    Plugin<Any> {
+class StoneCircle : MapZone(STONE_CIRCLE, true), Plugin<Any> {
+
     override fun configure() {
         register(ZoneBorders(2558, 3219, 2559, 3225))
         register(ZoneBorders(2560, 3219, 2564, 3225))

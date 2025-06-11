@@ -18,7 +18,7 @@ import org.rs.consts.Animations
 import org.rs.consts.Items
 import org.rs.consts.Sounds
 
-class AltarSpace : InteractionListener {
+class GildedAltarListener : InteractionListener {
     override fun defineListeners() {
 
         /*
