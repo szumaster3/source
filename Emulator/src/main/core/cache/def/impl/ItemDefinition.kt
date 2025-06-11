@@ -1141,7 +1141,7 @@ class ItemDefinition : Definition<Item?>() {
                         def.modelOffset2 -= 65536
                     }
                 } else if (opcode == 10) {
-                    def.interfaceModelId = buffer.getShort().toInt() and 0xFFFF
+                    // def.interfaceModelId = buffer.getShort().toInt() and 0xFFFF
                 } else if (opcode == 11) {
                     def.stackable = true
                 } else if (opcode == 12) {
