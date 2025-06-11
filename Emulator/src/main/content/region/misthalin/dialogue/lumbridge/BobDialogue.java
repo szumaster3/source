@@ -23,7 +23,6 @@ import org.rs.consts.NPCs;
  * <ul>
  *   <li>NPCs.BOB_519 (Lumbridge)</li>
  *   <li>NPCs.SQUIRE_3797 (Outpost)</li>
- *   <li>NPCs.TINDEL_MARCHANT_1799 (Khazard)</li>
  * </ul>
  * </p>
  */
@@ -325,7 +324,7 @@ public final class BobDialogue extends Dialogue {
 
     @Override
     public int[] getIds() {
-        return new int[]{NPCs.BOB_519, NPCs.SQUIRE_3797, NPCs.TINDEL_MARCHANT_1799};
+        return new int[]{NPCs.BOB_519, NPCs.SQUIRE_3797};
     }
 
     /**

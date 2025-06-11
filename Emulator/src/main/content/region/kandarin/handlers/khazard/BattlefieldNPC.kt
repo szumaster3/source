@@ -13,10 +13,7 @@ import org.rs.consts.NPCs
  * Handles NPCs combat in the Kandarin battlefield.
  */
 @Initializable
-class BattlefieldNPC(
-    id: Int = 0,
-    location: Location? = null,
-) : AbstractNPC(id, location) {
+class BattlefieldNPC(id: Int = 0, location: Location? = null, ) : AbstractNPC(id, location) {
     private var nextActionTime = 0L
     private var isGnome = false
 
