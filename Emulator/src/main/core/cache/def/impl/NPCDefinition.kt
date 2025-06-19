@@ -18,161 +18,106 @@ import core.tools.StringUtils.isPlusN
 import java.nio.ByteBuffer
 
 /**
- * The type Npc definition.
+ * Represents the NPC definitions.
  */
-class NPCDefinition(
-    id: Int,
-) : Definition<NPC?>() {
+class NPCDefinition(id: Int) : Definition<NPC?>() {
     @JvmField var size: Int = 1
-
     @JvmField var combatLevel: Int
-
     @JvmField var headIcons: Int
-
-    @JvmField var isVisibleOnMap: Boolean
-
+    @JvmField var minimapDot: Boolean
     @JvmField var dropTables: NPCDropTables = NPCDropTables(this)
-
-    @JvmField var anInt833: Int
-
-    @JvmField var anInt836: Int
-
-    @JvmField var anInt837: Int
-
-    @JvmField var aBoolean841: Boolean
-
-    @JvmField var anInt842: Int
-
-    @JvmField var configFileId: Int
-
+    @JvmField var ambientLight: Int
+    @JvmField var shadowLight: Int
+    @JvmField var modelSizeX: Int
+    @JvmField var rotated: Boolean
+    @JvmField var modelSizeY: Int
+    @JvmField var varpId: Int
     @JvmField var childNPCIds: IntArray? = null
-
-    @JvmField var anInt846: Int
-
-    @JvmField var anInt850: Int
-
-    @JvmField var aByte851: Byte
-
-    @JvmField var aBoolean852: Boolean
-
-    @JvmField var anInt853: Int
-
-    @JvmField var aByte854: Byte
-
-    @JvmField var aBoolean856: Boolean
-
-    @JvmField var aBoolean857: Boolean
-
-    @JvmField var aShortArray859: ShortArray? = null
-
-    @JvmField var aByteArray861: ByteArray? = null
-
-    @JvmField var aShort862: Short
-
-    @JvmField var aBoolean863: Boolean
-
-    @JvmField var anInt864: Int
-
-    @JvmField var aShortArray866: ShortArray? = null
-
-    @JvmField var anIntArray868: IntArray
-
-    @JvmField var anInt869: Int
-
-    @JvmField var anInt870: Int
-
-    @JvmField var anInt871: Int
-
-    @JvmField var anInt872: Int
-
-    @JvmField var anInt874: Int
-
-    @JvmField var anInt875: Int
-
-    @JvmField var anInt876: Int
-
-    @JvmField var anInt879: Int
-
-    @JvmField var aShortArray880: ShortArray? = null
-
-    @JvmField var anInt884: Int
-
-    @JvmField var configId: Int
-
-    @JvmField var anInt889: Int
-
-    @JvmField var anIntArray892: IntArray? = null
-
-    @JvmField var aShort894: Short
-
-    @JvmField var aShortArray896: ShortArray? = null
-
-    @JvmField var anInt897: Int
-
-    @JvmField var anInt899: Int
-
-    @JvmField var anInt901: Int
-
+    @JvmField var ambientSoundId: Int
+    @JvmField var contrast: Int
+    @JvmField var modelPitch: Byte
+    @JvmField var clickable: Boolean
+    @JvmField var modelYaw: Int
+    @JvmField var modelRoll: Byte
+    @JvmField var visible: Boolean
+    @JvmField var hasRenderPriority: Boolean
+    @JvmField var originalColors: ShortArray? = null
+    @JvmField var recolorHueShift: ByteArray? = null
+    @JvmField var ambientSoundVolume: Short
+    @JvmField var hasShadow: Boolean
+    @JvmField var modelScaleX: Int
+    @JvmField var modifiedColors: ShortArray? = null
+    @JvmField var modelIds: IntArray
+    @JvmField var ambientSoundMinDelay: Int
+    @JvmField var ambientSoundMaxDelay: Int
+    @JvmField var ambientSoundLoops: Int
+    @JvmField var combatLevelOverride: Int
+    @JvmField var mapIconId: Int
+    @JvmField var cursorOp: Int
+    @JvmField var mapSceneId: Int
+    @JvmField var shadowModifier: Int
+    @JvmField var originalTextures: ShortArray? = null
+    @JvmField var clickableAreaId: Int
+    @JvmField var varbitId: Int
+    @JvmField var transparency: Int
+    @JvmField var headIconModels: IntArray? = null
+    @JvmField var lightModifier: Short
+    @JvmField var modifiedTextures: ShortArray? = null
+    @JvmField var shadowOpacity: Int
+    @JvmField var modelScaleY: Int
+    @JvmField var cursor: Int
     @JvmField var standAnimation: Int
-
     @JvmField var walkAnimation: Int
-
     @JvmField var renderAnimationId: Int = 0
-
     @JvmField var combatDistance: Int = 0
-
     @JvmField var combatGraphics: Array<Graphics?> = arrayOfNulls(3)
-
     @JvmField var turnAnimation: Int = 0
-
     @JvmField var turn180Animation: Int = 0
-
     @JvmField var turnCWAnimation: Int = 0
-
     @JvmField var turnCCWAnimation: Int = 0
 
     init {
         this.id = id
-        anInt842 = -1
-        configFileId = -1
-        anInt837 = -1
-        anInt846 = -1
-        anInt853 = 32
+        modelSizeY = -1
+        varpId = -1
+        modelSizeX = -1
+        ambientSoundId = -1
+        modelYaw = 32
         standAnimation = -1
         walkAnimation = -1
         combatLevel = 0
-        anInt836 = -1
+        shadowLight = -1
         name = "null"
-        anInt869 = 0
-        anInt850 = 255
-        anInt871 = -1
-        aBoolean852 = true
-        aShort862 = 0
-        anInt876 = -1
-        aByte851 = -96
-        anInt875 = 0
-        anInt872 = -1
-        aBoolean857 = true
-        anInt870 = -1
-        anInt874 = -1
-        anInt833 = -1
-        anInt864 = 128
+        ambientSoundMinDelay = 0
+        contrast = 255
+        ambientSoundLoops = -1
+        clickable = true
+        ambientSoundVolume = 0
+        mapSceneId = -1
+        modelPitch = -96
+        cursorOp = 0
+        combatLevelOverride = -1
+        hasRenderPriority = true
+        ambientSoundMaxDelay = -1
+        mapIconId = -1
+        ambientLight = -1
+        modelScaleX = 128
         headIcons = -1
-        aBoolean856 = false
-        configId = -1
-        aByte854 = -16
-        aBoolean863 = false
-        isVisibleOnMap = true
-        anInt889 = -1
-        anInt884 = -1
-        aBoolean841 = true
-        anInt879 = -1
-        anInt899 = 128
-        aShort894 = 0
+        visible = false
+        varbitId = -1
+        modelRoll = -16
+        hasShadow = false
+        minimapDot = true
+        transparency = -1
+        clickableAreaId = -1
+        rotated = true
+        shadowModifier = -1
+        modelScaleY = 128
+        lightModifier = 0
         options = arrayOfNulls(5)
-        anInt897 = 0
-        anInt901 = -1
-        anIntArray868 = IntArray(0)
+        shadowOpacity = 0
+        cursor = -1
+        modelIds = IntArray(0)
     }
 
     /**
@@ -187,10 +132,10 @@ class NPCDefinition(
         }
         var configValue = -1
         if (player != null) {
-            if (configFileId != -1) {
-                configValue = VarbitDefinition.forNpcId(configFileId).getValue(player)
-            } else if (configId != -1) {
-                configValue = getVarp(player, configId)
+            if (varpId != -1) {
+                configValue = VarbitDefinition.forNpcId(varpId).getValue(player)
+            } else if (varbitId != -1) {
+                configValue = getVarp(player, varbitId)
             }
         } else {
             configValue = 0
@@ -222,11 +167,11 @@ class NPCDefinition(
         when (opcode) {
             1 -> {
                 val length = buffer.get().toInt() and 0xFF
-                anIntArray868 = IntArray(length)
+                modelIds = IntArray(length)
                 var i_66_ = 0
                 while (i_66_ < length) {
-                    anIntArray868[i_66_] = buffer.getShort().toInt() and 0xFFFF
-                    if ((anIntArray868[i_66_] xor -0x1) == -65536) anIntArray868[i_66_] = -1
+                    modelIds[i_66_] = buffer.getShort().toInt() and 0xFFFF
+                    if ((modelIds[i_66_] xor -0x1) == -65536) modelIds[i_66_] = -1
                     i_66_++
                 }
             }
@@ -247,65 +192,65 @@ class NPCDefinition(
             30, 31, 32, 33, 34 -> options[opcode - 30] = getString(buffer)
             40 -> {
                 var length = buffer.get().toInt() and 0xFF
-                aShortArray859 = ShortArray(length)
-                aShortArray896 = ShortArray(length)
+                originalColors = ShortArray(length)
+                modifiedTextures = ShortArray(length)
                 var i_65_ = 0
                 while ((length xor -0x1) < (i_65_ xor -0x1)) {
-                    aShortArray896!![i_65_] = (buffer.getShort().toInt() and 0xFFFF).toShort()
-                    aShortArray859!![i_65_] = (buffer.getShort().toInt() and 0xFFFF).toShort()
+                    modifiedTextures!![i_65_] = (buffer.getShort().toInt() and 0xFFFF).toShort()
+                    originalColors!![i_65_] = (buffer.getShort().toInt() and 0xFFFF).toShort()
                     i_65_++
                 }
             }
 
             41 -> {
                 var length = buffer.get().toInt() and 0xFF
-                aShortArray880 = ShortArray(length)
-                aShortArray866 = ShortArray(length)
+                originalTextures = ShortArray(length)
+                modifiedColors = ShortArray(length)
                 var i_54_ = 0
                 while ((i_54_ xor -0x1) > (length xor -0x1)) {
-                    aShortArray880!![i_54_] = (buffer.getShort().toInt() and 0xFFFF).toShort()
-                    aShortArray866!![i_54_] = (buffer.getShort().toInt() and 0xFFFF).toShort()
+                    originalTextures!![i_54_] = (buffer.getShort().toInt() and 0xFFFF).toShort()
+                    modifiedColors!![i_54_] = (buffer.getShort().toInt() and 0xFFFF).toShort()
                     i_54_++
                 }
             }
 
             42 -> {
                 var length = buffer.get().toInt() and 0xFF
-                aByteArray861 = ByteArray(length)
+                recolorHueShift = ByteArray(length)
                 var i_55_ = 0
                 while (length > i_55_) {
-                    aByteArray861!![i_55_] = buffer.get()
+                    recolorHueShift!![i_55_] = buffer.get()
                     i_55_++
                 }
             }
 
             60 -> {
                 var length = buffer.get().toInt() and 0xFF
-                anIntArray892 = IntArray(length)
+                headIconModels = IntArray(length)
                 var i_64_ = 0
                 while ((i_64_ xor -0x1) > (length xor -0x1)) {
-                    anIntArray892!![i_64_] = buffer.getShort().toInt() and 0xFFFF
+                    headIconModels!![i_64_] = buffer.getShort().toInt() and 0xFFFF
                     i_64_++
                 }
             }
 
-            93 -> isVisibleOnMap = false
+            93 -> minimapDot = false
             95 -> combatLevel = buffer.getShort().toInt() and 0xFFFF
-            97 -> anInt864 = buffer.getShort().toInt() and 0xFFFF
-            98 -> anInt899 = buffer.getShort().toInt() and 0xFFFF
-            99 -> aBoolean863 = true
-            100 -> anInt869 = buffer.get().toInt()
-            101 -> anInt897 = buffer.get() * 5
+            97 -> modelScaleX = buffer.getShort().toInt() and 0xFFFF
+            98 -> modelScaleY = buffer.getShort().toInt() and 0xFFFF
+            99 -> hasShadow = true
+            100 -> ambientSoundMinDelay = buffer.get().toInt()
+            101 -> shadowOpacity = buffer.get() * 5
             102 -> headIcons = buffer.getShort().toInt() and 0xFFFF
-            103 -> anInt853 = buffer.getShort().toInt() and 0xFFFF
+            103 -> modelYaw = buffer.getShort().toInt() and 0xFFFF
             106, 118 -> {
-                configFileId = buffer.getShort().toInt() and 0xFFFF
-                if (configFileId == 65535) {
-                    configFileId = -1
+                varpId = buffer.getShort().toInt() and 0xFFFF
+                if (varpId == 65535) {
+                    varpId = -1
                 }
-                configId = buffer.getShort().toInt() and 0xFFFF
-                if (configId == 65535) {
-                    configId = -1
+                varbitId = buffer.getShort().toInt() and 0xFFFF
+                if (varbitId == 65535) {
+                    varbitId = -1
                 }
                 var defaultValue = -1
                 if ((opcode xor -0x1) == -119) {
@@ -327,17 +272,17 @@ class NPCDefinition(
                 childNPCIds!![length + 1] = defaultValue
             }
 
-            107 -> aBoolean841 = false
-            109 -> aBoolean852 = false
-            111 -> aBoolean857 = false
+            107 -> rotated = false
+            109 -> clickable = false
+            111 -> hasRenderPriority = false
             113 -> {
-                aShort862 = (buffer.getShort().toInt() and 0xFFFF).toShort()
-                aShort894 = (buffer.getShort().toInt() and 0xFFFF).toShort()
+                ambientSoundVolume = (buffer.getShort().toInt() and 0xFFFF).toShort()
+                lightModifier = (buffer.getShort().toInt() and 0xFFFF).toShort()
             }
 
             114 -> {
-                aByte851 = (buffer.get())
-                aByte854 = (buffer.get())
+                modelPitch = (buffer.get())
+                modelRoll = (buffer.get())
             }
 
             115 -> {
@@ -503,142 +448,141 @@ class NPCDefinition(
             }
         return getConfiguration<Animation>(name, null) ?: return null
     }
+    /**
+     * Checks if the NPC model is rotated by 90 degrees.
+     *
+     * @return true if rotated.
+     */
+    fun isRotated(): Boolean = rotated
 
     /**
-     * Isa boolean 841 boolean.
+     * Gets the model pitch rotation.
      *
-     * @return the boolean
+     * @return the model pitch value.
      */
-    fun isaBoolean841(): Boolean = aBoolean841
+    fun getModelPitch(): Byte = modelPitch
 
     /**
-     * Gets byte 851.
+     * Checks if the NPC is clickable.
      *
-     * @return the byte 851
+     * @return true if clickable.
      */
-    fun getaByte851(): Byte = aByte851
+    fun isClickable(): Boolean = clickable
 
     /**
-     * Isa boolean 852 boolean.
+     * Gets the model roll rotation.
      *
-     * @return the boolean
+     * @return the model roll value.
      */
-    fun isaBoolean852(): Boolean = aBoolean852
+    fun getModelRoll(): Byte = modelRoll
 
     /**
-     * Gets byte 854.
+     * Checks if the NPC is visible.
      *
-     * @return the byte 854
+     * @return true if visible.
      */
-    fun getaByte854(): Byte = aByte854
+    fun isVisible(): Boolean = visible
 
     /**
-     * Isa boolean 856 boolean.
+     * Checks if the NPC has render priority.
      *
-     * @return the boolean
+     * @return true if has render priority.
      */
-    fun isaBoolean856(): Boolean = aBoolean856
+    fun hasRenderPriority(): Boolean = hasRenderPriority
 
     /**
-     * Isa boolean 857 boolean.
+     * Gets the original model colors before any recoloring.
      *
-     * @return the boolean
+     * @return the original colors as a ShortArray.
      */
-    fun isaBoolean857(): Boolean = aBoolean857
+    fun getOriginalColors(): ShortArray? = originalColors
 
     /**
-     * Geta short array 859 short [ ].
+     * Gets the hue shifts applied to the recolored model.
      *
-     * @return the short [ ]
+     * @return the hue shift values as a ByteArray.
      */
-    fun getaShortArray859(): ShortArray? = aShortArray859
+    fun getRecolorHueShift(): ByteArray? = recolorHueShift
 
     /**
-     * Geta byte array 861 byte [ ].
+     * Gets the ambient sound volume for the NPC.
      *
-     * @return the byte [ ]
+     * @return the ambient sound volume.
      */
-    fun getaByteArray861(): ByteArray? = aByteArray861
+    fun getAmbientSoundVolume(): Short = ambientSoundVolume
 
     /**
-     * Gets short 862.
+     * Checks if the NPC has a shadow applied.
      *
-     * @return the short 862
+     * @return true if has shadow.
      */
-    fun getaShort862(): Short = aShort862
+    fun hasShadow(): Boolean = hasShadow
 
     /**
-     * Isa boolean 863 boolean.
+     * Gets the modified (recolored) model colors.
      *
-     * @return the boolean
+     * @return the modified colors as a ShortArray.
      */
-    fun isaBoolean863(): Boolean = aBoolean863
+    fun getModifiedColors(): ShortArray? = modifiedColors
 
     /**
-     * Geta short array 866 short [ ].
+     * Gets the original model textures.
      *
-     * @return the short [ ]
+     * @return the original textures as a ShortArray.
      */
-    fun getaShortArray866(): ShortArray? = aShortArray866
+    fun getOriginalTextures(): ShortArray? = originalTextures
 
     /**
-     * Geta short array 880 short [ ].
+     * Gets the Varp id used for morph.
      *
-     * @return the short [ ]
+     * @return the Varp id.
      */
-    fun getaShortArray880(): ShortArray? = aShortArray880
-
-    /**
-     * Gets config id.
-     *
-     * @return the config id
-     */
-    fun getConfigId(): Int =
-        if (configFileId != -1) {
-            VarbitDefinition.forNpcId(configFileId).varpId
+    fun getVarpId(): Int =
+        if (varpId != -1) {
+            VarbitDefinition.forNpcId(varpId).varpId
         } else {
-            configFileId
+            varpId
         }
 
+    /**
+     * Gets the start bit offset of the associated Varbit.
+     *
+     * @return the varbit start bit offset.
+     */
     val varbitOffset: Int
-        /**
-         * Gets varbit offset.
-         *
-         * @return the varbit offset
-         */
         get() {
-            if (configFileId != -1) {
-                return VarbitDefinition.forNpcId(configFileId).startBit
+            if (varpId != -1) {
+                return VarbitDefinition.forNpcId(varpId).startBit
             }
             return -1
         }
 
+    /**
+     * Gets the bit size of the associated varbit.
+     *
+     * @return the varbit size in bits.
+     */
     val varbitSize: Int
-        /**
-         * Gets varbit size.
-         *
-         * @return the varbit size
-         */
         get() {
-            if (configFileId != -1) {
-                return VarbitDefinition.forNpcId(configFileId).endBit - VarbitDefinition.forNpcId(configFileId).startBit
+            if (varpId != -1) {
+                return VarbitDefinition.forNpcId(varpId).endBit - VarbitDefinition.forNpcId(varpId).startBit
             }
             return -1
         }
 
     /**
-     * Gets short 894.
+     * Gets the light modifier for the NPC.
      *
-     * @return the short 894
+     * @return the light modifier value.
      */
-    fun getaShort894(): Short = aShort894
+    fun getLightModifier(): Short = lightModifier
 
     /**
-     * Geta short array 896 short [ ].
+     * Gets the modified (retextured) model textures.
      *
-     * @return the short [ ]
+     * @return the modified textures as a ShortArray.
      */
-    fun getaShortArray896(): ShortArray? = aShortArray896
+    fun getModifiedTextures(): ShortArray? = modifiedTextures
 
     companion object {
         private val DEFINITIONS: MutableMap<Int, NPCDefinition> = HashMap()
