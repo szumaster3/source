@@ -31,7 +31,7 @@ class NPCDefinition(id: Int) : Definition<NPC?>() {
     @JvmField var modelSizeX: Int
     @JvmField var rotated: Boolean
     @JvmField var modelSizeY: Int
-    @JvmField var varpId: Int
+    @JvmField var varbitId: Int
     @JvmField var childNPCIds: IntArray? = null
     @JvmField var ambientSoundId: Int
     @JvmField var contrast: Int
@@ -58,7 +58,7 @@ class NPCDefinition(id: Int) : Definition<NPC?>() {
     @JvmField var shadowModifier: Int
     @JvmField var originalTextures: ShortArray? = null
     @JvmField var clickableAreaId: Int
-    @JvmField var varbitId: Int
+    @JvmField var varpId: Int
     @JvmField var transparency: Int
     @JvmField var headIconModels: IntArray? = null
     @JvmField var lightModifier: Short
@@ -79,7 +79,7 @@ class NPCDefinition(id: Int) : Definition<NPC?>() {
     init {
         this.id = id
         modelSizeY = -1
-        varpId = -1
+        varbitId = -1
         modelSizeX = -1
         ambientSoundId = -1
         modelYaw = 32
@@ -104,7 +104,7 @@ class NPCDefinition(id: Int) : Definition<NPC?>() {
         modelScaleX = 128
         headIcons = -1
         visible = false
-        varbitId = -1
+        varpId = -1
         modelRoll = -16
         hasShadow = false
         minimapDot = true
@@ -132,10 +132,10 @@ class NPCDefinition(id: Int) : Definition<NPC?>() {
         }
         var configValue = -1
         if (player != null) {
-            if (varpId != -1) {
-                configValue = VarbitDefinition.forNpcId(varpId).getValue(player)
-            } else if (varbitId != -1) {
-                configValue = getVarp(player, varbitId)
+            if (varbitId != -1) {
+                configValue = VarbitDefinition.forNpcId(varbitId).getValue(player)
+            } else if (varpId != -1) {
+                configValue = getVarp(player, varpId)
             }
         } else {
             configValue = 0
@@ -244,13 +244,13 @@ class NPCDefinition(id: Int) : Definition<NPC?>() {
             102 -> headIcons = buffer.getShort().toInt() and 0xFFFF
             103 -> modelYaw = buffer.getShort().toInt() and 0xFFFF
             106, 118 -> {
-                varpId = buffer.getShort().toInt() and 0xFFFF
-                if (varpId == 65535) {
-                    varpId = -1
-                }
                 varbitId = buffer.getShort().toInt() and 0xFFFF
                 if (varbitId == 65535) {
                     varbitId = -1
+                }
+                varpId = buffer.getShort().toInt() and 0xFFFF
+                if (varpId == 65535) {
+                    varpId = -1
                 }
                 var defaultValue = -1
                 if ((opcode xor -0x1) == -119) {
@@ -538,10 +538,10 @@ class NPCDefinition(id: Int) : Definition<NPC?>() {
      * @return the Varp id.
      */
     fun getVarpId(): Int =
-        if (varpId != -1) {
-            VarbitDefinition.forNpcId(varpId).varpId
+        if (varbitId != -1) {
+            VarbitDefinition.forNpcId(varbitId).varpId
         } else {
-            varpId
+            varbitId
         }
 
     /**
@@ -551,8 +551,8 @@ class NPCDefinition(id: Int) : Definition<NPC?>() {
      */
     val varbitOffset: Int
         get() {
-            if (varpId != -1) {
-                return VarbitDefinition.forNpcId(varpId).startBit
+            if (varbitId != -1) {
+                return VarbitDefinition.forNpcId(varbitId).startBit
             }
             return -1
         }
@@ -564,8 +564,8 @@ class NPCDefinition(id: Int) : Definition<NPC?>() {
      */
     val varbitSize: Int
         get() {
-            if (varpId != -1) {
-                return VarbitDefinition.forNpcId(varpId).endBit - VarbitDefinition.forNpcId(varpId).startBit
+            if (varbitId != -1) {
+                return VarbitDefinition.forNpcId(varbitId).endBit - VarbitDefinition.forNpcId(varbitId).startBit
             }
             return -1
         }
