@@ -20,151 +20,82 @@ import java.nio.ByteBuffer
  */
 class SceneryDefinition : Definition<Scenery?>() {
     var originalColors: ShortArray? = null
-
     @JvmField var configObjectIds: IntArray? = null
-
     @JvmField var modelIds: IntArray? = null
     private var modelConfiguration: IntArray? = null
-
     @JvmField var anIntArray3833: IntArray? = null
-
     @JvmField val anInt3834: Int = 0
-
     @JvmField var anInt3835: Int = -1
     private val aByte3837: Byte = 0
-
     @JvmField var anInt3838: Int = -1
-
     @JvmField var mirrored: Boolean
-
     @JvmField var contrast: Int
-
     @JvmField var modelSizeZ: Int
-
     @JvmField var anInt3844: Int
-
     @JvmField var aBoolean3845: Boolean = false
     private val aByte3847: Byte = 0
     private val aByte3849: Byte = 0
-
     @JvmField var anInt3850: Int = 0
-
     @JvmField var anInt3851: Int
-
     @JvmField var isBlocksLand: Boolean
-
     @JvmField var aBoolean3853: Boolean
-
     @JvmField var anInt3855: Int
-
     @JvmField var isFirstBool: Boolean
-
     @JvmField var anInt3857: Int
-
     @JvmField var recolourPalette: ByteArray? = null
-
     @JvmField var anIntArray3859: IntArray? = null
-
     @JvmField var anInt3860: Int
-
     @JvmField var varbitID: Int
-
     @JvmField var modifiedColors: ShortArray? = null
-
     @JvmField var anInt3865: Int = 255
-
     @JvmField var aBoolean3866: Boolean = false
-
     @JvmField var aBoolean3867: Boolean = false
-
     @JvmField var isProjectileClipped: Boolean
-
     @JvmField val anIntArray3869: IntArray?
-
     @JvmField var aBoolean3870: Boolean
-
     @JvmField var sizeY: Int
-
     @JvmField var isCastsShadow: Boolean = true
-
     @JvmField var membersOnly: Boolean
-
     @JvmField var thirdBoolean: Boolean
-
     @JvmField val anInt3875: Int
-
     @JvmField var addObjectCheck: Int
-
     @JvmField val anInt3877: Int
-
     @JvmField var brightness: Int
-
     @JvmField var solid: Int
-
     @JvmField val anInt3881: Int = 0
-
     @JvmField var anInt3882: Int
-
     @JvmField var offsetX: Int
-
     @JvmField var loader: Any? = null
-
     @JvmField var offsetZ: Int
-
     @JvmField var sizeX: Int
-
     @JvmField var aBoolean3891: Boolean
-
     @JvmField var offsetMultiplier: Int
-
     @JvmField var interactive: Int
-
     @JvmField var aBoolean3894: Boolean
-
     @JvmField var aBoolean3895: Boolean
-
     @JvmField var anInt3896: Int = 0
-
     @JvmField var configId: Int
     private val aByteArray3899: ByteArray? = null
-
     @JvmField var anInt3900: Int
-
     @JvmField var modelSizeX: Int
-
     @JvmField var anInt3904: Int
-
     @JvmField var anInt3905: Int
-
     @JvmField var aBoolean3906: Boolean
-
     @JvmField var anIntArray3908: IntArray? = null
-
     @JvmField var contouredGround: Byte
-
     @JvmField var anInt3913: Int
     private val aByte3914: Byte
-
     @JvmField var offsetY: Int
-
     @JvmField val anIntArrayArray3916: Array<IntArray>? = null
-
     @JvmField var modelSizeY: Int
-
     @JvmField var modifiedTextureColours: ShortArray? = null
-
     @JvmField var originalTextureColours: ShortArray? = null
-
     @JvmField var anInt3921: Int
     private val aClass194_3922: Any? = null
-
     @JvmField var aBoolean3923: Boolean
-
     @JvmField var aBoolean3924: Boolean
-
     @JvmField var walkingFlag: Int
     private var hasHiddenOptions = false
-
     @JvmField var mapIcon: Short
 
     /**

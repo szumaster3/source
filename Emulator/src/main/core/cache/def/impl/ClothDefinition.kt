@@ -7,7 +7,7 @@ import core.cache.CacheIndex
 import java.nio.ByteBuffer
 
 /**
- * Represents a cloth definition.
+ * Represents a cloth definition with model and color data.
  */
 class ClothDefinition {
     var bodyPartId: Int = 0
@@ -21,10 +21,10 @@ class ClothDefinition {
 
     companion object {
         /**
-         * Retrieves a [ClothDefinition] for the given cloth id by loading its data from the cache.
+         * Loads the cloth definition for the id from cache.
          *
-         * @param clothId The id of the cloth.
-         * @return The [ClothDefinition] containing the data for the given id.
+         * @param clothId The cloth id.
+         * @return The loaded [ClothDefinition].
          */
         @JvmStatic
         fun forId(clothId: Int): ClothDefinition {
@@ -54,9 +54,9 @@ class ClothDefinition {
     }
 
     /**
-     * Loads the cloth definition data from the provided [ByteBuffer].
+     * Loads cloth data from the buffer.
      *
-     * @param buffer The [ByteBuffer] containing the cloth data.
+     * @param buffer The data buffer.
      */
     fun load(buffer: ByteBuffer) {
         while (true) {
@@ -67,15 +67,12 @@ class ClothDefinition {
     }
 
     /**
-     * Parses an opcode and reads the corresponding data from the buffer.
+     * Parses an opcode and reads data.
      *
-     * @param opcode The opcode indicating the type of data to read.
-     * @param buffer The [ByteBuffer] containing the data.
+     * @param opcode The data opcode.
+     * @param buffer The data buffer.
      */
-    private fun parse(
-        opcode: Int,
-        buffer: ByteBuffer,
-    ) {
+    private fun parse(opcode: Int, buffer: ByteBuffer) {
         when (opcode) {
             1 -> bodyPartId = buffer.get().toInt() and 0xFF
             2 -> {

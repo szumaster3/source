@@ -7,55 +7,19 @@ import core.game.node.entity.player.Player
 import java.nio.ByteBuffer
 
 /**
- * The type Varbit definition.
+ * Represents a varbit definition used for bit-wise variable storage.
  */
 class VarbitDefinition {
-    /**
-     * Gets id.
-     *
-     * @return the id
-     */
     val id: Int
-
-    /**
-     * Gets varp id.
-     *
-     * @return the varp id
-     */
     var varpId: Int = 0
-
-    /**
-     * Gets start bit.
-     *
-     * @return the start bit
-     */
     var startBit: Int = 0
-
-    /**
-     * Gets end bit.
-     *
-     * @return the end bit
-     */
     var endBit: Int = 0
         private set
 
-    /**
-     * Instantiates a new Varbit definition.
-     *
-     * @param id the id
-     */
     constructor(id: Int) {
         this.id = id
     }
 
-    /**
-     * Instantiates a new Varbit definition.
-     *
-     * @param varpId   the varp id
-     * @param id       the id
-     * @param startBit the start bit
-     * @param endBit   the end bit
-     */
     constructor(varpId: Int, id: Int, startBit: Int, endBit: Int) {
         this.varpId = varpId
         this.id = id
@@ -64,19 +28,17 @@ class VarbitDefinition {
     }
 
     /**
-     * Gets value.
+     * Gets the value of this varbit for the given [Player].
      *
-     * @param player the player
-     * @return the value
+     * @param player The player to check.
+     * @return The Varbit value.
      */
     fun getValue(player: Player): Int = getVarbit(player, id)
 
+    /**
+     * The bit mask based on [startBit] and [endBit].
+     */
     val mask: Int
-        /**
-         * Gets mask.
-         *
-         * @return the mask
-         */
         get() {
             var mask = 0
             for (i in startBit..endBit) mask = mask or (1 shl (i - startBit))
@@ -98,37 +60,37 @@ class VarbitDefinition {
         }
 
         /**
-         * For scenery id varbit definition.
+         * Gets the varbit definition for a scenery id.
          *
-         * @param id the id
-         * @return the varbit definition
+         * @param id The scenery id.
+         * @return The [VarbitDefinition].
          */
         @JvmStatic
         fun forSceneryId(id: Int): VarbitDefinition = forId(id)
 
         /**
-         * For npc id varbit definition.
+         * Gets the varbit definition for an NPC id.
          *
-         * @param id the id
-         * @return the varbit definition
+         * @param id The NPC id.
+         * @return The [VarbitDefinition].
          */
         @JvmStatic
         fun forNpcId(id: Int): VarbitDefinition = forId(id)
 
         /**
-         * For item id varbit definition.
+         * Gets the [VarbitDefinition] for an item id.
          *
-         * @param id the id
-         * @return the varbit definition
+         * @param id The item id.
+         * @return The corresponding [VarbitDefinition].
          */
         @JvmStatic
         fun forItemId(id: Int): VarbitDefinition = forId(id)
 
         /**
-         * For id varbit definition.
+         * Gets the [VarbitDefinition] for the given id.
          *
-         * @param id the id
-         * @return the varbit definition
+         * @param id The varbit id.
+         * @return The [VarbitDefinition].
          */
         @JvmStatic
         fun forId(id: Int): VarbitDefinition {
@@ -155,20 +117,15 @@ class VarbitDefinition {
         }
 
         /**
-         * Create.
+         * Creates and registers a new [VarbitDefinition].
          *
-         * @param varpId   the varp id
-         * @param varbitId the varbit id
-         * @param startBit the start bit
-         * @param endBit   the end bit
+         * @param varpId The Varp id.
+         * @param varbitId The Varbit id.
+         * @param startBit The start bit.
+         * @param endBit The end bit.
          */
         @JvmStatic
-        fun create(
-            varpId: Int,
-            varbitId: Int,
-            startBit: Int,
-            endBit: Int,
-        ) {
+        fun create(varpId: Int, varbitId: Int, startBit: Int, endBit: Int, ) {
             val def =
                 VarbitDefinition(
                     varpId,
@@ -179,12 +136,10 @@ class VarbitDefinition {
             MAPPING[varbitId] = def
         }
 
+        /**
+         * Gets the Varbit definitions mapping.
+         */
         val mapping: Map<Int, VarbitDefinition>
-            /**
-             * Gets mapping.
-             *
-             * @return the mapping
-             */
             get() = MAPPING
     }
 }

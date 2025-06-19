@@ -9,71 +9,56 @@ import core.tools.Log
 import java.nio.ByteBuffer
 
 /**
- * Represents a Struct, which is a container for key-value pairs with various data types.
- *
- * @property id The id for struct.
- * @property dataStore A mutable map holding the key-value pairs of the struct.
+ * Represents a struct storing key-value pairs with mixed data types.
  */
-class Struct(
-    val id: Int,
-) {
+class Struct(val id: Int) {
     val dataStore = mutableMapOf<Int, Any>()
 
     /**
-     * Gets an integer value associated with a given key from the Struct.
+     * Gets an integer value by key.
      *
-     * @param key The key to look up in the `dataStore`.
-     * @return The integer value associated with the key, or -1 if the value is not valid.
+     * @param key The key to lookup.
+     * @return The integer value.
      */
-    fun getInt(key: Int): Int =
-        dataStore[key] as? Int ?: run {
-            log(javaClass, Log.ERR, "Invalid value passed for key: [$key] struct: [$id]")
-            -1
-        }
+    fun getInt(key: Int): Int = dataStore[key] as? Int ?: run {
+        log(javaClass, Log.ERR, "Invalid value passed for key: [$key] struct: [$id]")
+        -1
+    }
 
     /**
-     * Gets a string value associated with a given key from the Struct.
+     * Gets a string value by key.
      *
-     * @param key The key to look up in the `dataStore`.
-     * @return The string value associated with the key, or null if the value is not a string.
+     * @param key The key to lookup.
+     * @return The string value.
      */
     fun getString(key: Int): String? = dataStore[key] as? String
 
-    /**
-     * Provides a string representation of the Struct, including its id and the stored key-value pairs.
-     *
-     * @return A string describing the Struct.
-     */
     override fun toString(): String = "Struct(id=$id, dataStore=$dataStore)"
 
     companion object {
         private val definitions = mutableMapOf<Int, Struct>()
 
         /**
-         * Retrieves the Struct for a given id.
+         * Gets or loads the Struct for the given id.
          *
-         * @param id The id of the Struct to retrieve.
-         * @return The Struct associated with the given id.
+         * @param id The Struct id.
+         * @return The struct.
          */
         @JvmStatic
-        fun get(id: Int): Struct =
-            definitions[id] ?: run {
-                val data = Cache.getData(CacheIndex.CONFIGURATION, CacheArchive.STRUCT_TYPE, id)
-                parse(id, data).also { definitions[id] = it }
-            }
+        fun get(id: Int): Struct = definitions[id] ?: run {
+            val data = Cache.getData(CacheIndex.CONFIGURATION, CacheArchive.STRUCT_TYPE, id)
+            parse(id, data).also { definitions[id] = it }
+        }
 
         /**
-         * Parses a byte array of data to create and initialize a Struct.
+         * Parses raw byte data into a struct instance.
          *
-         * @param id The id of the Struct to be created.
-         * @param data The byte array containing the data to parse.
-         * @return The fully initialized Struct instance.
+         * @param id The Struct id.
+         * @param data The raw byte data.
+         * @return The parsed struct.
          */
         @JvmStatic
-        fun parse(
-            id: Int,
-            data: ByteArray?,
-        ): Struct {
+        fun parse(id: Int, data: ByteArray?): Struct {
             val struct = Struct(id)
             data?.let {
                 val buffer = ByteBuffer.wrap(it)

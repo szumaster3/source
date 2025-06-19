@@ -1,22 +1,12 @@
 package core.cache.def.impl
 
 /**
- * The type Script args.
- */
-class ScriptArgs
-/**
- * Instantiates a new Script args.
+ * Represents script arguments identified by an id.
  *
- * @param id   the id
- * @param args the args
+ * @property id The script identifier.
+ * @property args The array of arguments.
  */
-(
-    /**
-     * The Id.
-     */
+class ScriptArgs(
     var id: Int,
-    /**
-     * The Args.
-     */
     var args: Array<Any>,
 )

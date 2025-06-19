@@ -5,7 +5,7 @@ import core.cache.CacheIndex
 import java.nio.ByteBuffer
 
 /**
- * Represents a graphical definition.
+ * Represents a graphical definition used for rendering graphics.
  */
 class GraphicDefinition {
     var modelID: Int = 0
@@ -29,27 +29,26 @@ class GraphicDefinition {
         private val graphicDefinitions = mutableMapOf<Int, GraphicDefinition>()
 
         /**
-         * Retrieves the [GraphicDefinition] for given id.
+         * Gets the [GraphicDefinition] for the given id.
          *
-         * @param gfxId The id of the graphic to retrieve.
-         * @return The [GraphicDefinition] associated with the specified id.
+         * @param gfxId The graphic id.
+         * @return The corresponding [GraphicDefinition].
          */
         @JvmStatic
-        fun forId(gfxId: Int): GraphicDefinition =
-            graphicDefinitions[gfxId] ?: run {
-                val data = Cache.getData(CacheIndex.GRAPHICS, gfxId ushr 8, gfxId and 0xFF)
-                GraphicDefinition().apply {
-                    graphicsId = gfxId
-                    data?.let { readValueLoop(ByteBuffer.wrap(it)) }
-                    graphicDefinitions[gfxId] = this
-                }
+        fun forId(gfxId: Int): GraphicDefinition = graphicDefinitions[gfxId] ?: run {
+            val data = Cache.getData(CacheIndex.GRAPHICS, gfxId ushr 8, gfxId and 0xFF)
+            GraphicDefinition().apply {
+                graphicsId = gfxId
+                data?.let { readValueLoop(ByteBuffer.wrap(it)) }
+                graphicDefinitions[gfxId] = this
             }
+        }
     }
 
     /**
-     * Reads the values from the provided [ByteBuffer] and processes each opcode.
+     * Reads and processes graphic data from the given [ByteBuffer].
      *
-     * @param buffer The [ByteBuffer] containing the data to be read.
+     * @param buffer The buffer containing graphic data.
      */
     private fun readValueLoop(buffer: ByteBuffer) {
         while (true) {
@@ -60,15 +59,12 @@ class GraphicDefinition {
     }
 
     /**
-     * Processes the value corresponding to the given opcode from the [ByteBuffer].
+     * Processes a single opcode and updates the definition accordingly.
      *
-     * @param buffer The [ByteBuffer] containing the data to be read.
-     * @param opcode The opcode that determines how to interpret the following data.
+     * @param buffer The data buffer.
+     * @param opcode The opcode to process.
      */
-    private fun readValues(
-        buffer: ByteBuffer,
-        opcode: Int,
-    ) {
+    private fun readValues(buffer: ByteBuffer, opcode: Int) {
         when (opcode) {
             1 -> modelID = buffer.short.toInt()
             2 -> animationID = buffer.short.toInt()

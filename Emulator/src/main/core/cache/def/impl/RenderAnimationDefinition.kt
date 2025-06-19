@@ -15,83 +15,44 @@ import java.nio.ByteBuffer
  */
 class RenderAnimationDefinition {
     @JvmField var turn180Animation: Int
-
     @JvmField var anInt951: Int = -1
-
     @JvmField var anInt952: Int
-
     @JvmField var turnCWAnimation: Int = -1
-
     @JvmField var anInt954: Int
-
     @JvmField var anInt955: Int
-
     @JvmField var anInt956: Int = 0
-
     @JvmField var anInt957: Int
-
     @JvmField var anInt958: Int
-
     @JvmField var anIntArray959: IntArray? = null
-
     @JvmField var anInt960: Int
-
     @JvmField var anInt961: Int = 0
-
     @JvmField var anInt962: Int
-
     @JvmField var walkAnimationId: Int
-
     @JvmField var anInt964: Int
-
     @JvmField var anInt965: Int = 0
-
     @JvmField var anInt966: Int
-
     @JvmField var standAnimationIds: IntArray? = null
-
     @JvmField var anInt969: Int = 0
-
     @JvmField var anIntArray971: IntArray? = null
-
     @JvmField var standAnimationId: Int
-
     @JvmField var anInt973: Int = 0
-
     @JvmField var anInt974: Int
-
     @JvmField var anInt975: Int = 0
-
     @JvmField var runAnimationId: Int
-
     @JvmField var anInt977: Int
-
     @JvmField var aBoolean978: Boolean = true
-
     @JvmField var anIntArrayArray979: Array<IntArray?>? = null
-
     @JvmField var anInt980: Int = 0
-
     @JvmField var turnCCWAnimation: Int
-
     @JvmField var anInt983: Int
-
     @JvmField var anInt985: Int
-
     @JvmField var anInt986: Int
-
     @JvmField var anInt987: Int
-
     @JvmField var anInt988: Int = 0
-
     @JvmField var anInt989: Int
-
     @JvmField var anInt990: Int
-
     @JvmField var anInt992: Int = 0
-
     @JvmField var anInt993: Int = 0
-
     @JvmField var anInt994: Int = 0
 
     private fun parse(buffer: ByteBuffer) {

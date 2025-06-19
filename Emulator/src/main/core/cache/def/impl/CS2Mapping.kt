@@ -10,19 +10,9 @@ import java.nio.file.Files
 import java.nio.file.Paths
 
 /**
- * Represents a CS2 (Client Script 2) mapping for script id.
- *
- * @property scriptId The unique id of the script associated with this mapping.
- * @property unknown An unknown integer value associated with the mapping.
- * @property unknown1 Another unknown integer value associated with the mapping.
- * @property defaultString A default string value for the mapping.
- * @property defaultInt A default integer value for the mapping.
- * @property map A HashMap that associates an integer key with a value of type Any (either a String or an Integer).
- * @property array An array that holds the values in the same order as they appear in the map.
+ * Represents a mapping for a CS2 script.
  */
-class CS2Mapping private constructor(
-    val scriptId: Int,
-) {
+class CS2Mapping private constructor(val scriptId: Int) {
     var unknown: Int = 0
     var unknown1: Int = 0
     var defaultString: String? = null
@@ -34,9 +24,7 @@ class CS2Mapping private constructor(
         private val maps = HashMap<Int, CS2Mapping>()
 
         /**
-         * The main function that generates a report of all script mappings.
-         *
-         * @param args Command-line arguments (unused).
+         * Generates a report of all script mappings.
          */
         @JvmStatic
         fun main(args: Array<String>) {
@@ -56,10 +44,10 @@ class CS2Mapping private constructor(
         }
 
         /**
-         * Retrieves the cs2 map for a given script id.
+         * Gets the [CS2Mapping] for the given script id.
          *
-         * @param scriptId The script id to retrieve the mapping for.
-         * @return The corresponding [CS2Mapping], or `null` if the mapping could not be found or loaded.
+         * @param scriptId The script id.
+         * @return The mapping.
          */
         @JvmStatic
         fun forId(scriptId: Int): CS2Mapping? {
@@ -73,9 +61,9 @@ class CS2Mapping private constructor(
     }
 
     /**
-     * Loads the mapping data from the provided byte buffer.
+     * Loads mapping data from the byte buffer.
      *
-     * @param buffer The ByteBuffer containing the mapping data to be loaded.
+     * @param buffer The data buffer.
      */
     private fun load(buffer: ByteBuffer) {
         while (true) {
