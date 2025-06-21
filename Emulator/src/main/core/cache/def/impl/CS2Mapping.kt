@@ -53,7 +53,7 @@ class CS2Mapping private constructor(val scriptId: Int) {
         fun forId(scriptId: Int): CS2Mapping? {
             maps[scriptId]?.let { return it }
             val mapping = CS2Mapping(scriptId)
-            val bs = Cache.getData(CacheIndex.CLIENT_SCRIPTS, scriptId ushr 8, scriptId and 0xFF) ?: return null
+            val bs = Cache.getData(CacheIndex.ENUM_CONFIGURATION, scriptId ushr 8, scriptId and 0xFF) ?: return null
             mapping.load(ByteBuffer.wrap(bs))
             maps[scriptId] = mapping
             return mapping
