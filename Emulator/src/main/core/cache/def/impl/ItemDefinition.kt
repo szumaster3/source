@@ -29,85 +29,45 @@ import kotlin.math.round
  */
 class ItemDefinition : Definition<Item?>() {
     @JvmField var interfaceModelId = 0
-
     @JvmField var modelZoom = 0
-
     @JvmField var modelRotationX = 0
-
     @JvmField var modelRotationY = 0
-
     @JvmField var modelOffset1: Int = 0
-
     @JvmField var modelOffset2: Int = 0
-
     @JvmField var stackable = false
-
     @JvmField var value = 1
-
     @JvmField var membersOnly = false
-
     @JvmField var maleWornModelId1 = -1
-
     @JvmField var femaleWornModelId1 = -1
-
     @JvmField var maleWornModelId2 = -1
-
     @JvmField var femaleWornModelId2 = -1
-
     @JvmField var maleWornModelId3: Int = -1
-
     @JvmField var femaleWornModelId3: Int = -1
-
     @JvmField var maleWornModelId4: Int = -1
-
     @JvmField var femaleWornModelId4: Int = -1
-
     @JvmField var groundOptions: Array<String?>
-
     @JvmField var originalModelColors: ShortArray? = null
-
     @JvmField var modifiedModelColors: ShortArray? = null
-
     @JvmField var textureColour1: ShortArray? = null
-
     @JvmField var textureColour2: ShortArray? = null
-
     @JvmField var unknownArray1: ByteArray? = null
-
     @JvmField var unknownArray2: IntArray? = null
-
     @JvmField val unknownArray3: Array<IntArray>? = null
-
     @JvmField var unnoted = true
-
     @JvmField var colourEquip1 = -1
-
     @JvmField var colourEquip2 = 0
-
     @JvmField var noteId = -1
-
     @JvmField var noteTemplateId = -1
-
     @JvmField var stackIds: IntArray? = null
-
     @JvmField var stackAmounts: IntArray? = null
-
     @JvmField var teamId = 0
-
     @JvmField var lendId = -1
-
     @JvmField var lendTemplateId = -1
-
     @JvmField var recolourId: Int = -1
-
     @JvmField var recolourTemplateId: Int = -1
-
     @JvmField var equipId = 0
-
     @JvmField var itemRequirements: HashMap<Int, Int>? = null
-
     @JvmField var clientScriptData: HashMap<Int, Any>? = null
-
     @JvmField var itemType = 0
 
     /**
@@ -116,10 +76,7 @@ class ItemDefinition : Definition<Item?>() {
      * @param reference         the reference
      * @param templateReference the template reference
      */
-    fun transferNoteDefinition(
-        reference: ItemDefinition,
-        templateReference: ItemDefinition,
-    ) {
+    fun transferNoteDefinition(reference: ItemDefinition, templateReference: ItemDefinition) {
         membersOnly = reference.membersOnly
         interfaceModelId = templateReference.interfaceModelId
         originalModelColors = templateReference.originalModelColors
@@ -143,10 +100,7 @@ class ItemDefinition : Definition<Item?>() {
      * @param reference         the reference
      * @param templateReference the template reference
      */
-    fun transferLendDefinition(
-        reference: ItemDefinition,
-        templateReference: ItemDefinition,
-    ) {
+    fun transferLendDefinition(reference: ItemDefinition, templateReference: ItemDefinition) {
         femaleWornModelId1 = reference.femaleWornModelId1
         maleWornModelId2 = reference.maleWornModelId2
         membersOnly = reference.membersOnly
@@ -182,10 +136,7 @@ class ItemDefinition : Definition<Item?>() {
      * @param reference         the reference
      * @param templateReference the template reference
      */
-    fun transferRecolourDefinition(
-        reference: ItemDefinition,
-        templateReference: ItemDefinition,
-    ) {
+    fun transferRecolourDefinition(reference: ItemDefinition, templateReference: ItemDefinition) {
         femaleWornModelId2 = reference.femaleWornModelId2
         options = arrayOfNulls(5)
         modelRotationY = templateReference.modelRotationY
@@ -224,11 +175,7 @@ class ItemDefinition : Definition<Item?>() {
      * @param message the message
      * @return the boolean
      */
-    fun hasRequirement(
-        player: Player,
-        wield: Boolean,
-        message: Boolean,
-    ): Boolean {
+    fun hasRequirement(player: Player, wield: Boolean, message: Boolean): Boolean {
         val requirements = getConfiguration<Map<Int, Int>>(ItemConfigParser.REQUIREMENTS) ?: return true
         for (skill in requirements.keys) {
             if (skill < 0 || skill >= Skills.SKILL_NAME.size) {
@@ -559,9 +506,9 @@ class ItemDefinition : Definition<Item?>() {
 
     val inventoryOptions: Array<String>
         /**
-         * Get inventory options string [ ].
+         * Get inventory options string.
          *
-         * @return the string [ ]
+         * @return the string
          */
         get() = options
 
@@ -575,9 +522,9 @@ class ItemDefinition : Definition<Item?>() {
     }
 
     /**
-     * Get original model colors short [ ].
+     * Get original model colors short.
      *
-     * @return the short [ ]
+     * @return the short
      */
     fun getOriginalModelColors(): ShortArray? = originalModelColors
 
@@ -591,9 +538,9 @@ class ItemDefinition : Definition<Item?>() {
     }
 
     /**
-     * Get modified model colors short [ ].
+     * Get modified model colors short.
      *
-     * @return the short [ ]
+     * @return the short
      */
     fun getModifiedModelColors(): ShortArray? = modifiedModelColors
 
@@ -607,9 +554,9 @@ class ItemDefinition : Definition<Item?>() {
     }
 
     /**
-     * Get texture colour 1 short [ ].
+     * Get texture colour 1 short.
      *
-     * @return the short [ ]
+     * @return the short
      */
     fun getTextureColour1(): ShortArray? = textureColour1
 
@@ -623,9 +570,9 @@ class ItemDefinition : Definition<Item?>() {
     }
 
     /**
-     * Get texture colour 2 short [ ].
+     * Get texture colour 2 short.
      *
-     * @return the short [ ]
+     * @return the short
      */
     fun getTextureColour2(): ShortArray? = textureColour2
 
@@ -639,9 +586,9 @@ class ItemDefinition : Definition<Item?>() {
     }
 
     /**
-     * Get unknown array 1 byte [ ].
+     * Get unknown array 1 byte.
      *
-     * @return the byte [ ]
+     * @return the byte
      */
     fun getUnknownArray1(): ByteArray? = unknownArray1
 
@@ -737,9 +684,9 @@ class ItemDefinition : Definition<Item?>() {
     }
 
     /**
-     * Get stack ids int [ ].
+     * Get stack ids int.
      *
-     * @return the int [ ]
+     * @return the int
      */
     fun getStackIds(): IntArray? = stackIds
 
@@ -753,9 +700,9 @@ class ItemDefinition : Definition<Item?>() {
     }
 
     /**
-     * Get stack amounts int [ ].
+     * Get stack amounts int.
      *
-     * @return the int [ ]
+     * @return the int
      */
     fun getStackAmounts(): IntArray? = stackAmounts
 

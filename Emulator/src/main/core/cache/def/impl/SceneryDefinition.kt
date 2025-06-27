@@ -19,7 +19,7 @@ import java.nio.ByteBuffer
  * The type Scenery definition.
  */
 class SceneryDefinition : Definition<Scenery?>() {
-    var originalColors: ShortArray? = null
+    @JvmField var originalColors: ShortArray? = null
     @JvmField var configObjectIds: IntArray? = null
     @JvmField var modelIds: IntArray? = null
     private var modelConfiguration: IntArray? = null
@@ -410,9 +410,9 @@ class SceneryDefinition : Definition<Scenery?>() {
     fun isaBoolean3895(): Boolean = aBoolean3895
 
     /**
-     * Geta byte array 3899 byte [ ].
+     * Geta byte array 3899 byte.
      *
-     * @return the byte [ ]
+     * @return the byte
      */
     fun getaByteArray3899(): ByteArray? = aByteArray3899
 
@@ -491,9 +491,9 @@ class SceneryDefinition : Definition<Scenery?>() {
     }
 
     /**
-     * Get model configuration int [ ].
+     * Get model configuration int.
      *
-     * @return the int [ ]
+     * @return the int
      */
     fun getModelConfiguration(): IntArray? = modelConfiguration
 
