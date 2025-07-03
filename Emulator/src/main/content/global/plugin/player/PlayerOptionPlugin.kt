@@ -3,7 +3,6 @@ package content.global.plugin.player
 import core.game.bots.AIPlayer
 import core.game.bots.AIRepository
 import core.game.interaction.*
-import core.game.interaction.Option.*
 import core.game.node.entity.impl.PulseType
 import core.game.node.entity.player.Player
 import core.game.node.entity.player.link.request.RequestType
@@ -16,7 +15,7 @@ class PlayerOptionPlugin : InteractionListener {
          * Handles attacking the other player.
          */
 
-        on(IntType.PLAYER, Option.Companion._P_ATTACK.name) { player, node ->
+        on(IntType.PLAYER, Option.Companion.P_ATTACK.name) { player, node ->
             player.attack(node)
             return@on true
         }
@@ -25,7 +24,7 @@ class PlayerOptionPlugin : InteractionListener {
          * Handles trade with the other player.
          */
 
-        on(IntType.PLAYER, Option.Companion._P_TRADE.name) { player, node ->
+        on(IntType.PLAYER, Option.Companion.P_TRADE.name) { player, node ->
             player.requestManager.request((node as Player), RequestType.TRADE)
             return@on true
         }
@@ -34,7 +33,7 @@ class PlayerOptionPlugin : InteractionListener {
          * Handles assists with the other player.
          */
 
-        on(IntType.PLAYER, Option.Companion._P_ASSIST.name) { player, node ->
+        on(IntType.PLAYER, Option.Companion.P_ASSIST.name) { player, node ->
             if (node is AIPlayer) AIRepository.sendBotInfo(player, node)
             player.requestManager.request((node as Player), RequestType.ASSIST)
             return@on true
@@ -44,7 +43,7 @@ class PlayerOptionPlugin : InteractionListener {
          * Handles following the player.
          */
 
-        on(IntType.PLAYER, Option.Companion._P_FOLLOW.name) { player, node ->
+        on(IntType.PLAYER, Option.Companion.P_FOLLOW.name) { player, node ->
             val target = node as Player
             player.pulseManager.run(
                 object : MovementPulse(player, target, DestinationFlag.FOLLOW_ENTITY) {

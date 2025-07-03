@@ -30,37 +30,37 @@ class Option(@JvmField val name: String, val index: Int) {
         /**
          * Player attack option.
          */
-        val _P_ATTACK = Option("Attack", 0)
+        val P_ATTACK = Option("Attack", 0)
 
         /**
          * Player follow option.
          */
-        val _P_FOLLOW = Option("Follow", 2)
+        val P_FOLLOW = Option("Follow", 2)
 
         /**
          * Player trade option.
          */
-        val _P_TRADE = Option("Trade with", 3)
+        val P_TRADE = Option("Trade with", 3)
 
         /**
          * Player give-to option.
          */
-        val _P_GIVETO = Option("Give-to", 3)
+        val P_GIVETO = Option("Give-to", 3)
 
         /**
          * Player pickpocket option.
          */
-        val _P_PICKPOCKET = Option("Pickpocket", 4)
+        val P_PICKPOCKET = Option("Pickpocket", 4)
 
         /**
          * Player examine option.
          */
-        val _P_EXAMINE = Option("Examine", 7)
+        val P_EXAMINE = Option("Examine", 7)
 
         /**
          * Player assist request option.
          */
-        val _P_ASSIST = Option("Req Assist", 6)
+        val P_ASSIST = Option("Req Assist", 6)
 
         /**
          * Fallback/null option.

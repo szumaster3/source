@@ -188,9 +188,9 @@ class InteractPlugin(private val node: Node) {
         when (node) {
             is Player -> {
                 for (i in options.indices) remove(i)
-                set(Option._P_FOLLOW)
-                set(Option._P_TRADE)
-                set(Option._P_ASSIST)
+                set(Option.P_FOLLOW)
+                set(Option.P_TRADE)
+                set(Option.P_ASSIST)
             }
             is NPC -> init(node.id, *node.definition.options)
             is Scenery -> init(node.id, *node.definition.options)
