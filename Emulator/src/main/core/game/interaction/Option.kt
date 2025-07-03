@@ -17,7 +17,6 @@ class Option(@JvmField val name: String, val index: Int) {
      * Gets the assigned handler.
      */
     var handler: OptionHandler? = null
-        private set
 
     /**
      * Sets and returns the handler.
