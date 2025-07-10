@@ -29,7 +29,6 @@ class ClothDefinition {
          * @param clothId The cloth id.
          * @return The loaded [ClothDefinition].
          */
-        @JvmStatic
         fun forId(clothId: Int): ClothDefinition {
             val def = ClothDefinition()
             val data = Cache.getData(CacheIndex.CONFIGURATION, CacheArchive.IDK_TYPE, clothId)

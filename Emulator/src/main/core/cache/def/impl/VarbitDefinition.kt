@@ -69,19 +69,16 @@ class VarbitDefinition {
         /**
          * Gets the varbit definition for a scenery id.
          */
-        @JvmStatic
         fun forSceneryId(id: Int): VarbitDefinition = forId(id)
 
         /**
          * Gets the varbit definition for an NPC id.
          */
-        @JvmStatic
         fun forNpcId(id: Int): VarbitDefinition = forId(id)
 
         /**
          * Gets the varbit definition for an item id.
          */
-        @JvmStatic
         fun forItemId(id: Int): VarbitDefinition = forId(id)
 
         /**
@@ -90,7 +87,6 @@ class VarbitDefinition {
          * @param id The varbit id.
          * @return The varbit definition.
          */
-        @JvmStatic
         fun forId(id: Int): VarbitDefinition {
             MAPPING[id]?.let { return it }
 
@@ -119,7 +115,6 @@ class VarbitDefinition {
          * @param startBit The start bit index.
          * @param endBit The end bit index.
          */
-        @JvmStatic
         fun create(varpId: Int, varbitId: Int, startBit: Int, endBit: Int) {
             val def = VarbitDefinition(varpId, varbitId, startBit, endBit)
             MAPPING[varbitId] = def

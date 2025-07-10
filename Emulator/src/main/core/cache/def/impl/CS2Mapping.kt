@@ -52,7 +52,6 @@ class CS2Mapping private constructor(val scriptId: Int) {
          * @param scriptId The script id.
          * @return The mapping.
          */
-        @JvmStatic
         fun forId(scriptId: Int): CS2Mapping? {
             maps[scriptId]?.let { return it }
             val mapping = CS2Mapping(scriptId)

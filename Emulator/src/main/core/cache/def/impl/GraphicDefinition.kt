@@ -38,7 +38,6 @@ class GraphicDefinition {
          * @param gfxId The graphic id.
          * @return The corresponding [GraphicDefinition].
          */
-        @JvmStatic
         fun forId(gfxId: Int): GraphicDefinition = graphicDefinitions[gfxId] ?: run {
             val data = Cache.getData(CacheIndex.GRAPHICS, gfxId ushr 8, gfxId and 0xFF)
             GraphicDefinition().apply {

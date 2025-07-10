@@ -48,7 +48,6 @@ class Struct(val id: Int) {
          * @param id The struct id.
          * @return The [Struct] instance.
          */
-        @JvmStatic
         fun get(id: Int): Struct = definitions[id] ?: run {
             val data = Cache.getData(CacheIndex.CONFIGURATION, CacheArchive.STRUCT_TYPE, id)
             decode(id, data).also { definitions[id] = it }
@@ -61,7 +60,6 @@ class Struct(val id: Int) {
          * @param data The raw byte data.
          * @return The parsed [Struct].
          */
-        @JvmStatic
         fun decode(id: Int, data: ByteArray?): Struct {
             val struct = Struct(id)
             data?.let {

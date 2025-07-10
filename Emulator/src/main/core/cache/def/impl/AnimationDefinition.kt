@@ -64,7 +64,6 @@ class AnimationDefinition {
          *
          * @return A map containing animation definitions by their id.
          */
-        @JvmStatic
         fun getDefinition(): Map<Int, AnimationDefinition> = animationDefinition
     }
 

@@ -17,46 +17,46 @@ import java.nio.ByteBuffer
  * The render animation definition.
  */
 class RenderAnimationDefinition {
-    @JvmField var turn180Animation: Int
-    @JvmField var anInt951: Int = -1
-    @JvmField var anInt952: Int
-    @JvmField var turnCWAnimation: Int = -1
-    @JvmField var anInt954: Int
-    @JvmField var anInt955: Int
-    @JvmField var anInt956: Int = 0
-    @JvmField var anInt957: Int
-    @JvmField var anInt958: Int
-    @JvmField var anIntArray959: IntArray? = null
-    @JvmField var anInt960: Int
-    @JvmField var anInt961: Int = 0
-    @JvmField var anInt962: Int
-    @JvmField var walkAnimationId: Int
-    @JvmField var anInt964: Int
-    @JvmField var anInt965: Int = 0
-    @JvmField var anInt966: Int
-    @JvmField var standAnimationIds: IntArray? = null
-    @JvmField var anInt969: Int = 0
-    @JvmField var anIntArray971: IntArray? = null
-    @JvmField var standAnimationId: Int
-    @JvmField var anInt973: Int = 0
-    @JvmField var anInt974: Int
-    @JvmField var anInt975: Int = 0
-    @JvmField var runAnimationId: Int
-    @JvmField var anInt977: Int
-    @JvmField var aBoolean978: Boolean = true
-    @JvmField var anIntArrayArray979: Array<IntArray?>? = null
-    @JvmField var anInt980: Int = 0
-    @JvmField var turnCCWAnimation: Int
-    @JvmField var anInt983: Int
-    @JvmField var anInt985: Int
-    @JvmField var anInt986: Int
-    @JvmField var anInt987: Int
-    @JvmField var anInt988: Int = 0
-    @JvmField var anInt989: Int
-    @JvmField var anInt990: Int
-    @JvmField var anInt992: Int = 0
-    @JvmField var anInt993: Int = 0
-    @JvmField var anInt994: Int = 0
+    var turn180Animation: Int
+    var anInt951: Int = -1
+    var anInt952: Int
+    var turnCWAnimation: Int = -1
+    var anInt954: Int
+    var anInt955: Int
+    var anInt956: Int = 0
+    var anInt957: Int
+    var anInt958: Int
+    var anIntArray959: IntArray? = null
+    var anInt960: Int
+    var anInt961: Int = 0
+    var anInt962: Int
+    var walkAnimationId: Int
+    var anInt964: Int
+    var anInt965: Int = 0
+    var anInt966: Int
+    var standAnimationIds: IntArray? = null
+    var anInt969: Int = 0
+    var anIntArray971: IntArray? = null
+    var standAnimationId: Int
+    var anInt973: Int = 0
+    var anInt974: Int
+    var anInt975: Int = 0
+    var runAnimationId: Int
+    var anInt977: Int
+    var aBoolean978: Boolean = true
+    var anIntArrayArray979: Array<IntArray?>? = null
+    var anInt980: Int = 0
+    var turnCCWAnimation: Int
+    var anInt983: Int
+    var anInt985: Int
+    var anInt986: Int
+    var anInt987: Int
+    var anInt988: Int = 0
+    var anInt989: Int
+    var anInt990: Int
+    var anInt992: Int = 0
+    var anInt993: Int = 0
+    var anInt994: Int = 0
 
     private fun parse(buffer: ByteBuffer) {
         while (true) {

@@ -60,7 +60,6 @@ class DataMap private constructor(val id: Int) {
          * @param id The DataMap id.
          * @return The [DataMap] instance.
          */
-        @JvmStatic
         fun get(id: Int): DataMap = definitions[id] ?: run {
             val data = Cache.getData(CacheIndex.ENUM_CONFIGURATION, id ushr 8, id and 0xFF)
             val def = decode(id, data)
@@ -75,7 +74,6 @@ class DataMap private constructor(val id: Int) {
          * @param data The raw data bytes.
          * @return The parsed [DataMap].
          */
-        @JvmStatic
         fun decode(id: Int, data: ByteArray?): DataMap {
             val def = DataMap(id)
             if (data != null) {
