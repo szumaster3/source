@@ -4,8 +4,6 @@ import core.api.getVarp
 import core.cache.Cache.getData
 import core.cache.CacheIndex
 import core.cache.def.Definition
-import core.cache.misc.buffer.ByteBufferUtils.getMedium
-import core.cache.misc.buffer.ByteBufferUtils.getString
 import core.game.interaction.OptionHandler
 import core.game.node.entity.npc.NPC
 import core.game.node.entity.npc.drop.NPCDropTables
@@ -14,6 +12,7 @@ import core.game.system.config.NPCConfigParser
 import core.game.world.GameWorld.prompt
 import core.game.world.update.flag.context.Animation
 import core.game.world.update.flag.context.Graphics
+import core.net.*
 import core.tools.StringUtils.isPlusN
 import java.nio.ByteBuffer
 
@@ -156,17 +155,14 @@ class NPCDefinition(id: Int) : Definition<NPC?>() {
             if (opcode == 0) {
                 break
             }
-            parseOpcode(buffer, opcode)
+            decode(buffer, opcode)
         }
     }
 
-    private fun parseOpcode(
-        buffer: ByteBuffer,
-        opcode: Int,
-    ) {
+    private fun decode(buffer: ByteBuffer, opcode: Int) {
         when (opcode) {
             1 -> {
-                val length = buffer.get().toInt() and 0xFF
+                val length = buffer.g1()
                 modelIds = IntArray(length)
                 var i_66_ = 0
                 while (i_66_ < length) {
@@ -175,23 +171,21 @@ class NPCDefinition(id: Int) : Definition<NPC?>() {
                     i_66_++
                 }
             }
-
-            2 -> name = getString(buffer)
-            12 -> size = buffer.get().toInt() and 0xFF
-            13 -> standAnimation = buffer.getShort().toInt()
-            14 -> walkAnimation = buffer.getShort().toInt()
-            15 -> turnAnimation = buffer.getShort().toInt()
-            16 -> buffer.getShort() // Another turn animation
+            2 -> name = buffer.gjstr()
+            12 -> size = buffer.g1()
+            13 -> standAnimation = buffer.g2b()
+            14 -> walkAnimation = buffer.g2b()
+            15 -> turnAnimation = buffer.g2b()
+            16 -> buffer.g2()
             17 -> {
-                walkAnimation = buffer.getShort().toInt()
-                turn180Animation = buffer.getShort().toInt()
-                turnCWAnimation = buffer.getShort().toInt()
-                turnCCWAnimation = buffer.getShort().toInt()
+                walkAnimation = buffer.g2b()
+                turn180Animation = buffer.g2b()
+                turnCWAnimation = buffer.g2b()
+                turnCCWAnimation = buffer.g2b()
             }
-
-            30, 31, 32, 33, 34 -> options[opcode - 30] = getString(buffer)
+            in 30..34 -> options[opcode - 30] = buffer.gjstr()
             40 -> {
-                var length = buffer.get().toInt() and 0xFF
+                var length = buffer.g1()
                 originalColors = ShortArray(length)
                 modifiedTextures = ShortArray(length)
                 var i_65_ = 0
@@ -233,22 +227,21 @@ class NPCDefinition(id: Int) : Definition<NPC?>() {
                     i_64_++
                 }
             }
-
             93 -> minimapDot = false
-            95 -> combatLevel = buffer.getShort().toInt() and 0xFFFF
-            97 -> modelScaleX = buffer.getShort().toInt() and 0xFFFF
-            98 -> modelScaleY = buffer.getShort().toInt() and 0xFFFF
+            95 -> combatLevel = buffer.g2()
+            97 -> modelScaleX = buffer.g2()
+            98 -> modelScaleY = buffer.g2()
             99 -> hasShadow = true
-            100 -> ambientSoundMinDelay = buffer.get().toInt()
-            101 -> shadowOpacity = buffer.get() * 5
-            102 -> headIcons = buffer.getShort().toInt() and 0xFFFF
-            103 -> modelYaw = buffer.getShort().toInt() and 0xFFFF
+            100 -> ambientSoundMinDelay = buffer.g1()
+            101 -> shadowOpacity = buffer.g1b()
+            102 -> headIcons = buffer.g2()
+            103 -> modelYaw = buffer.g2()
             106, 118 -> {
-                varbitId = buffer.getShort().toInt() and 0xFFFF
+                varbitId = buffer.g2()
                 if (varbitId == 65535) {
                     varbitId = -1
                 }
-                varpId = buffer.getShort().toInt() and 0xFFFF
+                varpId = buffer.g2()
                 if (varpId == 65535) {
                     varpId = -1
                 }
@@ -271,83 +264,71 @@ class NPCDefinition(id: Int) : Definition<NPC?>() {
                 }
                 childNPCIds!![length + 1] = defaultValue
             }
-
             107 -> rotated = false
             109 -> clickable = false
             111 -> hasRenderPriority = false
             113 -> {
-                ambientSoundVolume = (buffer.getShort().toInt() and 0xFFFF).toShort()
-                lightModifier = (buffer.getShort().toInt() and 0xFFFF).toShort()
+                ambientSoundVolume = buffer.g2().toShort()
+                lightModifier = buffer.g2().toShort()
             }
-
             114 -> {
-                modelPitch = (buffer.get())
-                modelRoll = (buffer.get())
+                modelPitch = buffer.get()
+                modelRoll = buffer.get()
             }
-
             115 -> {
-                buffer.get() // & 0xFF;
-                buffer.get() // & 0xFF;
+                buffer.get()
+                buffer.get()
             }
-
             119 -> buffer.get()
             121 -> {
-                var length = buffer.get().toInt() and 0xFF
-                var i = 0
-                while (i < length) {
+                val length = buffer.g1()
+                repeat(length) {
                     buffer.get()
                     buffer.get()
                     buffer.get()
                     buffer.get()
-                    i++
                 }
             }
-
-            122 -> buffer.getShort()
-            123 -> buffer.getShort()
+            122 -> buffer.g2()
+            123 -> buffer.g2()
             125 -> buffer.get()
             126 -> {
-                buffer.getShort()
-                renderAnimationId = buffer.getShort().toInt()
+                buffer.g2()
+                renderAnimationId = buffer.g2()
             }
-
-            127 -> renderAnimationId = buffer.getShort().toInt()
+            127 -> renderAnimationId = buffer.g2()
             128 -> buffer.get()
             134 -> {
-                buffer.getShort()
-                buffer.getShort()
-                buffer.getShort()
-                buffer.getShort()
+                buffer.g2()
+                buffer.g2()
+                buffer.g2()
+                buffer.g2()
                 buffer.get()
             }
-
             135 -> {
                 buffer.get()
-                buffer.getShort()
+                buffer.g2()
             }
-
             136 -> {
                 buffer.get()
-                buffer.getShort()
+                buffer.g2()
             }
-
-            137 -> buffer.getShort()
+            137 -> buffer.g2()
             249 -> {
-                var length = buffer.get().toInt() and 0xFF
-                var i = 0
-                while (i < length) {
-                    val string = buffer.get().toInt() == 1
-                    getMedium(buffer) // script id
-                    if (!string) {
-                        buffer.getInt() // Value
+                val length = buffer.g1()
+                repeat(length) {
+                    val isString = buffer.g1() == 1
+                    val key = buffer.g3()
+                    if (isString) {
+                        val value = buffer.gjstr()
                     } else {
-                        getString(buffer) // value
+                        val value = buffer.g4()
                     }
-                    i++
                 }
             }
-
-            else -> {}
+            else -> {
+                // Nieznany opcode - można logować lub ignorować
+            }
         }
     }
 

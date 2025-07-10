@@ -7,11 +7,14 @@ import core.cache.Cache.getIndexCapacity
 import core.cache.CacheIndex
 import core.cache.def.Definition
 import core.cache.misc.buffer.ByteBufferUtils.getMedium
-import core.cache.misc.buffer.ByteBufferUtils.getString
 import core.game.interaction.OptionHandler
 import core.game.node.entity.player.Player
 import core.game.node.scenery.Scenery
 import core.game.world.GameWorld.prompt
+import core.net.g1
+import core.net.g2
+import core.net.g4
+import core.net.gjstr
 import core.tools.Log
 import java.nio.ByteBuffer
 
@@ -585,7 +588,7 @@ class SceneryDefinition : Definition<Scenery?>() {
                     definitions[objectId] = SceneryDefinition()
                     continue
                 }
-                val def = parseDefinition(objectId, ByteBuffer.wrap(data))
+                val def = decode(objectId, ByteBuffer.wrap(data))
                 definitions[objectId] = def
                 data = null
             }
@@ -609,219 +612,221 @@ class SceneryDefinition : Definition<Scenery?>() {
         }
 
         /**
-         * Parse definition scenery definition.
+         * Parses a [SceneryDefinition].
          *
-         * @param objectId the object id
-         * @param buffer   the buffer
-         * @return the scenery definition
+         * @param objectId The id of the scenery object.
+         * @param buffer The buffer containing the object data.
+         * @return The parsed [SceneryDefinition].
          */
-        private fun parseDefinition(
-            objectId: Int,
-            buffer: ByteBuffer,
-        ): SceneryDefinition {
+        private fun decode(objectId: Int, buffer: ByteBuffer): SceneryDefinition {
             val def = SceneryDefinition()
             def.id = objectId
-            while (true) {
-                if (!buffer.hasRemaining()) {
-                    log(SceneryDefinition::class.java, Log.ERR, "Buffer empty for $objectId")
-                    break
-                }
-                val opcode = buffer.get().toInt() and 0xFF
-                if (opcode == 1 || opcode == 5) {
-                    val length = buffer.get().toInt() and 0xff
-                    if (def.modelIds == null) {
-                        def.modelIds = IntArray(length)
-                        if (opcode == 1) {
-                            def.modelConfiguration = IntArray(length)
-                        }
-                        for (i in 0 until length) {
-                            def.modelIds!![i] = buffer.getShort().toInt() and 0xFFFF
+
+            while (buffer.hasRemaining()) {
+                val opcode = buffer.g1()
+
+                when (opcode) {
+                    0 -> break
+
+                    1, 5 -> {
+                        val length = buffer.g1()
+                        if (def.modelIds == null) {
+                            def.modelIds = IntArray(length)
                             if (opcode == 1) {
-                                def.modelConfiguration!![i] = buffer.get().toInt() and 0xFF
+                                def.modelConfiguration = IntArray(length)
+                            }
+                            for (i in 0 until length) {
+                                def.modelIds!![i] = buffer.g2()
+                                if (opcode == 1) {
+                                    def.modelConfiguration!![i] = buffer.g1()
+                                }
+                            }
+                        } else {
+                            buffer.position(buffer.position() + length * if (opcode == 1) 3 else 2)
+                        }
+                    }
+
+                    2 -> def.name = buffer.gjstr()
+
+                    14 -> def.sizeX = buffer.g1()
+                    15 -> def.sizeY = buffer.g1()
+
+                    17 -> {
+                        def.isProjectileClipped = false
+                        def.solid = 0
+                    }
+
+                    18 -> def.isProjectileClipped = false
+
+                    19 -> def.interactive = buffer.g1()
+
+                    21 -> def.contouredGround = 1.toByte()
+                    22 -> def.aBoolean3867 = true
+                    23 -> def.thirdBoolean = true
+
+                    24 -> {
+                        def.addObjectCheck = buffer.g2()
+                        if (def.addObjectCheck == 65535) def.addObjectCheck = -1
+                    }
+
+                    27 -> def.solid = 1
+
+                    28 -> def.offsetMultiplier = buffer.g1() shl 2
+
+                    29 -> def.brightness = buffer.get().toInt()
+                    39 -> def.contrast = buffer.get().toInt() * 5
+
+                    in 30..34 -> {
+                        val idx = opcode - 30
+                        def.options[idx] = buffer.gjstr()
+                        if (def.options[idx] == "Hidden") {
+                            def.options[idx] = null
+                            def.hasHiddenOptions = true
+                        }
+                    }
+
+                    40 -> {
+                        val length = buffer.g1()
+                        def.originalColors = ShortArray(length)
+                        def.modifiedColors = ShortArray(length)
+                        repeat(length) {
+                            def.originalColors!![it] = buffer.getShort()
+                            def.modifiedColors!![it] = buffer.getShort()
+                        }
+                    }
+
+                    41 -> {
+                        val length = buffer.g1()
+                        def.originalTextureColours = ShortArray(length)
+                        def.modifiedTextureColours = ShortArray(length)
+                        repeat(length) {
+                            def.originalTextureColours!![it] = buffer.getShort()
+                            def.modifiedTextureColours!![it] = buffer.getShort()
+                        }
+                    }
+
+                    42 -> {
+                        val length = buffer.g1()
+                        def.recolourPalette = ByteArray(length)
+                        repeat(length) { def.recolourPalette!![it] = buffer.get() }
+                    }
+
+                    60 -> def.mapIcon = buffer.getShort()
+
+                    62 -> def.mirrored = true
+                    64 -> def.isCastsShadow = false
+
+                    65 -> def.modelSizeX = buffer.g2()
+                    66 -> def.modelSizeZ = buffer.g2()
+                    67 -> def.modelSizeY = buffer.g2()
+
+                    68 -> buffer.getShort()
+
+                    69 -> def.walkingFlag = buffer.g1()
+
+                    70 -> def.offsetX = buffer.getShort().toInt() shl 2
+                    71 -> def.offsetZ = buffer.getShort().toInt() shl 2
+                    72 -> def.offsetY = buffer.getShort().toInt() shl 2
+
+                    73 -> def.isBlocksLand = true
+                    74 -> def.isFirstBool = true
+
+                    75 -> def.anInt3855 = buffer.g1()
+
+                    77, 92 -> {
+                        def.varbitID = buffer.g2()
+                        if (def.varbitID == 65535) def.varbitID = -1
+
+                        def.configId = buffer.g2()
+                        if (def.configId == 65535) def.configId = -1
+
+                        var defaultId = -1
+                        if (opcode == 92) {
+                            defaultId = buffer.g2()
+                            if (defaultId == 65535) defaultId = -1
+                        }
+
+                        val childrenAmount = buffer.g1()
+                        def.configObjectIds = IntArray(childrenAmount + 2)
+                        for (index in 0..childrenAmount) {
+                            def.configObjectIds!![index] = buffer.g2()
+                            if (def.configObjectIds!![index] == 65535) def.configObjectIds!![index] = -1
+                        }
+                        def.configObjectIds!![childrenAmount + 1] = defaultId
+                    }
+
+                    78 -> {
+                        def.anInt3860 = buffer.g2()
+                        def.anInt3904 = buffer.g1()
+                    }
+
+                    79 -> {
+                        def.anInt3900 = buffer.g2()
+                        def.anInt3905 = buffer.g2()
+                        def.anInt3904 = buffer.g1()
+                        val length = buffer.g1()
+                        def.anIntArray3859 = IntArray(length)
+                        for (i in 0 until length) {
+                            def.anIntArray3859!![i] = buffer.g2()
+                        }
+                    }
+
+                    81 -> {
+                        def.contouredGround = 2.toByte()
+                        def.anInt3882 = 256 * buffer.g1()
+                    }
+
+                    82, 88 -> {}
+
+                    89 -> def.aBoolean3895 = false
+                    90 -> def.aBoolean3870 = true
+                    91 -> def.membersOnly = true
+
+                    93 -> {
+                        def.contouredGround = 3.toByte()
+                        def.anInt3882 = buffer.g2()
+                    }
+
+                    94 -> def.contouredGround = 4.toByte()
+                    95 -> def.contouredGround = 5.toByte()
+
+                    96, 97 -> {}
+
+                    100 -> {
+                        buffer.get()
+                        buffer.getShort()
+                    }
+
+                    101 -> buffer.get()
+                    102 -> buffer.getShort()
+
+                    249 -> {
+                        val length = buffer.g1()
+                        repeat(length) {
+                            val isString = buffer.g1() == 1
+                            getMedium(buffer) // script id
+                            if (isString) {
+                                buffer.gjstr()
+                            } else {
+                                buffer.g4()
                             }
                         }
-                    } else {
-                        buffer.position(buffer.position() + (length * (if (opcode == 1) 3 else 2)))
                     }
-                } else if (opcode == 2) {
-                    def.name = getString(buffer)
-                } else if (opcode == 14) {
-                    def.sizeX = buffer.get().toInt() and 0xFF
-                } else if (opcode == 15) {
-                    def.sizeY = buffer.get().toInt() and 0xFF
-                } else if (opcode == 17) {
-                    def.isProjectileClipped = false
-                    def.solid = 0
-                } else if (opcode == 18) {
-                    def.isProjectileClipped = false
-                } else if (opcode == 19) {
-                    def.interactive = buffer.get().toInt() and 0xFF
-                } else if (opcode == 21) {
-                    def.contouredGround = 1.toByte()
-                } else if (opcode == 22) {
-                    def.aBoolean3867 = true
-                } else if (opcode == 23) {
-                    def.thirdBoolean = true
-                } else if (opcode == 24) {
-                    def.addObjectCheck = buffer.getShort().toInt() and 0xFFFF
-                    if (def.addObjectCheck == 65535) {
-                        def.addObjectCheck = -1
+
+                    else -> {
+                        log(SceneryDefinition::class.java, Log.ERR, "Unhandled object definition opcode: $opcode")
+                        break
                     }
-                } else if (opcode == 27) {
-                    def.solid = 1
-                } else if (opcode == 28) {
-                    def.offsetMultiplier = ((buffer.get().toInt() and 0xFF) shl 2)
-                } else if (opcode == 29) {
-                    def.brightness = buffer.get().toInt()
-                } else if (opcode == 39) {
-                    def.contrast = buffer.get() * 5
-                } else if (opcode >= 30 && opcode < 35) {
-                    def.options[opcode - 30] = getString(buffer)
-                    if (def.options[opcode - 30] == "Hidden") {
-                        def.options[opcode - 30] = null
-                        def.hasHiddenOptions = true
-                    }
-                } else if (opcode == 40) {
-                    val length = buffer.get().toInt() and 0xFF
-                    def.originalColors = ShortArray(length)
-                    def.modifiedColors = ShortArray(length)
-                    for (i in 0 until length) {
-                        def.originalColors!![i] = buffer.getShort()
-                        def.modifiedColors!![i] = buffer.getShort()
-                    }
-                } else if (opcode == 41) {
-                    val length = buffer.get().toInt() and 0xFF
-                    def.originalTextureColours = ShortArray(length)
-                    def.modifiedTextureColours = ShortArray(length)
-                    for (i in 0 until length) {
-                        def.originalTextureColours!![i] = buffer.getShort()
-                        def.modifiedTextureColours!![i] = buffer.getShort()
-                    }
-                } else if (opcode == 42) {
-                    val length = buffer.get().toInt() and 0xFF
-                    def.recolourPalette = ByteArray(length)
-                    for (i in 0 until length) {
-                        def.recolourPalette!![i] = buffer.get()
-                    }
-                } else if (opcode == 60) {
-                    def.mapIcon = buffer.getShort()
-                } else if (opcode == 62) {
-                    def.mirrored = true
-                } else if (opcode == 64) {
-                    def.isCastsShadow = false
-                } else if (opcode == 65) {
-                    def.modelSizeX = buffer.getShort().toInt() and 0xFFFF
-                } else if (opcode == 66) {
-                    def.modelSizeZ = buffer.getShort().toInt() and 0xFFFF
-                } else if (opcode == 67) {
-                    def.modelSizeY = buffer.getShort().toInt() and 0xFFFF
-                } else if (opcode == 68) {
-                    buffer.getShort()
-                } else if (opcode == 69) {
-                    def.walkingFlag = buffer.get().toInt() and 0xFF
-                } else if (opcode == 70) {
-                    def.offsetX = buffer.getShort().toInt() shl 2
-                } else if (opcode == 71) {
-                    def.offsetZ = buffer.getShort().toInt() shl 2
-                } else if (opcode == 72) {
-                    def.offsetY = buffer.getShort().toInt() shl 2
-                } else if (opcode == 73) {
-                    def.isBlocksLand = true
-                } else if (opcode == 74) {
-                    def.isFirstBool = true
-                } else if (opcode == 75) {
-                    def.anInt3855 = buffer.get().toInt() and 0xFF
-                } else if (opcode == 77 || opcode == 92) {
-                    def.varbitID = buffer.getShort().toInt() and 0xFFFF
-                    if (def.varbitID == 65535) {
-                        def.varbitID = -1
-                    }
-                    def.configId = buffer.getShort().toInt() and 0xFFFF
-                    if (def.configId == 65535) {
-                        def.configId = -1
-                    }
-                    var defaultId = -1
-                    if (opcode == 92) {
-                        defaultId = buffer.getShort().toInt() and 0xFFFF
-                        if (defaultId == 65535) {
-                            defaultId = -1
-                        }
-                    }
-                    val childrenAmount = buffer.get().toInt() and 0xFF
-                    def.configObjectIds = IntArray(childrenAmount + 2)
-                    var index = 0
-                    while (childrenAmount >= index) {
-                        def.configObjectIds!![index] = buffer.getShort().toInt() and 0xFFFF
-                        if (def.configObjectIds!![index] == 65535) {
-                            def.configObjectIds!![index] = -1
-                        }
-                        index++
-                    }
-                    def.configObjectIds!![childrenAmount + 1] = defaultId
-                } else if (opcode == 78) {
-                    def.anInt3860 = buffer.getShort().toInt() and 0xFFFF
-                    def.anInt3904 = buffer.get().toInt() and 0xFF
-                } else if (opcode == 79) {
-                    def.anInt3900 = buffer.getShort().toInt() and 0xFFFF
-                    def.anInt3905 = buffer.getShort().toInt() and 0xFFFF
-                    def.anInt3904 = buffer.get().toInt() and 0xFF
-                    val length = buffer.get().toInt() and 0xFF
-                    def.anIntArray3859 = IntArray(length)
-                    for (i in 0 until length) {
-                        def.anIntArray3859!![i] = buffer.getShort().toInt() and 0xFFFF
-                    }
-                } else if (opcode == 81) {
-                    def.contouredGround = 2.toByte()
-                    def.anInt3882 = 256 * buffer.get() and 0xFF
-                } else if (opcode == 82 || opcode == 88) {
-                } else if (opcode == 89) {
-                    def.aBoolean3895 = false
-                } else if (opcode == 90) {
-                    def.aBoolean3870 = true
-                } else if (opcode == 91) {
-                    def.membersOnly = true
-                } else if (opcode == 93) {
-                    def.contouredGround = 3.toByte()
-                    def.anInt3882 = buffer.getShort().toInt() and 0xFFFF
-                } else if (opcode == 94) {
-                    def.contouredGround = 4.toByte()
-                } else if (opcode == 95) {
-                    def.contouredGround = 5.toByte()
-                } else if (opcode == 96 || opcode == 97) {
-                } else if (opcode == 100) {
-                    buffer.get()
-                    buffer.getShort()
-                } else if (opcode == 101) {
-                    buffer.get()
-                } else if (opcode == 102) {
-                    buffer.getShort()
-                } else if (opcode == 249) { // cs2 scripts
-                    val length = buffer.get().toInt() and 0xFF
-                    for (i in 0 until length) {
-                        val string = buffer.get().toInt() == 1
-                        getMedium(buffer) // script id
-                        if (!string) {
-                            buffer.getInt() // Value
-                        } else {
-                            getString(buffer) // value
-                        }
-                    }
-                } else {
-                    if (opcode != 0) {
-                        log(
-                            SceneryDefinition::class.java,
-                            Log.ERR,
-                            "Unhandled object definition opcode: $opcode",
-                        )
-                    }
-                    break
                 }
             }
+
             def.configureObject()
+
             if (def.isFirstBool) {
                 def.solid = 0
                 def.isProjectileClipped = false
             }
+
             return def
         }
 

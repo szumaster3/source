@@ -2,6 +2,10 @@ package core.cache.def.impl
 
 import core.cache.Cache
 import core.cache.CacheIndex
+import core.net.g1
+import core.net.g2
+import core.net.g2s
+import core.net.g4
 import java.nio.ByteBuffer
 
 /**
@@ -46,15 +50,15 @@ class GraphicDefinition {
     }
 
     /**
-     * Reads and processes graphic data from the given [ByteBuffer].
+     * Reads and processes graphic data from the given [JagexBuffer].
      *
      * @param buffer The buffer containing graphic data.
      */
     private fun readValueLoop(buffer: ByteBuffer) {
         while (true) {
-            val opcode = buffer.get().toInt() and 0xFF
+            val opcode = buffer.g1()
             if (opcode == 0) break
-            readValues(buffer, opcode)
+            decode(buffer, opcode)
         }
     }
 
@@ -64,51 +68,48 @@ class GraphicDefinition {
      * @param buffer The data buffer.
      * @param opcode The opcode to process.
      */
-    private fun readValues(buffer: ByteBuffer, opcode: Int) {
+    private fun decode(buffer: ByteBuffer, opcode: Int) {
         when (opcode) {
-            1 -> modelID = buffer.short.toInt()
-            2 -> animationID = buffer.short.toInt()
-            4 -> sizeXY = buffer.short.toInt() and 0xFFFF
-            5 -> sizeZ = buffer.short.toInt() and 0xFFFF
-            6 -> rotation = buffer.short.toInt() and 0xFFFF
-            7 -> ambient = buffer.get().toInt() and 0xFF
-            8 -> modelShadow = buffer.get().toInt() and 0xFF
+            1 -> modelID = buffer.g2()
+            2 -> animationID = buffer.g2()
+            4 -> sizeXY = buffer.g2()
+            5 -> sizeZ = buffer.g2()
+            6 -> rotation = buffer.g2()
+            7 -> ambient = buffer.g1()
+            8 -> modelShadow = buffer.g1()
             10 -> castsShadow = true
             11 -> renderPriority = 1
             12 -> renderPriority = 4
             13 -> renderPriority = 5
             14 -> {
                 renderPriority = 2
-                shadowOpacity = (buffer.get().toInt() and 0xFF) * 256
+                shadowOpacity = buffer.g1() * 256
             }
-
             15 -> {
                 renderPriority = 3
-                shadowOpacity = buffer.short.toInt() and 0xFFFF
+                shadowOpacity = buffer.g2()
             }
-
             16 -> {
                 renderPriority = 3
-                shadowOpacity = buffer.int
+                shadowOpacity = buffer.g4()
             }
 
             40 -> {
-                val size = buffer.get().toInt() and 0xFF
+                val size = buffer.g1()
                 originalModelColor = ShortArray(size)
                 modifiedModelColor = ShortArray(size)
                 for (i in 0 until size) {
-                    originalModelColor!![i] = buffer.short
-                    modifiedModelColor!![i] = buffer.short
+                    originalModelColor!![i] = buffer.g2s().toShort()
+                    modifiedModelColor!![i] = buffer.g2s().toShort()
                 }
             }
-
             41 -> {
-                val size = buffer.get().toInt() and 0xFF
+                val size = buffer.g1()
                 originalTextureColor = ShortArray(size)
                 modifiedTextureColor = ShortArray(size)
                 for (i in 0 until size) {
-                    originalTextureColor!![i] = buffer.short
-                    modifiedTextureColor!![i] = buffer.short
+                    originalTextureColor!![i] = buffer.g2().toShort()
+                    modifiedTextureColor!![i] = buffer.g2s().toShort()
                 }
             }
         }

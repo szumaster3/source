@@ -2,7 +2,9 @@ package core.cache.def.impl
 
 import core.cache.Cache
 import core.cache.CacheIndex
-import core.cache.misc.buffer.ByteBufferUtils
+import core.net.g1
+import core.net.g2
+import core.net.g3
 import java.nio.ByteBuffer
 
 /**
@@ -37,7 +39,7 @@ class AnimationDefinition {
         private val animationDefinition = mutableMapOf<Int, AnimationDefinition>()
 
         /**
-         * Retrieves an [AnimationDefinition] by its emote id.
+         * Gets an [AnimationDefinition] by its emote id.
          *
          * @param emoteId The id of the animation.
          * @return The [AnimationDefinition] if found, or `null` otherwise.
@@ -58,7 +60,7 @@ class AnimationDefinition {
             }
 
         /**
-         * Retrieves all loaded animation definitions.
+         * Gets all loaded animation definitions.
          *
          * @return A map containing animation definitions by their id.
          */
@@ -73,26 +75,23 @@ class AnimationDefinition {
      */
     private fun readValueLoop(buffer: ByteBuffer) {
         while (true) {
-            val opcode = buffer.get().toInt() and 0xFF
+            val opcode = buffer.g1()
             if (opcode == 0) break
             readValues(buffer, opcode)
         }
     }
-
     /**
      * Gets the total duration of the animation in milliseconds.
      *
      * @return The animation duration in milliseconds.
      */
     fun getDuration(): Int = duration?.filter { it <= 100 }?.sumOf { it * 20 } ?: 0
-
     /**
      * Gets the total cycle count for the animation.
      *
      * @return The number of cycles.
      */
     fun getCycles(): Int = duration?.sum() ?: 0
-
     /**
      * Gets the duration of the animation in game ticks.
      *
@@ -106,60 +105,53 @@ class AnimationDefinition {
      * @param buffer The [ByteBuffer] containing the data.
      * @param opcode The opcode indicating what data to read.
      */
-    private fun readValues(
-        buffer: ByteBuffer,
-        opcode: Int,
-    ) {
+    private fun readValues(buffer: ByteBuffer, opcode: Int) {
         when (opcode) {
             1 -> {
-                val length = buffer.short.toInt() and 0xFFFF
-                duration = IntArray(length) { buffer.short.toInt() and 0xFFFF }
-                frames = IntArray(length) { buffer.short.toInt() and 0xFFFF }
+                val length = buffer.g2()
+                duration = IntArray(length) { buffer.g2() }
+                frames = IntArray(length) { buffer.g2() }
                 frames?.forEachIndexed { i, v ->
-                    frames!![i] = (buffer.short.toInt() and 0xFFFF shl 16) + v
+                    frames!![i] = (buffer.g2() shl 16) + v
                 }
             }
-
-            2 -> loopOffset = buffer.short.toInt() and 0xFFFF
+            2 -> loopOffset = buffer.g2()
             3 -> {
                 interleaveOrder = BooleanArray(256)
-                val length = buffer.get().toInt() and 0xFF
+                val length = buffer.g1()
                 repeat(length) {
-                    interleaveOrder!![buffer.get().toInt() and 0xFF] = true
+                    interleaveOrder!![buffer.g1()] = true
                 }
             }
-
             4 -> isForcedPriority = true
-            5 -> priority = buffer.get().toInt() and 0xFF
-            6 -> leftHandItem = buffer.short.toInt() and 0xFFFF
-            7 -> rightHandItem = buffer.short.toInt() and 0xFFFF
-            8 -> maxLoops = buffer.get().toInt() and 0xFF
-            9 -> priorityOverride = buffer.get().toInt() and 0xFF
-            10 -> priorityBackup = buffer.get().toInt() and 0xFF
-            11 -> replayMode = buffer.get().toInt() and 0xFF
+            5 -> priority = buffer.g1()
+            6 -> leftHandItem = buffer.g2()
+            7 -> rightHandItem = buffer.g2()
+            8 -> maxLoops = buffer.g1()
+            9 -> priorityOverride = buffer.g1()
+            10 -> priorityBackup = buffer.g1()
+            11 -> replayMode = buffer.g1()
             12 -> {
-                val i = buffer.get().toInt() and 0xFF
-                expressionFrames = IntArray(i) { buffer.short.toInt() and 0xFFFF }
+                val i = buffer.g1()
+                expressionFrames = IntArray(i) { buffer.g2() }
                 expressionFrames?.forEachIndexed { index, v ->
-                    expressionFrames!![index] = (buffer.short.toInt() and 0xFFFF shl 16) + v
+                    expressionFrames!![index] = (buffer.g2() shl 16) + v
                 }
             }
-
             13 -> {
-                val i = buffer.short.toInt() and 0xFFFF
+                val i = buffer.g2()
                 handledSounds = Array(i) { null }
                 repeat(i) { index ->
-                    val size = buffer.get().toInt() and 0xFF
+                    val size = buffer.g1()
                     if (size > 0) {
                         handledSounds!![index] =
                             IntArray(size).apply {
-                                this[0] = ByteBufferUtils.getMedium(buffer)
-                                for (j in 1 until size) this[j] = buffer.short.toInt() and 0xFFFF
+                                this[0] = buffer.g3()
+                                for (j in 1 until size) this[j] = buffer.g2()
                             }
                     }
                 }
             }
-
             14 -> hasSoundEffect = true
         }
     }

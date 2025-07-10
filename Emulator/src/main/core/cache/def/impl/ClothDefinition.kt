@@ -4,6 +4,9 @@ import core.ServerConstants
 import core.cache.Cache
 import core.cache.CacheArchive
 import core.cache.CacheIndex
+import core.net.g1
+import core.net.g2
+import core.net.g2s
 import java.nio.ByteBuffer
 
 /**
@@ -29,7 +32,7 @@ class ClothDefinition {
         @JvmStatic
         fun forId(clothId: Int): ClothDefinition {
             val def = ClothDefinition()
-            val data = Cache.getData(CacheIndex.CONFIGURATION, CacheArchive.PLAYER_KIT, clothId)
+            val data = Cache.getData(CacheIndex.CONFIGURATION, CacheArchive.IDK_TYPE, clothId)
             data?.let { def.load(ByteBuffer.wrap(it)) }
             return def
         }
@@ -46,7 +49,7 @@ class ClothDefinition {
             } catch (e: Throwable) {
                 e.printStackTrace()
             }
-            val length = Cache.getArchiveCapacity(CacheIndex.CONFIGURATION, CacheArchive.PLAYER_KIT)
+            val length = Cache.getArchiveCapacity(CacheIndex.CONFIGURATION, CacheArchive.IDK_TYPE)
             for (i in 0 until length) {
                 forId(i)
             }
@@ -60,9 +63,10 @@ class ClothDefinition {
      */
     fun load(buffer: ByteBuffer) {
         while (true) {
-            val opcode = buffer.get().toInt() and 0xFF
-            if (opcode == 0) break
-            parse(opcode, buffer)
+            when (val opcode = buffer.g1()) {
+                0 -> return
+                else -> decode(opcode, buffer)
+            }
         }
     }
 
@@ -72,28 +76,25 @@ class ClothDefinition {
      * @param opcode The data opcode.
      * @param buffer The data buffer.
      */
-    private fun parse(opcode: Int, buffer: ByteBuffer) {
+    private fun decode(opcode: Int, buffer: ByteBuffer) {
         when (opcode) {
-            1 -> bodyPartId = buffer.get().toInt() and 0xFF
+            1 -> bodyPartId = buffer.g1()
             2 -> {
-                val length = buffer.get().toInt() and 0xFF
-                bodyModelIds = IntArray(length) { buffer.short.toInt() and 0xFFFF }
+                val length = buffer.g1()
+                bodyModelIds = IntArray(length) { buffer.g2() }
             }
-
             3 -> notSelectable = true
             40 -> {
-                val length = buffer.get().toInt() and 0xFF
-                originalColors = IntArray(length) { buffer.short.toInt() }
-                modifiedColors = IntArray(length) { buffer.short.toInt() }
+                val length = buffer.g1()
+                originalColors = IntArray(length) { buffer.g2s() }
+                modifiedColors = IntArray(length) { buffer.g2s() }
             }
-
             41 -> {
-                val length = buffer.get().toInt() and 0xFF
-                originalTextureColors = IntArray(length) { buffer.short.toInt() }
-                modifiedTextureColors = IntArray(length) { buffer.short.toInt() }
+                val length = buffer.g1()
+                originalTextureColors = IntArray(length) { buffer.g2s() }
+                modifiedTextureColors = IntArray(length) { buffer.g2s() }
             }
-
-            in 60..69 -> headModelIds[opcode - 60] = buffer.short.toInt() and 0xFFFF
+            in 60..69 -> headModelIds[opcode - 60] = buffer.g2()
         }
     }
 }

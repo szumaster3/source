@@ -2,8 +2,11 @@ package core.cache.def.impl
 
 import core.cache.Cache
 import core.cache.CacheIndex
-import core.cache.misc.buffer.ByteBufferUtils
 import core.game.world.GameWorld
+import core.net.g1
+import core.net.g2
+import core.net.g4
+import core.net.gjstr
 import java.io.BufferedWriter
 import java.nio.ByteBuffer
 import java.nio.file.Files
@@ -62,24 +65,22 @@ class CS2Mapping private constructor(val scriptId: Int) {
 
     /**
      * Loads mapping data from the byte buffer.
-     *
-     * @param buffer The data buffer.
      */
     private fun load(buffer: ByteBuffer) {
         while (true) {
-            when (val opcode = buffer.get().toInt() and 0xFF) {
+            when (val opcode = buffer.g1()) {
                 0 -> return
-                1 -> unknown = buffer.get().toInt() and 0xFF
-                2 -> unknown1 = buffer.get().toInt() and 0xFF
-                3 -> defaultString = ByteBufferUtils.getString(buffer)
-                4 -> defaultInt = buffer.int
+                1 -> unknown = buffer.g1()
+                2 -> unknown1 = buffer.g1()
+                3 -> defaultString = buffer.gjstr()
+                4 -> defaultInt = buffer.g4()
                 5, 6 -> {
-                    val size = buffer.short.toInt() and 0xFFFF
+                    val size = buffer.g2()
                     map = HashMap(size)
                     array = arrayOfNulls(size)
                     for (i in 0 until size) {
-                        val key = buffer.int
-                        val value: Any = if (opcode == 5) ByteBufferUtils.getString(buffer) else buffer.int
+                        val key = buffer.g4()
+                        val value: Any = if (opcode == 5) buffer.gjstr() else buffer.g4()
                         array!![i] = value
                         map!![key] = value
                     }

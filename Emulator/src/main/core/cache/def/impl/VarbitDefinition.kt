@@ -4,10 +4,17 @@ import core.api.getVarbit
 import core.cache.Cache.getData
 import core.cache.CacheIndex
 import core.game.node.entity.player.Player
+import core.net.g1
+import core.net.g2
 import java.nio.ByteBuffer
 
 /**
  * Represents a varbit definition used for bit-wise variable storage.
+ *
+ * @property id The varbit id.
+ * @property varpId The related varp id.
+ * @property startBit The starting bit index.
+ * @property endBit The ending bit index.
  */
 class VarbitDefinition {
     val id: Int
@@ -28,15 +35,15 @@ class VarbitDefinition {
     }
 
     /**
-     * Gets the value of this varbit for the given [Player].
+     * Gets the value of this varbit for the given player.
      *
-     * @param player The player to check.
-     * @return The Varbit value.
+     * @param player The player instance.
+     * @return The value of the varbit.
      */
     fun getValue(player: Player): Int = getVarbit(player, id)
 
     /**
-     * The bit mask based on [startBit] and [endBit].
+     * Calculates the bit mask from startBit to endBit.
      */
     val mask: Int
         get() {
@@ -45,7 +52,7 @@ class VarbitDefinition {
             return mask
         }
 
-    override fun toString(): String = "ConfigFileDefinition [id=$id, configId=$varpId, bitShift=$startBit, bitSize=$endBit]"
+    override fun toString(): String = "VarbitDefinition(id=$id, varpId=$varpId, startBit=$startBit, endBit=$endBit)"
 
     companion object {
         private val MAPPING: MutableMap<Int, VarbitDefinition> = HashMap()
@@ -61,54 +68,42 @@ class VarbitDefinition {
 
         /**
          * Gets the varbit definition for a scenery id.
-         *
-         * @param id The scenery id.
-         * @return The [VarbitDefinition].
          */
         @JvmStatic
         fun forSceneryId(id: Int): VarbitDefinition = forId(id)
 
         /**
          * Gets the varbit definition for an NPC id.
-         *
-         * @param id The NPC id.
-         * @return The [VarbitDefinition].
          */
         @JvmStatic
         fun forNpcId(id: Int): VarbitDefinition = forId(id)
 
         /**
-         * Gets the [VarbitDefinition] for an item id.
-         *
-         * @param id The item id.
-         * @return The corresponding [VarbitDefinition].
+         * Gets the varbit definition for an item id.
          */
         @JvmStatic
         fun forItemId(id: Int): VarbitDefinition = forId(id)
 
         /**
-         * Gets the [VarbitDefinition] for the given id.
+         * Gets the varbit definition for the given id.
          *
          * @param id The varbit id.
-         * @return The [VarbitDefinition].
+         * @return The varbit definition.
          */
         @JvmStatic
         fun forId(id: Int): VarbitDefinition {
-            var def = MAPPING[id]
-            if (def != null) {
-                return def
-            }
+            MAPPING[id]?.let { return it }
 
-            def = VarbitDefinition(id)
-            val bs = getData(CacheIndex.VAR_BIT, id ushr 10, id and 0x3ff)
+            val def = VarbitDefinition(id)
+            val bs = getData(CacheIndex.VAR_BIT, id ushr 10, id and 0x3FF)
             if (bs != null) {
                 val buffer = ByteBuffer.wrap(bs)
-                var opcode = 0
-                while (((buffer.get().toInt() and 0xFF).also { opcode = it }) != 0) {
+                var opcode: Int
+                while ((buffer.g1().also { opcode = it }) != 0) {
                     if (opcode == 1) {
-                        def.varpId = buffer.getShort().toInt() and 0xFFFF
-                        def.startBit = buffer.get().toInt() and 0xFF
-                        def.endBit = buffer.get().toInt() and 0xFF
+                        def.varpId = buffer.g2()
+                        def.startBit = buffer.g1()
+                        def.endBit = buffer.g1()
                     }
                 }
             }
@@ -117,27 +112,21 @@ class VarbitDefinition {
         }
 
         /**
-         * Creates and registers a new [VarbitDefinition].
+         * Creates and registers a new VarbitDefinition.
          *
-         * @param varpId The Varp id.
-         * @param varbitId The Varbit id.
-         * @param startBit The start bit.
-         * @param endBit The end bit.
+         * @param varpId The varp id.
+         * @param varbitId The varbit id.
+         * @param startBit The start bit index.
+         * @param endBit The end bit index.
          */
         @JvmStatic
-        fun create(varpId: Int, varbitId: Int, startBit: Int, endBit: Int, ) {
-            val def =
-                VarbitDefinition(
-                    varpId,
-                    varbitId,
-                    startBit,
-                    endBit,
-                )
+        fun create(varpId: Int, varbitId: Int, startBit: Int, endBit: Int) {
+            val def = VarbitDefinition(varpId, varbitId, startBit, endBit)
             MAPPING[varbitId] = def
         }
 
         /**
-         * Gets the Varbit definitions mapping.
+         * Gets all varbit definitions.
          */
         val mapping: Map<Int, VarbitDefinition>
             get() = MAPPING

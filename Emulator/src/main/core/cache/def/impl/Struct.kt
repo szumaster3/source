@@ -5,6 +5,9 @@ import core.cache.Cache
 import core.cache.CacheArchive
 import core.cache.CacheIndex
 import core.cache.misc.buffer.ByteBufferUtils
+import core.net.g1
+import core.net.g4
+import core.net.gjstr
 import core.tools.Log
 import java.nio.ByteBuffer
 
@@ -18,7 +21,7 @@ class Struct(val id: Int) {
      * Gets an integer value by key.
      *
      * @param key The key to lookup.
-     * @return The integer value.
+     * @return The integer value, or -1 if not found or invalid type.
      */
     fun getInt(key: Int): Int = dataStore[key] as? Int ?: run {
         log(javaClass, Log.ERR, "Invalid value passed for key: [$key] struct: [$id]")
@@ -29,7 +32,7 @@ class Struct(val id: Int) {
      * Gets a string value by key.
      *
      * @param key The key to lookup.
-     * @return The string value.
+     * @return The string value, or null if not found or invalid type.
      */
     fun getString(key: Int): String? = dataStore[key] as? String
 
@@ -39,39 +42,39 @@ class Struct(val id: Int) {
         private val definitions = mutableMapOf<Int, Struct>()
 
         /**
-         * Gets or loads the Struct for the given id.
+         * Gets the [Struct] instance for the given id.
+         * Loads and parses it from cache if not already loaded.
          *
-         * @param id The Struct id.
-         * @return The struct.
+         * @param id The struct id.
+         * @return The [Struct] instance.
          */
         @JvmStatic
         fun get(id: Int): Struct = definitions[id] ?: run {
             val data = Cache.getData(CacheIndex.CONFIGURATION, CacheArchive.STRUCT_TYPE, id)
-            parse(id, data).also { definitions[id] = it }
+            decode(id, data).also { definitions[id] = it }
         }
 
         /**
-         * Parses raw byte data into a struct instance.
+         * Parses raw byte data into a [Struct] instance.
          *
-         * @param id The Struct id.
+         * @param id The struct id.
          * @param data The raw byte data.
-         * @return The parsed struct.
+         * @return The parsed [Struct].
          */
         @JvmStatic
-        fun parse(id: Int, data: ByteArray?): Struct {
+        fun decode(id: Int, data: ByteArray?): Struct {
             val struct = Struct(id)
             data?.let {
                 val buffer = ByteBuffer.wrap(it)
-
                 while (true) {
-                    val opcode = buffer.get().toInt() and 0xFF
+                    val opcode = buffer.g1()
                     if (opcode == 0) break
                     if (opcode == 249) {
-                        val size = buffer.get().toInt() and 0xFF
+                        val size = buffer.g1()
                         repeat(size) {
-                            val isString = (buffer.get().toInt() and 0xFF) == 1
+                            val isString = buffer.g1() == 1
                             val key = ByteBufferUtils.getMedium(buffer)
-                            val value: Any = if (isString) ByteBufferUtils.getString(buffer) else buffer.int
+                            val value: Any = if (isString) buffer.gjstr() else buffer.g4()
                             struct.dataStore[key] = value
                         }
                     }

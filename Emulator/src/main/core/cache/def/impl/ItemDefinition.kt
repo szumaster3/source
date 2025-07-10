@@ -8,14 +8,13 @@ import core.cache.Cache.getData
 import core.cache.Cache.getIndexCapacity
 import core.cache.CacheIndex
 import core.cache.def.Definition
-import core.cache.misc.buffer.ByteBufferUtils.getMedium
-import core.cache.misc.buffer.ByteBufferUtils.getString
 import core.game.interaction.OptionHandler
 import core.game.node.entity.player.Player
 import core.game.node.entity.skill.Skills
 import core.game.node.item.Item
 import core.game.node.item.ItemPlugin
 import core.game.system.config.ItemConfigParser
+import core.net.*
 import core.tools.Log
 import core.tools.StringUtils.isPlusN
 import org.rs.consts.Components
@@ -1020,7 +1019,7 @@ class ItemDefinition : Definition<Item?>() {
                     definitions[itemId] = ItemDefinition()
                     continue
                 }
-                val def = parseDefinition(itemId, ByteBuffer.wrap(data))
+                val def = decode(itemId, ByteBuffer.wrap(data))
                 if (def == null) {
                     log(
                         ItemDefinition::class.java,
@@ -1056,167 +1055,104 @@ class ItemDefinition : Definition<Item?>() {
          * @param buffer the buffer
          * @return the item definition
          */
-        private fun parseDefinition(
-            itemId: Int,
-            buffer: ByteBuffer,
-        ): ItemDefinition {
+        private fun decode(itemId: Int, buffer: ByteBuffer): ItemDefinition {
             val def = ItemDefinition()
             def.id = itemId
             while (true) {
-                val opcode = buffer.get().toInt() and 0xFF
-                if (opcode == 0) {
-                    break
-                } else if (opcode == 1) {
-                    def.interfaceModelId = buffer.getShort().toInt() and 0xFFFF
-                } else if (opcode == 2) {
-                    def.name = getString(buffer)
-                } else if (opcode == 3) {
-                    def.handlers["examine"] = getString(buffer) // Examine
-                    // info.
-                } else if (opcode == 4) {
-                    def.modelZoom = buffer.getShort().toInt() and 0xFFFF
-                } else if (opcode == 5) {
-                    def.modelRotationX = buffer.getShort().toInt() and 0xFFFF
-                } else if (opcode == 6) {
-                    def.modelRotationY = buffer.getShort().toInt() and 0xFFFF
-                } else if (opcode == 7) {
-                    def.modelOffset1 = buffer.getShort().toInt() and 0xFFFF
-                    if (def.modelOffset1 > 32767) def.modelOffset1 -= 65536
-                } else if (opcode == 8) {
-                    def.modelOffset2 = buffer.getShort().toInt() and 0xFFFF
-                    if (def.modelOffset2 > 32767) {
-                        def.modelOffset2 -= 65536
+                val opcode = buffer.g1()
+                if (opcode == 0) break
+                when (opcode) {
+                    1 -> def.interfaceModelId = buffer.g2()
+                    2 -> def.name = buffer.gjstr()
+                    3 -> def.handlers["examine"] = buffer.gjstr()
+                    4 -> def.modelZoom = buffer.g2()
+                    5 -> def.modelRotationX = buffer.g2()
+                    6 -> def.modelRotationY = buffer.g2()
+                    7 -> {
+                        def.modelOffset1 = buffer.g2()
+                        if (def.modelOffset1 > 32767) def.modelOffset1 -= 65536
                     }
-                } else if (opcode == 10) {
-                    // def.interfaceModelId = buffer.getShort().toInt() and 0xFFFF
-                } else if (opcode == 11) {
-                    def.stackable = true
-                } else if (opcode == 12) {
-                    def.value = ((buffer.get().toInt() and 0xFF) shl 24) + (
-                        (
-                            buffer
-                                .get()
-                                .toInt() and 0xFF
-                        ) shl 16
-                    ) + ((buffer.get().toInt() and 0xFF) shl 8) + (
-                        buffer
-                            .get()
-                            .toInt() and 0xFF
-                    )
-                } else if (opcode == 16) {
-                    def.membersOnly = true
-                } else if (opcode == 23) {
-                    def.maleWornModelId1 = buffer.getShort().toInt() and 0xFFFF
-                    // buffer.get();
-                } else if (opcode == 24) {
-                    def.femaleWornModelId1 = buffer.getShort().toInt() and 0xFFFF
-                } else if (opcode == 25) {
-                    def.maleWornModelId2 = buffer.getShort().toInt() and 0xFFFF
-                    // buffer.get();
-                } else if (opcode == 26) {
-                    def.femaleWornModelId2 = buffer.getShort().toInt() and 0xFFFF
-                } else if (opcode >= 30 && opcode < 35) {
-                    def.groundOptions[opcode - 30] = getString(buffer)
-                } else if (opcode >= 35 && opcode < 40) {
-                    def.options[opcode - 35] = getString(buffer)
-                } else if (opcode == 40) {
-                    val length = buffer.get().toInt() and 0xFF
-                    def.originalModelColors = ShortArray(length)
-                    def.modifiedModelColors = ShortArray(length)
-                    for (index in 0 until length) {
-                        def.originalModelColors!![index] = buffer.getShort()
-                        def.modifiedModelColors!![index] = buffer.getShort()
+                    8 -> {
+                        def.modelOffset2 = buffer.g2()
+                        if (def.modelOffset2 > 32767) def.modelOffset2 -= 65536
                     }
-                } else if (opcode == 41) {
-                    val length = buffer.get().toInt() and 0xFF
-                    def.textureColour1 = ShortArray(length)
-                    def.textureColour2 = ShortArray(length)
-                    for (index in 0 until length) {
-                        def.textureColour1!![index] = buffer.getShort()
-                        def.textureColour2!![index] = buffer.getShort()
+                    10 -> { }
+                    11 -> def.stackable = true
+                    12 -> def.value = buffer.g4()
+                    16 -> def.membersOnly = true
+                    23 -> def.maleWornModelId1 = buffer.g2()
+                    24 -> def.femaleWornModelId1 = buffer.g2()
+                    25 -> def.maleWornModelId2 = buffer.g2()
+                    26 -> def.femaleWornModelId2 = buffer.g2()
+                    in 30..34 -> def.groundOptions[opcode - 30] = buffer.gjstr()
+                    in 35..39 -> def.options[opcode - 35] = buffer.gjstr()
+                    40 -> {
+                        val length = buffer.g1()
+                        def.originalModelColors = ShortArray(length)
+                        def.modifiedModelColors = ShortArray(length)
+                        for (i in 0 until length) {
+                            def.originalModelColors!![i] = buffer.g2b().toShort()
+                            def.modifiedModelColors!![i] = buffer.g2b().toShort()
+                        }
                     }
-                } else if (opcode == 42) {
-                    val length = buffer.get().toInt() and 0xFF
-                    def.unknownArray1 = ByteArray(length)
-                    for (index in 0 until length) def.unknownArray1!![index] = buffer.get()
-                } else if (opcode == 65) {
-                    def.unnoted = true
-                } else if (opcode == 78) {
-                    def.colourEquip1 = buffer.getShort().toInt() and 0xFFFF
-                } else if (opcode == 79) {
-                    def.colourEquip2 = buffer.getShort().toInt() and 0xFFFF
-                } else if (opcode == 90) {
-                    def.maleWornModelId3 = buffer.getShort().toInt()
-                } else if (opcode == 91) {
-                    def.femaleWornModelId3 = buffer.getShort().toInt()
-                } else if (opcode == 92) {
-                    def.maleWornModelId4 = buffer.getShort().toInt()
-                } else if (opcode == 93) {
-                    def.femaleWornModelId4 = buffer.getShort().toInt()
-                } else if (opcode == 95) {
-                    buffer.getShort()
-                } else if (opcode == 96) {
-                    def.itemType = buffer.get().toInt()
-                } else if (opcode == 97) {
-                    def.noteId = buffer.getShort().toInt() and 0xFFFF
-                } else if (opcode == 98) {
-                    def.noteTemplateId = buffer.getShort().toInt() and 0xFFFF
-                } else if (opcode >= 100 && opcode < 110) {
-                    if (def.stackIds == null) {
-                        def.stackIds = IntArray(10)
-                        def.stackAmounts = IntArray(10)
+                    41 -> {
+                        val length = buffer.g1()
+                        def.textureColour1 = ShortArray(length)
+                        def.textureColour2 = ShortArray(length)
+                        for (i in 0 until length) {
+                            def.textureColour1!![i] = buffer.g2b().toShort()
+                            def.textureColour2!![i] = buffer.g2b().toShort()
+                        }
                     }
-                    def.stackIds!![opcode - 100] = buffer.getShort().toInt() and 0xFFFF
-                    def.stackAmounts!![opcode - 100] = buffer.getShort().toInt() and 0xFFFF
-                } else if (opcode == 110) {
-                    buffer.getShort()
-                } else if (opcode == 111) {
-                    buffer.getShort()
-                } else if (opcode == 112) {
-                    buffer.getShort()
-                } else if (opcode == 113) {
-                    buffer.get()
-                } else if (opcode == 114) {
-                    buffer.get()
-                } else if (opcode == 115) {
-                    def.teamId = buffer.get().toInt()
-                } else if (opcode == 121) {
-                    def.lendId = buffer.getShort().toInt() and 0xFFFF
-                } else if (opcode == 122) {
-                    def.lendTemplateId = buffer.getShort().toInt() and 0xFFFF
-                } else if (opcode == 125) {
-                    buffer.get()
-                    buffer.get()
-                    buffer.get()
-                } else if (opcode == 126) {
-                    buffer.get()
-                    buffer.get()
-                    buffer.get()
-                } else if (opcode == 127) {
-                    buffer.get()
-                    buffer.getShort()
-                } else if (opcode == 128) {
-                    buffer.get()
-                    buffer.getShort()
-                } else if (opcode == 129) {
-                    buffer.get()
-                    buffer.getShort()
-                } else if (opcode == 130) {
-                    buffer.get()
-                    buffer.getShort()
-                } else if (opcode == 249) {
-                    val length = buffer.get().toInt() and 0xFF
-                    if (def.clientScriptData == null) {
-                        def.clientScriptData = HashMap()
+                    42 -> {
+                        val length = buffer.g1()
+                        def.unknownArray1 = ByteArray(length)
+                        for (i in 0 until length) def.unknownArray1!![i] = buffer.get()
                     }
-                    for (index in 0 until length) {
-                        val string = (buffer.get().toInt() and 0xFF) == 1
-                        val key = getMedium(buffer)
-                        val value: Any = if (string) getString(buffer) else buffer.getInt()
-                        def.clientScriptData!![key] = value
+                    65 -> def.unnoted = true
+                    78 -> def.colourEquip1 = buffer.g2()
+                    79 -> def.colourEquip2 = buffer.g2()
+                    90 -> def.maleWornModelId3 = buffer.g2()
+                    91 -> def.femaleWornModelId3 = buffer.g2()
+                    92 -> def.maleWornModelId4 = buffer.g2()
+                    93 -> def.femaleWornModelId4 = buffer.g2()
+                    95 -> buffer.g2()
+                    96 -> def.itemType = buffer.g1()
+                    97 -> def.noteId = buffer.g2()
+                    98 -> def.noteTemplateId = buffer.g2()
+                    in 100..109 -> {
+                        if (def.stackIds == null) {
+                            def.stackIds = IntArray(10)
+                            def.stackAmounts = IntArray(10)
+                        }
+                        def.stackIds!![opcode - 100] = buffer.g2()
+                        def.stackAmounts!![opcode - 100] = buffer.g2()
                     }
-                } else {
-                    break
+                    110, 111, 112 -> buffer.g2()
+                    113, 114 -> buffer.g1()
+                    115 -> def.teamId = buffer.g1()
+                    121 -> def.lendId = buffer.g2()
+                    122 -> def.lendTemplateId = buffer.g2()
+                    125, 126 -> {
+                        buffer.g1()
+                        buffer.g1()
+                        buffer.g1()
+                    }
+                    127, 128, 129, 130 -> {
+                        buffer.g1()
+                        buffer.g2()
+                    }
+                    249 -> {
+                        val length = buffer.g1()
+                        if (def.clientScriptData == null) def.clientScriptData = HashMap()
+                        for (i in 0 until length) {
+                            val isString = buffer.g1() == 1
+                            val key = buffer.g3()
+                            val value: Any = if (isString) buffer.gjstr() else buffer.g4()
+                            def.clientScriptData!![key] = value
+                        }
+                    }
+                    else -> break
                 }
             }
             return def

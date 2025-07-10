@@ -139,4 +139,25 @@ object ByteBufferUtils {
             null
         }
     }
+
+    /*
+     * Reads a map of parameters from the buffer.
+     */
+
+    @JvmStatic
+    fun readParams(buffer: ByteBuffer): Map<Int, Any> {
+        val params = mutableMapOf<Int, Any>()
+        val length = buffer.get().toInt() and 0xFF
+        repeat(length) {
+            val isString = (buffer.get().toInt() and 0xFF) == 1
+            val key = buffer.int
+            val value: Any = if (isString) {
+                getString(buffer)
+            } else {
+                buffer.int
+            }
+            params[key] = value
+        }
+        return params
+    }
 }
