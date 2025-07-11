@@ -1,6 +1,7 @@
 package core.cache.def.impl
 
 import core.api.getVarp
+import core.api.log
 import core.cache.Cache.getData
 import core.cache.CacheIndex
 import core.cache.def.Definition
@@ -13,6 +14,7 @@ import core.game.world.GameWorld.prompt
 import core.game.world.update.flag.context.Animation
 import core.game.world.update.flag.context.Graphics
 import core.net.*
+import core.tools.Log
 import core.tools.StringUtils.isPlusN
 import java.nio.ByteBuffer
 
@@ -327,7 +329,7 @@ class NPCDefinition(id: Int) : Definition<NPC?>() {
                 }
             }
             else -> {
-                // Nieznany opcode - można logować lub ignorować
+                log(javaClass, Log.ERR, "Unhandled NPC definition opcode: $opcode")
             }
         }
     }
