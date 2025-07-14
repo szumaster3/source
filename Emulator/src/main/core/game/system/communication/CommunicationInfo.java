@@ -9,8 +9,8 @@ import core.game.world.GameWorld;
 import core.game.world.repository.Repository;
 import core.net.amsc.MSPacketRepository;
 import core.net.amsc.WorldCommunicator;
-import core.net.packet.OutgoingContext;
 import core.net.packet.PacketRepository;
+import core.net.packet.context.ContactContext;
 import core.net.packet.out.ContactPackets;
 import core.tools.Log;
 import core.tools.StringUtils;
@@ -238,10 +238,10 @@ public final class CommunicationInfo {
         Player target = Repository.getPlayerByName(contact);
         if (target != null) {
             if (showActive(player, target)) {
-                PacketRepository.send(ContactPackets.class, new OutgoingContext.Contact(player, contact, GameWorld.getSettings().getWorldId()));
+                PacketRepository.send(ContactPackets.class, new ContactContext(player, contact, GameWorld.getSettings().getWorldId()));
             }
             if (player.getSettings().getPrivateChatSetting() == 1 && showActive(target, player)) {
-                PacketRepository.send(ContactPackets.class, new OutgoingContext.Contact(target, player.getName(), GameWorld.getSettings().getWorldId()));
+                PacketRepository.send(ContactPackets.class, new ContactContext(target, player.getName(), GameWorld.getSettings().getWorldId()));
             }
         }
     }

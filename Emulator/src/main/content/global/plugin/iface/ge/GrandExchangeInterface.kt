@@ -1,5 +1,6 @@
 package content.global.plugin.iface.ge
 
+import content.global.handlers.iface.ge.StockMarket
 import core.api.*
 import core.cache.def.impl.CS2Mapping
 import core.cache.def.impl.ItemDefinition
@@ -13,8 +14,8 @@ import core.game.node.entity.player.Player
 import core.game.node.item.Item
 import core.game.system.task.Pulse
 import core.game.world.GameWorld
-import core.net.packet.OutgoingContext
 import core.net.packet.PacketRepository
+import core.net.packet.context.ContainerContext
 import core.net.packet.out.ContainerPacket
 import core.plugin.Initializable
 import core.plugin.Plugin
@@ -159,9 +160,8 @@ class GrandExchangeInterface : ComponentPlugin() {
                 }
                 playAudio(player, Sounds.GE_TRADE_OK_4044)
                 PacketRepository.send(
-                    ContainerPacket::class.java, OutgoingContext.Container(
-                        player, -1, -2, player.getAttribute("container-key", 93), player.inventory, false
-                    )
+                    ContainerPacket::class.java,
+                    ContainerContext(player, -1, -2, player.getAttribute("container-key", 93), player.inventory, false)
                 )
             }
 

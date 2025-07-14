@@ -78,8 +78,11 @@ import core.game.world.update.flag.chunk.AnimateObjectUpdateFlag
 import core.game.world.update.flag.context.Animation
 import core.game.world.update.flag.context.ForceMoveCtx
 import core.game.world.update.flag.context.Graphics
-import core.net.packet.OutgoingContext
 import core.net.packet.PacketRepository
+import core.net.packet.context.ChildPositionContext
+import core.net.packet.context.DefaultContext
+import core.net.packet.context.MinimapStateContext
+import core.net.packet.context.MusicContext
 import core.net.packet.out.AudioPacket
 import core.net.packet.out.MinimapState
 import core.net.packet.out.MusicPacket
@@ -775,7 +778,7 @@ fun playJingle(
     player: Player,
     jingleId: Int,
 ) {
-    PacketRepository.send(MusicPacket::class.java, OutgoingContext.Music(player, jingleId, true))
+    PacketRepository.send(MusicPacket::class.java, MusicContext(player, jingleId, true))
 }
 
 /**
@@ -1250,21 +1253,8 @@ fun sendAnimation(
  * @param radius The radius within which the audio is heard. Defaults to Audio.defaultAudioRadius.
  */
 @JvmOverloads
-fun playAudio(
-    player: Player,
-    id: Int,
-    delay: Int = 0,
-    loops: Int = 1,
-    location: Location? = null,
-    radius: Int = Audio.defaultAudioRadius,
-) {
-    PacketRepository.send(
-        AudioPacket::class.java,
-        OutgoingContext.Default(
-            player,
-            arrayOf(Audio(id, delay, loops, radius), location)
-        )
-    )
+fun playAudio(player: Player, id: Int, delay: Int = 0, loops: Int = 1, location: Location? = null, radius: Int = Audio.defaultAudioRadius) {
+    PacketRepository.send(AudioPacket::class.java, DefaultContext(player, Audio(id, delay, loops, radius), location))
 }
 
 /**
@@ -1277,19 +1267,10 @@ fun playAudio(
  * @param radius The radius within which players will hear the audio. Defaults to Audio.defaultAudioRadius.
  */
 @JvmOverloads
-fun playGlobalAudio(
-    location: Location,
-    id: Int,
-    delay: Int = 0,
-    loops: Int = 1,
-    radius: Int = Audio.defaultAudioRadius,
-) {
+fun playGlobalAudio(location: Location, id: Int, delay: Int = 0, loops: Int = 1, radius: Int = Audio.defaultAudioRadius) {
     val nearbyPlayers = RegionManager.getLocalPlayers(location, radius)
     for (player in nearbyPlayers) {
-        PacketRepository.send(
-            AudioPacket::class.java,
-            OutgoingContext.Default(player, arrayOf(Audio(id, delay, loops, radius), location)),
-        )
+        PacketRepository.send(AudioPacket::class.java, DefaultContext(player, Audio(id, delay, loops, radius), location))
     }
 }
 
@@ -3844,7 +3825,7 @@ fun openSingleTab(
 fun setMinimapState(
     player: Player,
     state: Int,
-) = PacketRepository.send(MinimapState::class.java, OutgoingContext.MinimapState(player, state))
+) = PacketRepository.send(MinimapState::class.java, MinimapStateContext(player, state))
 
 /**
  * Sends an interface configuration update to the player.
@@ -3880,7 +3861,7 @@ fun repositionChild(
     positionY: Int,
 ) = PacketRepository.send(
     RepositionChild::class.java,
-    OutgoingContext.ChildPosition(player, interfaceId, childId, Point(positionX, positionY)),
+    ChildPositionContext(player, interfaceId, childId, Point(positionX, positionY)),
 )
 
 /**

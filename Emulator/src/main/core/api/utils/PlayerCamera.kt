@@ -1,13 +1,13 @@
 package core.api.utils
 
 import core.game.node.entity.player.Player
-import core.net.packet.OutgoingContext
 import core.net.packet.PacketRepository
+import core.net.packet.context.CameraContext
 import core.net.packet.out.CameraViewPacket
 
 class PlayerCamera(val player: Player) {
 
-    var ctx: OutgoingContext.Camera? = null
+    var ctx: CameraContext? = null
 
     /**
      * Positions the camera to the given region-local coordinates.
@@ -22,7 +22,7 @@ class PlayerCamera(val player: Player) {
         height: Int,
     ) {
         player ?: return
-        ctx = OutgoingContext.Camera(player, OutgoingContext.CameraType.SET, x, y, height, 0, 0)
+        ctx = CameraContext(player, CameraContext.CameraType.SET, x, y, height, 0, 0)
         PacketRepository.send(CameraViewPacket::class.java, ctx!!)
     }
 
@@ -41,7 +41,7 @@ class PlayerCamera(val player: Player) {
         speed: Int,
     ) {
         player ?: return
-        ctx = OutgoingContext.Camera(player, OutgoingContext.CameraType.ROTATION, x, y, height, speed, 1)
+        ctx = CameraContext(player, CameraContext.CameraType.ROTATION, x, y, height, speed, 1)
         PacketRepository.send(CameraViewPacket::class.java, ctx!!)
     }
 
@@ -62,9 +62,9 @@ class PlayerCamera(val player: Player) {
         player ?: return
         ctx ?: return
         ctx =
-            OutgoingContext.Camera(
+            CameraContext(
                 player,
-                OutgoingContext.CameraType.ROTATION,
+                CameraContext.CameraType.ROTATION,
                 ctx!!.x + diffX,
                 ctx!!.y + diffY,
                 ctx!!.height + diffHeight,
@@ -89,7 +89,7 @@ class PlayerCamera(val player: Player) {
         speed: Int,
     ) {
         player ?: return
-        ctx = OutgoingContext.Camera(player, OutgoingContext.CameraType.POSITION, x, y, height, speed, 1)
+        ctx = CameraContext(player, CameraContext.CameraType.POSITION, x, y, height, speed, 1)
         PacketRepository.send(CameraViewPacket::class.java, ctx!!)
     }
 
@@ -110,7 +110,7 @@ class PlayerCamera(val player: Player) {
         speed: Int,
     ) {
         player ?: return
-        ctx = OutgoingContext.Camera(player, OutgoingContext.CameraType.SHAKE, cameraType, jitter, amplitude, frequency, speed)
+        ctx = CameraContext(player, CameraContext.CameraType.SHAKE, cameraType, jitter, amplitude, frequency, speed)
         PacketRepository.send(CameraViewPacket::class.java, ctx!!)
     }
 
@@ -131,9 +131,9 @@ class PlayerCamera(val player: Player) {
         speed: Int,
     ) {
         val ctx =
-            OutgoingContext.Camera(
+            CameraContext(
                 player,
-                OutgoingContext.CameraType.SHAKE,
+                CameraContext.CameraType.SHAKE,
                 cameraType.ordinal,
                 jitter,
                 amplitude,
@@ -148,7 +148,7 @@ class PlayerCamera(val player: Player) {
      */
     fun reset() {
         player ?: return
-        ctx = OutgoingContext.Camera(player, OutgoingContext.CameraType.RESET, -1, -1, -1, -1, -1)
+        ctx = CameraContext(player, CameraContext.CameraType.RESET, -1, -1, -1, -1, -1)
         PacketRepository.send(CameraViewPacket::class.java, ctx!!)
     }
 }

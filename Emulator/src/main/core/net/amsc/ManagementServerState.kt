@@ -1,8 +1,8 @@
 package core.net.amsc
 
 import core.game.world.repository.Repository
-import core.net.packet.OutgoingContext
 import core.net.packet.PacketRepository
+import core.net.packet.context.ContactContext
 import core.net.packet.out.ContactPackets
 
 /**
@@ -32,7 +32,7 @@ enum class ManagementServerState(val value: Int) {
         for (player in Repository.players) {
             PacketRepository.send(
                 ContactPackets::class.java,
-                OutgoingContext.Contact(player, OutgoingContext.Contact.UPDATE_STATE_TYPE)
+                ContactContext(player, ContactContext.UPDATE_STATE_TYPE)
             )
         }
     }
