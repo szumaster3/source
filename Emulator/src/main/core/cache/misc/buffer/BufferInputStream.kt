@@ -7,7 +7,7 @@ import java.nio.ByteBuffer
 /**
  * Buffer input stream.
  */
-class BufferInputStream(val buffer: ByteBuffer, ) : InputStream() {
+class BufferInputStream(val buffer: ByteBuffer) : InputStream() {
     @Throws(IOException::class)
     override fun read(): Int = buffer.get().toInt()
 }

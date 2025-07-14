@@ -7,7 +7,7 @@ import java.nio.ByteBuffer
 /**
  * Buffer output stream.
  */
-class BufferOutputStream(val buffer: ByteBuffer, ) : OutputStream() {
+class BufferOutputStream(val buffer: ByteBuffer) : OutputStream() {
     @Throws(IOException::class)
     override fun write(b: Int) {
         buffer.put(b.toByte())
