@@ -8,6 +8,7 @@ import core.game.node.item.Item
 import core.game.world.map.zone.ZoneBorders
 import core.game.interaction.IntType
 import core.game.interaction.InteractionListeners
+import core.game.world.map.Location
 import core.tools.colorize
 import org.rs.consts.Items
 
@@ -81,7 +82,8 @@ class DraynorWillows : Script(){
     }
 
     override fun newInstance(): Script {
-        val script = DraynorWillows()
+        val script = DraynorFisher()
+        script.bot = SkillingBotAssembler().produce(SkillingBotAssembler.Wealth.POOR, Location.create(3095, 3246, 0))
         return script
     }
 
