@@ -41,7 +41,7 @@ class DraynorWillows : Script(){
                     val willowtree = scriptAPI.getNearestNode("willow", true)
                     bot.interfaceManager.close()
                     willowtree?.let { InteractionListeners.run(willowtree.id,
-                        IntType.SCENERY,"Chop down",bot,willowtree) }
+                        IntType.SCENERY,"chop down",bot,willowtree) }
                     if (bot.inventory.isFull)
                         state = State.BANKING
                 }
@@ -61,6 +61,7 @@ class DraynorWillows : Script(){
                                 logCount += logs
                                 bot.inventory.remove(Item(Items.WILLOW_LOGS_1519,logs))
                                 bot.bank.add(Item(Items.WILLOW_LOGS_1519,logs))
+                                bot.inventory.add(Item(Items.ADAMANT_AXE_1357))
                                 state = State.CHOPPING
                                 return true
                             }
