@@ -9,8 +9,9 @@ import core.game.node.entity.player.info.Rights;
 import core.game.world.GameWorld;
 import core.game.world.repository.Repository;
 import core.net.amsc.WorldCommunicator;
-import core.net.packet.OutgoingContext;
 import core.net.packet.PacketRepository;
+import core.net.packet.context.ClanContext;
+import core.net.packet.context.MessageContext;
 import core.net.packet.out.CommunicationMessage;
 import core.net.packet.out.UpdateClanChat;
 import core.worker.ManagementEvents;
@@ -161,11 +162,11 @@ public final class ClanRepository {
             if (p != null) {
                 PacketRepository.send(
                         CommunicationMessage.class,
-                        new OutgoingContext.MessageContext(
+                        new MessageContext(
                                 p,
                                 player.getName(),
                                 Rights.getChatIcon(player),
-                                OutgoingContext.MessageContext.CLAN_MESSAGE,
+                                MessageContext.CLAN_MESSAGE,
                                 message
                         )
                 );
@@ -200,11 +201,11 @@ public final class ClanRepository {
         for (ClanEntry e : players) {
             PacketRepository.send(
                     CommunicationMessage.class,
-                    new OutgoingContext.MessageContext(
+                    new MessageContext(
                             e.getPlayer(),
                             player.getName(),
                             Rights.getChatIcon(player),
-                            OutgoingContext.MessageContext.CLAN_MESSAGE,
+                            MessageContext.CLAN_MESSAGE,
                             "[Attempting to kick/ban " + target.getUsername() + " from this Clan Chat.]"
                     )
             );
@@ -239,7 +240,7 @@ public final class ClanRepository {
                 banned.clear();
             }
         }
-        PacketRepository.send(UpdateClanChat.class, new OutgoingContext.Clan(player, this, true));
+        PacketRepository.send(UpdateClanChat.class, new ClanContext(player, this, true));
         player.getPacketDispatch().sendMessage(message);
         if (clanWar != null && !isDefault()) {
             clanWar.fireEvent("leavefc", player);
@@ -277,7 +278,7 @@ public final class ClanRepository {
         for (Iterator<ClanEntry> it = players.iterator(); it.hasNext(); ) {
             ClanEntry e = it.next();
             if (e.getWorldId() == GameWorld.getSettings().getWorldId() && e.getPlayer() != null) {
-                PacketRepository.send(UpdateClanChat.class, new OutgoingContext.Clan(e.getPlayer(), this, false));
+                PacketRepository.send(UpdateClanChat.class, new ClanContext(e.getPlayer(), this, false));
             }
         }
     }
