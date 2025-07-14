@@ -131,7 +131,7 @@ object LandscapeParser {
         storeAll: Boolean
     ) {
         if (landscape && !storeAll) {
-            val current = plane.objects[localX][localY]
+            val current = plane.objects!![localX][localY]
             if (current != null && current.definition.getChildObject(null)
                     !!.hasOptions(!object_.definition.getChildObject(null)!!.hasOptions(false))
             ) {
