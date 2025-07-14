@@ -267,7 +267,7 @@ class WoodcuttingPlugin : InteractionListener {
                 DiaryType.SEERS_VILLAGE,
                 1,
             ) &&
-            player.viewport.region.id == 10806
+            player.viewport.region!!.id == 10806
         ) {
             amount = 2
         }

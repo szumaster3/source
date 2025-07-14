@@ -21,6 +21,7 @@ import core.game.system.command.sets.STATS_LOGS
 import core.game.system.task.Pulse
 import core.game.world.map.Location
 import core.game.world.map.RegionManager.getLocalPlayers
+import core.game.world.update.flag.context.Animation
 import core.tools.RandomFunction
 import org.rs.consts.Items
 import org.rs.consts.NPCs
@@ -100,7 +101,7 @@ class WoodcuttingPulse(private val player: Player, private val node: Scenery) : 
 
     fun animate() {
         if (!player.animator.isAnimating) {
-            animate(player, getAxe(player)!!.animation)
+            player.animate(Animation.create(getAxe(player)!!.animation))
             val playersAroundMe =
                 getLocalPlayers(player, 2)
                     .stream()
@@ -238,7 +239,7 @@ class WoodcuttingPulse(private val player: Player, private val node: Scenery) : 
 
         if (reward == Items.LOGS_1511 &&
             isDiaryComplete(player, DiaryType.SEERS_VILLAGE, 1) &&
-            player.viewport.region.id == 10806
+            player.viewport.region!!.id == 10806
         ) {
             amount = 2
         }
