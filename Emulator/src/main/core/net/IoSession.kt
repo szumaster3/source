@@ -79,7 +79,7 @@ open class IoSession(
     /**
      * The last ping time stamp.
      */
-    var lastPing: Long = 0
+    private var lastPing: Long = 0
 
     /**
      * The address.
@@ -89,7 +89,7 @@ open class IoSession(
     /**
      * The client info.
      */
-    var clientInfo: ClientInfo? = null
+    private var clientInfo: ClientInfo? = null
 
     var associatedUsername: String? = null
 

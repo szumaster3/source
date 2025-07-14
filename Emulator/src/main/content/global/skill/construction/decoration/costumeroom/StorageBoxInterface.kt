@@ -4,8 +4,8 @@ import core.api.*
 import core.game.interaction.InterfaceListener
 import core.game.node.entity.player.Player
 import core.game.node.item.Item
-import core.net.packet.OutgoingContext
 import core.net.packet.PacketRepository
+import core.net.packet.context.ContainerContext
 import core.net.packet.out.ContainerPacket
 import org.rs.consts.Items
 
@@ -179,7 +179,7 @@ class StorageBoxInterface : InterfaceListener {
 
         PacketRepository.send(
             ContainerPacket::class.java,
-            OutgoingContext.Container(player, INTERFACE, CONTAINER_COMPONENT, TOTAL_SLOTS, itemsArray, false)
+            ContainerContext(player, INTERFACE, CONTAINER_COMPONENT, TOTAL_SLOTS, itemsArray, false)
         )
 
         repeat(TOTAL_SLOTS) { index ->

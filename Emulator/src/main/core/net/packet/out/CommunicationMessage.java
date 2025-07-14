@@ -31,7 +31,7 @@ public final class CommunicationMessage implements OutgoingPacket<MessageContext
 			buffer.put((byte) message.length());
 			buffer.putBytes(bytes, 0, length);
 			break;
-		case MessageContext.RECIEVE_MESSAGE:
+		case MessageContext.RECEIVE_MESSAGE:
 			bytes = new byte[256];
 			bytes[0] = (byte) message.length();
 			length = 1 + StringUtils.encryptPlayerChat(bytes, 0, 1, message.length(), message.getBytes());

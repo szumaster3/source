@@ -38,7 +38,7 @@ public final class ContactPackets implements OutgoingPacket<ContactContext> {
 			buffer.putShort(context.getWorldId());
 			Contact c = player.getCommunication().getContacts().get(context.getName());
 			if (c != null) {
-				buffer.put((byte) c.getRank().getValue());
+				buffer.put((byte) c.rank.getValue());
 			} else {
 				buffer.put((byte) 0);
 			}

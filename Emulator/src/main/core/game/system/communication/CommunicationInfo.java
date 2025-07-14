@@ -271,7 +271,7 @@ public final class CommunicationInfo {
                 if (showActive(target, player)) {
                     worldId = GameWorld.getSettings().getWorldId();
                 }
-                PacketRepository.send(ContactPackets.class, new OutgoingContext.Contact(target, player.getName(), worldId));
+                PacketRepository.send(ContactPackets.class, new ContactContext(target, player.getName(), worldId));
             }
         } else {
             info.contacts.remove(contact);
@@ -282,7 +282,7 @@ public final class CommunicationInfo {
             if (player.getSettings().getPrivateChatSetting() == 1) {
                 Player target = Repository.getPlayerByName(contact);
                 if (target != null) {
-                    PacketRepository.send(ContactPackets.class, new OutgoingContext.Contact(target, player.getName(), 0));
+                    PacketRepository.send(ContactPackets.class, new ContactContext(target, player.getName(), 0));
                 }
             }
         }
@@ -315,7 +315,7 @@ public final class CommunicationInfo {
         info.blocked.add(contact);
         Player target = Repository.getPlayerByName(contact);
         if (target != null && hasContact(target, player.getName())) {
-            PacketRepository.send(ContactPackets.class, new OutgoingContext.Contact(target, player.getName(), 0));
+            PacketRepository.send(ContactPackets.class, new ContactContext(target, player.getName(), 0));
         }
     }
 
@@ -346,7 +346,7 @@ public final class CommunicationInfo {
         if (CommunicationInfo.showActive(player, contact)) {
             worldId = c.worldId;
         }
-        PacketRepository.send(ContactPackets.class, new OutgoingContext.Contact(player, contact, worldId));
+        PacketRepository.send(ContactPackets.class, new ContactContext(player, contact, worldId));
     }
 
     /**

@@ -159,7 +159,7 @@ object Login {
 
     private fun proceedWithAcceptableLogin(session: IoSession, player: Player, opcode: Int) {
         Repository.addPlayer(player)
-        session.lastPing = System.currentTimeMillis()
+        session.setLastPing(System.currentTimeMillis())
         try {
             LoginParser(player.details).initialize(player, opcode == RECONNECT_LOGIN_OP)
             sendMSEvents(player.details)

@@ -14,8 +14,8 @@ import core.game.node.entity.player.link.IronmanMode
 import core.game.node.item.Item
 import core.game.system.config.ItemConfigParser
 import core.game.world.GameWorld.settings
-import core.net.packet.OutgoingContext
 import core.net.packet.PacketRepository
+import core.net.packet.context.ContainerContext
 import core.net.packet.out.ContainerPacket
 import org.rs.consts.Vars
 
@@ -412,14 +412,14 @@ class BankContainer(player: Player) : Container(SIZE, ContainerType.ALWAYS_STACK
                 if (event != null) {
                     PacketRepository.send(
                         ContainerPacket::class.java,
-                        OutgoingContext.Container(player, 762, 64000, 95, event.items, false, *event.slots)
+                       ContainerContext(player, 762, 64000, 95, event.items, false, *event.slots)
                     )
                 }
             } else {
                 if (event != null) {
                     PacketRepository.send(
                         ContainerPacket::class.java,
-                        OutgoingContext.Container(player, 763, 64000, 93, event.items, false, *event.slots)
+                        ContainerContext(player, 763, 64000, 93, event.items, false, *event.slots)
                     )
                 }
             }
@@ -431,12 +431,12 @@ class BankContainer(player: Player) : Container(SIZE, ContainerType.ALWAYS_STACK
             if (c is BankContainer) {
                 PacketRepository.send(
                     ContainerPacket::class.java,
-                    OutgoingContext.Container(player, 762, 64000, 95, c.toArray(), c.capacity(), false)
+                    ContainerContext(player, 762, 64000, 95, c.toArray(), c.capacity(), false)
                 )
             } else {
                 val items: Array<Item> = c?.toArray()?.copyOf() ?: emptyArray()
                 PacketRepository.send(
-                    ContainerPacket::class.java, OutgoingContext.Container(player, 763, 64000, 93, items, 28, false)
+                    ContainerPacket::class.java,ContainerContext(player, 763, 64000, 93, items, 28, false)
                 )
             }
             player.bank.setTabConfigurations()

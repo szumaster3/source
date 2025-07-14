@@ -13,8 +13,8 @@ import core.game.interaction.InterfaceListener
 import core.game.node.entity.player.Player
 import core.game.node.item.Item
 import core.game.node.scenery.Scenery
-import core.net.packet.OutgoingContext
 import core.net.packet.PacketRepository
+import core.net.packet.context.ContainerContext
 import core.net.packet.out.ContainerPacket
 import org.rs.consts.Components
 import org.rs.consts.Items
@@ -25,7 +25,13 @@ class WorkbenchPlugin :
     InteractionListener {
     private val flatpackItemIDs = Decoration.values().map { it.interfaceItem }.toIntArray()
     private val buildHotspot = BuildHotspot.values().map { it.objectId }.toIntArray()
-    private val workBenchIDs = intArrayOf(org.rs.consts.Scenery.WORKBENCH_13704, org.rs.consts.Scenery.WORKBENCH_13705, org.rs.consts.Scenery.WORKBENCH_13706, org.rs.consts.Scenery.WORKBENCH_13707, org.rs.consts.Scenery.WORKBENCH_13708)
+    private val workBenchIDs = intArrayOf(
+        org.rs.consts.Scenery.WORKBENCH_13704,
+        org.rs.consts.Scenery.WORKBENCH_13705,
+        org.rs.consts.Scenery.WORKBENCH_13706,
+        org.rs.consts.Scenery.WORKBENCH_13707,
+        org.rs.consts.Scenery.WORKBENCH_13708
+    )
 
     override fun defineListeners() {
         on(workBenchIDs, IntType.SCENERY, "work-at") { player, obj ->
@@ -180,7 +186,7 @@ class WorkbenchPlugin :
 
         PacketRepository.send(
             ContainerPacket::class.java,
-            OutgoingContext.Container(player, Components.POH_BUILD_FURNITURE_396, 132, 8, items, false),
+            ContainerContext(player, Components.POH_BUILD_FURNITURE_396, 132, 8, items, false),
         )
     }
 }

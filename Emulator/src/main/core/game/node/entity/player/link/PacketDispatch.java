@@ -406,7 +406,7 @@ public final class PacketDispatch {
      * @param hide        the hide
      */
     public void sendInterfaceConfig(int interfaceId, int childId, boolean hide) {
-        PacketRepository.send(InterfaceConfig.class, new OutgoingContext.InterfaceConfigContext(player, interfaceId, childId, hide));
+        PacketRepository.send(InterfaceConfig.class, new InterfaceConfigContext(player, interfaceId, childId, hide));
     }
 
     /**
@@ -446,7 +446,7 @@ public final class PacketDispatch {
      * @param location the location
      */
     public void sendPositionedGraphic(int id, int height, int delay, Location location) {
-        PacketRepository.send(PositionedGraphic.class, new OutgoingContext.PositionedGraphic(player, new Graphics(id, height, delay), location, 0, 0));
+        PacketRepository.send(PositionedGraphic.class, new PositionedGraphicContext(player, new Graphics(id, height, delay), location, 0, 0));
     }
 
     /**
@@ -468,7 +468,7 @@ public final class PacketDispatch {
      * @param location the location
      */
     public void sendPositionedGraphics(Graphics graphics, Location location) {
-        PacketRepository.send(PositionedGraphic.class, new OutgoingContext.PositionedGraphic(player, graphics, location, 0, 0));
+        PacketRepository.send(PositionedGraphic.class, new PositionedGraphicContext(player, graphics, location, 0, 0));
     }
 
     /**
@@ -496,7 +496,7 @@ public final class PacketDispatch {
             return;
         }
         animation.setObject(scenery);
-        PacketRepository.send(AnimateObjectPacket.class, new OutgoingContext.AnimateObject(player, animation));
+        PacketRepository.send(AnimateObjectPacket.class, new AnimateObjectContext(player, animation));
     }
 
     /**
@@ -545,7 +545,7 @@ public final class PacketDispatch {
      *
      * @return the context
      */
-    public OutgoingContext.PlayerContext getContext() {
+    public PlayerContext getContext() {
         return context;
     }
 
@@ -558,7 +558,7 @@ public final class PacketDispatch {
      * @param params the params
      */
     public void sendScriptConfigs(int id, int value, String type, java.lang.Object... params) {
-        PacketRepository.send(CSConfigPacket.class, new OutgoingContext.CSConfig(player, id, value, type, params));
+        PacketRepository.send(CSConfigPacket.class, new CSConfigContext(player, id, value, type, params));
     }
 
     /**
@@ -567,7 +567,7 @@ public final class PacketDispatch {
      * @param id the id
      */
     public void resetInterface(int id) {
-        PacketRepository.send(ResetInterface.class, new OutgoingContext.InterfaceContext(player, 0, 0, id, false));
+        PacketRepository.send(ResetInterface.class, new InterfaceContext(player, 0, 0, id, false));
     }
 
     /**
@@ -579,7 +579,7 @@ public final class PacketDispatch {
      * @param y         the y
      */
     public void sendRepositionOnInterface(int id, int component, int x, int y) {
-        PacketRepository.send(RepositionChild.class, new OutgoingContext.ChildPosition(player, id, component, new Point(x, y)));
+        PacketRepository.send(RepositionChild.class, new ChildPositionContext(player, id, component, x, y));
     }
 
 }

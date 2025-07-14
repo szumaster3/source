@@ -4,7 +4,7 @@ import com.moandjiezana.toml.Toml
 import content.data.God
 import content.data.consumables.Consumables
 import content.data.items.SkillingTool
-import content.global.plugin.iface.ge.StockMarket
+import content.global.handlers.iface.ge.StockMarket
 import content.global.skill.slayer.SlayerManager
 import content.global.skill.slayer.Tasks
 import core.ServerConstants
@@ -3861,7 +3861,7 @@ fun repositionChild(
     positionY: Int,
 ) = PacketRepository.send(
     RepositionChild::class.java,
-    ChildPositionContext(player, interfaceId, childId, Point(positionX, positionY)),
+    ChildPositionContext(player, interfaceId, childId, positionX, positionY),
 )
 
 /**

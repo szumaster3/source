@@ -891,7 +891,7 @@ public final class Skills {
     public void setStaticLevel(int skill, int level) {
         experience[skill] = getExperienceByLevel(staticLevels[skill] = dynamicLevels[skill] = level);
         if (entity instanceof Player) {
-            PacketRepository.send(SkillLevel.class, new OutgoingContext.SkillContext((Player) entity, skill));
+            PacketRepository.send(SkillLevel.class, new SkillContext((Player) entity, skill));
         }
     }
 

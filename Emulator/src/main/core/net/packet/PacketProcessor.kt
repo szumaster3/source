@@ -1,5 +1,6 @@
 package core.net.packet
 
+import content.global.handlers.iface.ge.StockMarket
 import core.game.event.ButtonClickEvent
 import core.cache.def.impl.ItemDefinition
 import core.cache.def.impl.NPCDefinition
@@ -35,7 +36,6 @@ import core.game.ge.GrandExchange.Companion.getOfferStats
 import core.game.ge.GrandExchange.Companion.getRecommendedPrice
 import core.game.ge.GrandExchangeOffer
 import core.game.ge.PriceIndex
-import content.global.plugin.iface.ge.StockMarket
 import content.global.skill.magic.SpellListener
 import content.global.skill.magic.SpellListeners
 import content.global.skill.magic.SpellUtils
@@ -44,7 +44,6 @@ import core.api.*
 import core.game.interaction.*
 import core.game.node.entity.player.info.LogType
 import core.game.node.entity.player.info.PlayerMonitor
-import core.tools.SystemLogger
 import core.game.system.command.CommandSystem
 import core.game.system.communication.GlobalChat
 import core.game.world.GameWorld
@@ -120,7 +119,7 @@ object PacketProcessor {
             is Packet.TrackingCameraPos,
             is Packet.TrackingDisplayUpdate -> processTrackingPacket(pkt)
             is Packet.PlayerPrefsUpdate -> {/*TODO implement something that cares about this */}
-            is Packet.Ping -> pkt.player.session.lastPing = System.currentTimeMillis()
+            is Packet.Ping -> pkt.player.session.setLastPing(System.currentTimeMillis())
             is Packet.JoinClan -> {
                 if (pkt.clanName.isEmpty() && pkt.player.communication.currentClan.isNotEmpty()) {
                     val builder = LeaveClanRequest.newBuilder()
