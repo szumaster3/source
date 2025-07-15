@@ -276,7 +276,7 @@ class IfaceDefinition {
                     }
                 }
             }
-            if (def.type == ComponentType.UNKNOWN_3) {
+            if (def.type == ComponentType.FIGURE) {
                 def.filled = data.g1() == 1
             }
             if (def.type == ComponentType.TEXT || def.type == ComponentType.UNKNOWN_1) {
@@ -292,12 +292,12 @@ class IfaceDefinition {
                 def.activeText = data.jagString
             }
             if (def.type == ComponentType.UNKNOWN_1 ||
-                def.type == ComponentType.UNKNOWN_3 ||
+                def.type == ComponentType.FIGURE ||
                 def.type == ComponentType.TEXT
             ) {
                 def.color = data.g4()
             }
-            if (def.type == ComponentType.UNKNOWN_3 || def.type == ComponentType.TEXT) {
+            if (def.type == ComponentType.FIGURE || def.type == ComponentType.TEXT) {
                 def.activeColor = data.g4()
                 def.overColor = data.g4()
                 def.unknownColor = data.g4()
@@ -573,7 +573,7 @@ class IfaceDefinition {
                     def.color = data.g4()
                 }
 
-                ComponentType.UNKNOWN_3 -> {
+                ComponentType.FIGURE -> {
                     def.color = data.g4()
                     def.filled = data.g1() == 1
                     def.alpha = data.g1()

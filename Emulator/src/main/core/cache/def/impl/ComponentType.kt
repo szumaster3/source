@@ -7,7 +7,7 @@ enum class ComponentType {
     SCROLLABLE,
     UNKNOWN_1,
     UNKNOWN_2,
-    UNKNOWN_3,
+    FIGURE,
     TEXT,
     SPRITE,
     MODEL,
