@@ -7,9 +7,7 @@ package core.cache.crypto
  *
  * @author Graham Edgecombe
  */
-class ISAACCipher(
-    seed: IntArray,
-) {
+class ISAACCipher(seed: IntArray) {
     /**
      * The count used to track how many random values have been generated.
      */

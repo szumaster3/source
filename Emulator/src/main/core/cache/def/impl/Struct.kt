@@ -4,7 +4,7 @@ import core.api.log
 import core.cache.Cache
 import core.cache.CacheArchive
 import core.cache.CacheIndex
-import core.cache.misc.buffer.ByteBufferUtils
+import core.cache.buffer.read.BufferReader
 import core.net.g1
 import core.net.g4
 import core.net.gjstr
@@ -71,7 +71,7 @@ class Struct(val id: Int) {
                         val size = buffer.g1()
                         repeat(size) {
                             val isString = buffer.g1() == 1
-                            val key = ByteBufferUtils.getMedium(buffer)
+                            val key = BufferReader.getMedium(buffer)
                             val value: Any = if (isString) buffer.gjstr() else buffer.g4()
                             struct.dataStore[key] = value
                         }

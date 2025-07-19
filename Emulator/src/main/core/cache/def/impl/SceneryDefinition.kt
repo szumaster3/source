@@ -5,8 +5,8 @@ import core.api.log
 import core.cache.Cache.getData
 import core.cache.Cache.getIndexCapacity
 import core.cache.CacheIndex
+import core.cache.buffer.read.BufferReader
 import core.cache.def.Definition
-import core.cache.misc.buffer.ByteBufferUtils.getMedium
 import core.game.interaction.OptionHandler
 import core.game.node.entity.player.Player
 import core.game.node.scenery.Scenery
@@ -804,7 +804,7 @@ class SceneryDefinition : Definition<Scenery?>() {
                         val length = buffer.g1()
                         repeat(length) {
                             val isString = buffer.g1() == 1
-                            getMedium(buffer) // script id
+                            BufferReader.getMedium(buffer) // script id
                             if (isString) {
                                 buffer.gjstr()
                             } else {
