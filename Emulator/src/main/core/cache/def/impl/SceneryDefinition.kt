@@ -23,7 +23,7 @@ import java.nio.ByteBuffer
  */
 class SceneryDefinition : Definition<Scenery?>() {
     @JvmField var originalColors: ShortArray? = null
-    @JvmField var configObjectIds: IntArray? = null
+    @JvmField var childrenIds: IntArray? = null
     @JvmField var modelIds: IntArray? = null
     private var modelConfiguration: IntArray? = null
     @JvmField var anIntArray3833: IntArray? = null
@@ -173,9 +173,9 @@ class SceneryDefinition : Definition<Scenery?>() {
                 }
             }
         }
-        if (configObjectIds != null) {
-            for (i in configObjectIds!!.indices) {
-                val def = forId(configObjectIds!![i])
+        if (childrenIds != null) {
+            for (i in childrenIds!!.indices) {
+                val def = forId(childrenIds!![i])
                 def.varbitID = varbitID
             }
         }
@@ -201,12 +201,12 @@ class SceneryDefinition : Definition<Scenery?>() {
         if (interactive > 0) {
             return true
         }
-        if (configObjectIds == null) {
+        if (childrenIds == null) {
             return hasOptions(false)
         }
-        for (i in configObjectIds!!.indices) {
-            if (configObjectIds!![i] != -1) {
-                val def = forId(configObjectIds!![i])
+        for (i in childrenIds!!.indices) {
+            if (childrenIds!![i] != -1) {
+                val def = forId(childrenIds!![i])
                 if (def.hasOptions(false)) {
                     return true
                 }
@@ -222,7 +222,7 @@ class SceneryDefinition : Definition<Scenery?>() {
      * @return the child object
      */
     fun getChildObject(player: Player?): SceneryDefinition? {
-        if (configObjectIds == null || configObjectIds!!.size < 1) {
+        if (childrenIds == null || childrenIds!!.size < 1) {
             return this
         }
         var configValue = -1
@@ -250,17 +250,17 @@ class SceneryDefinition : Definition<Scenery?>() {
      * @return the child object at index
      */
     fun getChildObjectAtIndex(index: Int): SceneryDefinition {
-        if (configObjectIds == null || configObjectIds!!.size < 1) {
+        if (childrenIds == null || childrenIds!!.size < 1) {
             return this
         }
-        if (index < 0 || index >= configObjectIds!!.size - 1 || configObjectIds!![index] == -1) {
-            val objectId = configObjectIds!![configObjectIds!!.size - 1]
+        if (index < 0 || index >= childrenIds!!.size - 1 || childrenIds!![index] == -1) {
+            val objectId = childrenIds!![childrenIds!!.size - 1]
             if (objectId != -1) {
                 return forId(objectId)
             }
             return this
         }
-        return forId(configObjectIds!![index])
+        return forId(childrenIds!![index])
     }
 
     val configFile: VarbitDefinition?
@@ -747,12 +747,12 @@ class SceneryDefinition : Definition<Scenery?>() {
                         }
 
                         val childrenAmount = buffer.g1()
-                        def.configObjectIds = IntArray(childrenAmount + 2)
+                        def.childrenIds = IntArray(childrenAmount + 2)
                         for (index in 0..childrenAmount) {
-                            def.configObjectIds!![index] = buffer.g2()
-                            if (def.configObjectIds!![index] == 65535) def.configObjectIds!![index] = -1
+                            def.childrenIds!![index] = buffer.g2()
+                            if (def.childrenIds!![index] == 65535) def.childrenIds!![index] = -1
                         }
-                        def.configObjectIds!![childrenAmount + 1] = defaultId
+                        def.childrenIds!![childrenAmount + 1] = defaultId
                     }
 
                     78 -> {
