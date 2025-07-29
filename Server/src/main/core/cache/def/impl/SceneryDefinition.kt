@@ -42,7 +42,7 @@ class SceneryDefinition : Definition<Scenery?>() {
     @JvmField var anInt3851: Int
     @JvmField var isBlocksLand: Boolean
     @JvmField var aBoolean3853: Boolean
-    @JvmField var anInt3855: Int
+    @JvmField var supportItems: Int
     @JvmField var isFirstBool: Boolean
     @JvmField var anInt3857: Int
     @JvmField var recolourPalette: ByteArray? = null
@@ -52,7 +52,7 @@ class SceneryDefinition : Definition<Scenery?>() {
     @JvmField var modifiedColors: ShortArray? = null
     @JvmField var anInt3865: Int = 255
     @JvmField var aBoolean3866: Boolean = false
-    @JvmField var aBoolean3867: Boolean = false
+    @JvmField var delayShading: Boolean = false
     @JvmField var isProjectileClipped: Boolean
     @JvmField val anIntArray3869: IntArray?
     @JvmField var aBoolean3870: Boolean
@@ -75,7 +75,7 @@ class SceneryDefinition : Definition<Scenery?>() {
     @JvmField var offsetMultiplier: Int
     @JvmField var interactive: Int
     @JvmField var aBoolean3894: Boolean
-    @JvmField var aBoolean3895: Boolean
+    @JvmField var forceAnimation: Boolean
     @JvmField var anInt3896: Int = 0
     @JvmField var configId: Int
     private val aByteArray3899: ByteArray? = null
@@ -119,14 +119,14 @@ class SceneryDefinition : Definition<Scenery?>() {
         thirdBoolean = false
         isProjectileClipped = true
         offsetX = 0
-        aBoolean3895 = true
+        forceAnimation = true
         contrast = 0
         aBoolean3870 = false
         offsetZ = 0
         aBoolean3853 = true
         isBlocksLand = false
         solid = 2
-        anInt3855 = -1
+        supportItems = -1
         brightness = 0
         anInt3904 = 0
         sizeX = 1
@@ -179,8 +179,8 @@ class SceneryDefinition : Definition<Scenery?>() {
                 def.varbitID = varbitID
             }
         }
-        if (anInt3855 == -1) {
-            anInt3855 = if (solid == 0) 0 else 1
+        if (supportItems == -1) {
+            supportItems = if (solid == 0) 0 else 1
         }
         // Manual changes
         if (id == 31017) {
@@ -375,7 +375,7 @@ class SceneryDefinition : Definition<Scenery?>() {
      *
      * @return the boolean
      */
-    fun isaBoolean3867(): Boolean = aBoolean3867
+    fun isaBoolean3867(): Boolean = delayShading
 
     /**
      * Isa boolean 3870 boolean.
@@ -410,7 +410,7 @@ class SceneryDefinition : Definition<Scenery?>() {
      *
      * @return the boolean
      */
-    fun isaBoolean3895(): Boolean = aBoolean3895
+    fun isaBoolean3895(): Boolean = forceAnimation
 
     /**
      * Geta byte array 3899 byte.
@@ -517,50 +517,10 @@ class SceneryDefinition : Definition<Scenery?>() {
          */
         val definitions: MutableMap<Int, SceneryDefinition> = HashMap()
         private val OPTION_HANDLERS: MutableMap<String, OptionHandler?> = HashMap()
-        /**
-         * Gets an int 3832.
-         *
-         * @return the an int 3832
-         */
-        /**
-         * The An int 3832.
-         */
         var anInt3832: Int = 0
-        /**
-         * Gets an int 3836.
-         *
-         * @return the an int 3836
-         */
-        /**
-         * The An int 3836.
-         */
         var anInt3836: Int = 0
-        /**
-         * Gets an int 3842.
-         *
-         * @return the an int 3842
-         */
-        /**
-         * The An int 3842.
-         */
         var anInt3842: Int = 0
-        /**
-         * Gets an int 3843.
-         *
-         * @return the an int 3843
-         */
-        /**
-         * The An int 3843.
-         */
         var anInt3843: Int = 0
-        /**
-         * Gets an int 3846.
-         *
-         * @return the an int 3846
-         */
-        /**
-         * The An int 3846.
-         */
         var anInt3846: Int = 0
 
         /**
@@ -661,7 +621,7 @@ class SceneryDefinition : Definition<Scenery?>() {
                     19 -> def.interactive = buffer.g1()
 
                     21 -> def.contouredGround = 1.toByte()
-                    22 -> def.aBoolean3867 = true
+                    22 -> def.delayShading = true
                     23 -> def.thirdBoolean = true
 
                     24 -> {
@@ -731,7 +691,7 @@ class SceneryDefinition : Definition<Scenery?>() {
                     73 -> def.isBlocksLand = true
                     74 -> def.isFirstBool = true
 
-                    75 -> def.anInt3855 = buffer.g1()
+                    75 -> def.supportItems = buffer.g1()
 
                     77, 92 -> {
                         def.varbitID = buffer.g2()
@@ -778,7 +738,7 @@ class SceneryDefinition : Definition<Scenery?>() {
 
                     82, 88 -> {}
 
-                    89 -> def.aBoolean3895 = false
+                    89 -> def.forceAnimation = false
                     90 -> def.aBoolean3870 = true
                     91 -> def.membersOnly = true
 
