@@ -27,7 +27,7 @@ class CS2Mapping private constructor(val scriptId: Int) {
         private val maps = HashMap<Int, CS2Mapping>()
 
         /**
-         * Generates a report of all script mappings.
+         * Dump all mappings to file.
          */
         @JvmStatic
         fun main(args: Array<String>) {
@@ -47,10 +47,7 @@ class CS2Mapping private constructor(val scriptId: Int) {
         }
 
         /**
-         * Gets the [CS2Mapping] for the given script id.
-         *
-         * @param scriptId The script id.
-         * @return The mapping.
+         * Load mapping by script id.
          */
         fun forId(scriptId: Int): CS2Mapping? {
             maps[scriptId]?.let { return it }
@@ -63,7 +60,7 @@ class CS2Mapping private constructor(val scriptId: Int) {
     }
 
     /**
-     * Loads mapping data from the byte buffer.
+     * Read mapping data from buffer.
      */
     private fun load(buffer: ByteBuffer) {
         while (true) {

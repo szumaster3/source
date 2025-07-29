@@ -1,6 +1,5 @@
 package core.cache.buffer.read
 
-import core.cache.buffer.write.BufferWriter
 import java.nio.ByteBuffer
 
 interface BufferReader<T> {

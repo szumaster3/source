@@ -11,66 +11,49 @@ import java.nio.ByteBuffer
  * Represents an animation definition.
  */
 class AnimationDefinition {
-    var maxLoops = 99
-    var movementPriority = 0
     var frames: IntArray? = null
-    var priorityOverride = -1
+    var duration: IntArray? = null
     var hasSoundEffect = false
     var priority = 5
     var rightHandItem = -1
-    var leftHandItem = -1
-    var handledSounds: Array<IntArray?>? = null
-    var interleaveOrder: BooleanArray? = null
-    var expressionFrames: IntArray? = null
-    var isForcedPriority = false
-    var duration: IntArray? = null
-    var replayMode = 2
-    var disableResetOnLoop = false
-    var stopsOnMovement = false
-    var priorityBackup = -1
-    var loopOffset = -1
-    var newHeader = false
-    var soundMinDelay: IntArray? = null
-    var soundMaxDelay: IntArray? = null
-    var frameSoundEffects: IntArray? = null
-    var effect2Sound = false
+
+    private var maxLoops = 99
+    private var priorityOverride = -1
+    private var leftHandItem = -1
+    private var handledSounds: Array<IntArray?>? = null
+    private var interleaveOrder: BooleanArray? = null
+    private var expressionFrames: IntArray? = null
+    private var isForcedPriority = false
+    private var replayMode = 2
+    private var priorityBackup = -1
+    private var loopOffset = -1
 
     companion object {
         private val animationDefinition = mutableMapOf<Int, AnimationDefinition>()
 
         /**
-         * Gets an [AnimationDefinition] by its emote id.
-         *
-         * @param emoteId The id of the animation.
-         * @return The [AnimationDefinition] if found, or `null` otherwise.
+         * Get animation by id.
+         * @param emoteId Animation id
+         * @return AnimationDefinition or null if missing
          */
         @JvmStatic
-        fun forId(emoteId: Int): AnimationDefinition? =
-            try {
-                animationDefinition[emoteId] ?: run {
-                    val data = Cache.getData(CacheIndex.SEQUENCE_CONFIGURATION, emoteId ushr 7, emoteId and 0x7f)
-                    val definition = AnimationDefinition()
-                    data?.let { definition.readValueLoop(ByteBuffer.wrap(it)) }
-                    definition.changeValues()
-                    animationDefinition[emoteId] = definition
-                    definition
-                }
-            } catch (_: Throwable) {
-                null
+        fun forId(emoteId: Int): AnimationDefinition? = try {
+            animationDefinition[emoteId] ?: run {
+                val data = Cache.getData(CacheIndex.SEQUENCE_CONFIGURATION, emoteId ushr 7, emoteId and 0x7f)
+                val def = AnimationDefinition()
+                data?.let { def.readValueLoop(ByteBuffer.wrap(it)) }
+                def.changeValues()
+                animationDefinition[emoteId] = def
+                def
             }
+        } catch (_: Throwable) { null }
 
-        /**
-         * Gets all loaded animation definitions.
-         *
-         * @return A map containing animation definitions by their id.
-         */
+        /** All loaded animations */
         fun getDefinition(): Map<Int, AnimationDefinition> = animationDefinition
     }
 
     /**
-     * Reads animation values from a buffer.
-     *
-     * @param buffer The [ByteBuffer] containing animation data.
+     * Read animation data from buffer.
      */
     private fun readValueLoop(buffer: ByteBuffer) {
         while (true) {
@@ -79,48 +62,38 @@ class AnimationDefinition {
             readValues(buffer, opcode)
         }
     }
+
     /**
-     * Gets the total duration of the animation in milliseconds.
-     *
-     * @return The animation duration in milliseconds.
+     * Total animation duration in ms.
      */
     fun getDuration(): Int = duration?.filter { it <= 100 }?.sumOf { it * 20 } ?: 0
+
     /**
-     * Gets the total cycle count for the animation.
-     *
-     * @return The number of cycles.
+     * Total animation cycles.
      */
     fun getCycles(): Int = duration?.sum() ?: 0
+
     /**
-     * Gets the duration of the animation in game ticks.
-     *
-     * @return The duration in game ticks.
+     * Duration in game ticks.
      */
     fun getDurationTicks(): Int = maxOf(getDuration() / 600, 1)
 
     /**
-     * Reads values from a buffer based on opcodes.
-     *
-     * @param buffer The [ByteBuffer] containing the data.
-     * @param opcode The opcode indicating what data to read.
+     * Read values from buffer by opcode.
      */
     private fun readValues(buffer: ByteBuffer, opcode: Int) {
         when (opcode) {
             1 -> {
-                val length = buffer.g2()
-                duration = IntArray(length) { buffer.g2() }
-                frames = IntArray(length) { buffer.g2() }
-                frames?.forEachIndexed { i, v ->
-                    frames!![i] = (buffer.g2() shl 16) + v
-                }
+                val len = buffer.g2()
+                duration = IntArray(len) { buffer.g2() }
+                frames = IntArray(len) { buffer.g2() }
+                frames?.forEachIndexed { i, v -> frames!![i] = (buffer.g2() shl 16) + v }
             }
             2 -> loopOffset = buffer.g2()
             3 -> {
                 interleaveOrder = BooleanArray(256)
-                val length = buffer.g1()
-                repeat(length) {
-                    interleaveOrder!![buffer.g1()] = true
-                }
+                val len = buffer.g1()
+                repeat(len) { interleaveOrder!![buffer.g1()] = true }
             }
             4 -> isForcedPriority = true
             5 -> priority = buffer.g1()
@@ -131,23 +104,20 @@ class AnimationDefinition {
             10 -> priorityBackup = buffer.g1()
             11 -> replayMode = buffer.g1()
             12 -> {
-                val i = buffer.g1()
-                expressionFrames = IntArray(i) { buffer.g2() }
-                expressionFrames?.forEachIndexed { index, v ->
-                    expressionFrames!![index] = (buffer.g2() shl 16) + v
-                }
+                val len = buffer.g1()
+                expressionFrames = IntArray(len) { buffer.g2() }
+                expressionFrames?.forEachIndexed { i, v -> expressionFrames!![i] = (buffer.g2() shl 16) + v }
             }
             13 -> {
-                val i = buffer.g2()
-                handledSounds = Array(i) { null }
-                repeat(i) { index ->
+                val len = buffer.g2()
+                handledSounds = Array(len) { null }
+                repeat(len) { idx ->
                     val size = buffer.g1()
                     if (size > 0) {
-                        handledSounds!![index] =
-                            IntArray(size).apply {
-                                this[0] = buffer.g3()
-                                for (j in 1 until size) this[j] = buffer.g2()
-                            }
+                        handledSounds!![idx] = IntArray(size).apply {
+                            this[0] = buffer.g3()
+                            for (j in 1 until size) this[j] = buffer.g2()
+                        }
                     }
                 }
             }
@@ -156,14 +126,10 @@ class AnimationDefinition {
     }
 
     /**
-     * Adjusts default values.
+     * Fix up default values after reading.
      */
     fun changeValues() {
-        if (priorityOverride == -1) {
-            priorityOverride = if (interleaveOrder == null) 0 else 2
-        }
-        if (priorityBackup == -1) {
-            priorityBackup = if (interleaveOrder == null) 0 else 2
-        }
+        if (priorityOverride == -1) priorityOverride = if (interleaveOrder == null) 0 else 2
+        if (priorityBackup == -1) priorityBackup = if (interleaveOrder == null) 0 else 2
     }
 }

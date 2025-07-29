@@ -10,7 +10,7 @@ import core.net.g2s
 import java.nio.ByteBuffer
 
 /**
- * Represents a cloth definition with model and color data.
+ * Cloth definition with models and color swaps.
  */
 class ClothDefinition {
     var bodyPartId: Int = 0
@@ -24,10 +24,7 @@ class ClothDefinition {
 
     companion object {
         /**
-         * Loads the cloth definition for the id from cache.
-         *
-         * @param clothId The cloth id.
-         * @return The loaded [ClothDefinition].
+         * Load cloth definition by id from cache.
          */
         fun forId(clothId: Int): ClothDefinition {
             val def = ClothDefinition()
@@ -37,9 +34,7 @@ class ClothDefinition {
         }
 
         /**
-         * Initializes the cache and loads all cloth definitions.
-         *
-         * @param args Command-line arguments (unused).
+         * Load all cloths from cache.
          */
         @JvmStatic
         fun main(args: Array<String>) {
@@ -49,16 +44,12 @@ class ClothDefinition {
                 e.printStackTrace()
             }
             val length = Cache.getArchiveCapacity(CacheIndex.CONFIGURATION, CacheArchive.IDK_TYPE)
-            for (i in 0 until length) {
-                forId(i)
-            }
+            for (i in 0 until length) forId(i)
         }
     }
 
     /**
-     * Loads cloth data from the buffer.
-     *
-     * @param buffer The data buffer.
+     * Read cloth data from buffer.
      */
     fun load(buffer: ByteBuffer) {
         while (true) {
@@ -70,28 +61,25 @@ class ClothDefinition {
     }
 
     /**
-     * Parses an opcode and reads data.
-     *
-     * @param opcode The data opcode.
-     * @param buffer The data buffer.
+     * Decode opcode data.
      */
     private fun decode(opcode: Int, buffer: ByteBuffer) {
         when (opcode) {
             1 -> bodyPartId = buffer.g1()
             2 -> {
-                val length = buffer.g1()
-                bodyModelIds = IntArray(length) { buffer.g2() }
+                val len = buffer.g1()
+                bodyModelIds = IntArray(len) { buffer.g2() }
             }
             3 -> notSelectable = true
             40 -> {
-                val length = buffer.g1()
-                originalColors = IntArray(length) { buffer.g2s() }
-                modifiedColors = IntArray(length) { buffer.g2s() }
+                val len = buffer.g1()
+                originalColors = IntArray(len) { buffer.g2s() }
+                modifiedColors = IntArray(len) { buffer.g2s() }
             }
             41 -> {
-                val length = buffer.g1()
-                originalTextureColors = IntArray(length) { buffer.g2s() }
-                modifiedTextureColors = IntArray(length) { buffer.g2s() }
+                val len = buffer.g1()
+                originalTextureColors = IntArray(len) { buffer.g2s() }
+                modifiedTextureColors = IntArray(len) { buffer.g2s() }
             }
             in 60..69 -> headModelIds[opcode - 60] = buffer.g2()
         }

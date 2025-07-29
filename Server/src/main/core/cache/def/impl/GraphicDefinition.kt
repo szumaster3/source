@@ -22,7 +22,6 @@ class GraphicDefinition {
     var modifiedModelColor: ShortArray? = null
     var originalTextureColor: ShortArray? = null
     var modifiedTextureColor: ShortArray? = null
-    var hasAlpha: Boolean = false
     var castsShadow: Boolean = false
     var modelShadow: Int = 0
     var graphicsId: Int = 0
@@ -33,10 +32,7 @@ class GraphicDefinition {
         private val graphicDefinitions = mutableMapOf<Int, GraphicDefinition>()
 
         /**
-         * Gets the [GraphicDefinition] for the given id.
-         *
-         * @param gfxId The graphic id.
-         * @return The corresponding [GraphicDefinition].
+         * Get graphic definition by id.
          */
         fun forId(gfxId: Int): GraphicDefinition = graphicDefinitions[gfxId] ?: run {
             val data = Cache.getData(CacheIndex.GRAPHICS, gfxId ushr 8, gfxId and 0xFF)
@@ -49,9 +45,7 @@ class GraphicDefinition {
     }
 
     /**
-     * Reads and processes graphic data from the given [JagexBuffer].
-     *
-     * @param buffer The buffer containing graphic data.
+     * Read graphic data from buffer.
      */
     private fun readValueLoop(buffer: ByteBuffer) {
         while (true) {
@@ -62,10 +56,7 @@ class GraphicDefinition {
     }
 
     /**
-     * Processes a single opcode and updates the definition accordingly.
-     *
-     * @param buffer The data buffer.
-     * @param opcode The opcode to process.
+     * Decode opcode and update definition.
      */
     private fun decode(buffer: ByteBuffer, opcode: Int) {
         when (opcode) {
@@ -92,7 +83,6 @@ class GraphicDefinition {
                 renderPriority = 3
                 shadowOpacity = buffer.g4()
             }
-
             40 -> {
                 val size = buffer.g1()
                 originalModelColor = ShortArray(size)
