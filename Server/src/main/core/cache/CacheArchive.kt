@@ -16,5 +16,5 @@ enum class CacheArchive(val id: Int) {
     VARC_TYPE(19),
     STRUCT_TYPE(26),
     BAS_TYPE(32),
-    CURSORS(33)
+    CURSORS(34)
 }
