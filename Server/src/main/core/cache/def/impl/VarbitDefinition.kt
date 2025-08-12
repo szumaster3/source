@@ -69,6 +69,7 @@ class VarbitDefinition {
         /**
          * Gets the varbit definition for a scenery id.
          */
+        @JvmStatic
         fun forSceneryId(id: Int): VarbitDefinition = forId(id)
 
         /**
