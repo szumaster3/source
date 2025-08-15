@@ -1,7 +1,7 @@
 package core.cache.def.impl
 
 import core.api.log
-import core.cache.ByteBufferExtensions
+import core.cache.util.ByteBufferExtensions
 import core.cache.Cache
 import core.cache.CacheIndex
 import core.tools.CP1252

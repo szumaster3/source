@@ -1,4 +1,4 @@
-package core.cache.crypto
+package core.cache.secure
 
 /**
  * Represents a ISAAC key pair, for both input and output.

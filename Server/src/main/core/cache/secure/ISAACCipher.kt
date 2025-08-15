@@ -1,4 +1,4 @@
-package core.cache.crypto
+package core.cache.secure
 
 /**
  * ISAAC cipher implementation based on Bob Jenkins' original algorithm.

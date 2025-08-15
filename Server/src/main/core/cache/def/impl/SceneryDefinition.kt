@@ -2,10 +2,10 @@ package core.cache.def.impl
 
 import core.api.getVarp
 import core.api.log
+import core.cache.util.ByteBufferExtensions
 import core.cache.Cache.getData
 import core.cache.Cache.getIndexCapacity
 import core.cache.CacheIndex
-import core.cache.buffer.read.BufferReader
 import core.cache.def.Definition
 import core.game.interaction.OptionHandler
 import core.game.node.entity.player.Player
@@ -511,11 +511,12 @@ class SceneryDefinition : Definition<Scenery?>() {
                         def.contouredGround = 2.toByte()
                         def.configId = buffer.g1() * 256
                     }
+                    82, 88 -> {}
                     /*
                     82 -> def.hideMinimap = true
                     88 -> def.isSolidFlag = false
-                    89 -> def.animateImmediately = false
                     */
+                    89 -> def.forceAnimation = false
                     90 -> def.isInteractable = true
                     91 -> def.membersOnly = true
 
@@ -539,6 +540,7 @@ class SceneryDefinition : Definition<Scenery?>() {
                         def.unknownField1 = buffer.g2()
                     }
                     */
+                    96, 97 -> {}
                     100 -> {
                         buffer.get()
                         buffer.getShort()
@@ -586,7 +588,7 @@ class SceneryDefinition : Definition<Scenery?>() {
                         val length = buffer.g1()
                         repeat(length) {
                             val isString = buffer.g1() == 1
-                            BufferReader.getMedium(buffer) // script id
+                            ByteBufferExtensions.getMedium(buffer) // script id
                             if (isString) {
                                 buffer.gjstr()
                             } else {

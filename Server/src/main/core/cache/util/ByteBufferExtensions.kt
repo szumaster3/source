@@ -1,4 +1,4 @@
-package core.cache
+package core.cache.util
 
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
@@ -21,12 +21,6 @@ object ByteBufferExtensions {
         buffer.put(s.toByteArray(StandardCharsets.UTF_8)).put(0.toByte())
     }
 
-    fun ByteBuffer.putGJ2String(s: String): ByteBuffer {
-        val packed = ByteArray(256)
-        val length = packGJString2(0, packed, s)
-        return put(0.toByte()).put(packed, 0, length).put(0.toByte())
-    }
-
     @JvmStatic
     fun packGJString2(position: Int, buffer: ByteArray, string: String): Int {
         var offset = position
@@ -46,5 +40,32 @@ object ByteBufferExtensions {
             }
         }
         return offset - position
+    }
+
+    @JvmStatic
+    fun getMedium(buffer: ByteBuffer): Int =
+        ((buffer.get().toInt() and 0xFF) shl 16) + ((buffer.get().toInt() and 0xFF) shl 8) + (buffer.get()
+            .toInt() and 0xFF)
+
+    @JvmStatic
+    fun getSmart(buffer: ByteBuffer): Int {
+        val peek = buffer.get().toInt() and 0xFF
+        return if (peek <= Byte.MAX_VALUE.toInt()) {
+            peek
+        } else {
+            ((peek shl 8) or (buffer.get().toInt() and 0xFF)) - 32768
+        }
+    }
+
+    @JvmStatic
+    fun getBigSmart(buffer: ByteBuffer): Int {
+        var value = 0
+        var current = getSmart(buffer)
+        while (current == 32767) {
+            current = getSmart(buffer)
+            value += 32767
+        }
+        value += current
+        return value
     }
 }

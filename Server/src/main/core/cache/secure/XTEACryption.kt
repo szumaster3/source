@@ -1,7 +1,6 @@
-package core.cache.crypto
+package core.cache.secure
 
 import java.nio.ByteBuffer
-
 
 /**
  * XTEA encryption & decryption utilities.
