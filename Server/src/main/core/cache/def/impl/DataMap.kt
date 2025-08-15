@@ -4,8 +4,8 @@ import core.api.log
 import core.cache.util.ByteBufferExtensions
 import core.cache.Cache
 import core.cache.CacheIndex
-import core.tools.CP1252
 import core.tools.Log
+import core.tools.StringUtils
 import java.nio.ByteBuffer
 
 class DataMap private constructor(val id: Int) {
@@ -71,8 +71,8 @@ class DataMap private constructor(val id: Int) {
                     if (opcode == 0) break
 
                     when (opcode) {
-                        1 -> def.keyType = CP1252.getFromByte(buffer.get())
-                        2 -> def.valueType = CP1252.getFromByte(buffer.get())
+                        1 -> def.keyType = StringUtils.getFromByte(buffer.get())
+                        2 -> def.valueType = StringUtils.getFromByte(buffer.get())
                         3 -> def.defaultString = ByteBufferExtensions.getString(buffer)
                         4 -> def.defaultInt = buffer.int
                         5, 6 -> {
