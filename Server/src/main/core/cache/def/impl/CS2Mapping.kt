@@ -16,11 +16,35 @@ import java.nio.file.Paths
  * Represents a mapping for a CS2 script.
  */
 class CS2Mapping private constructor(val scriptId: Int) {
-    var unknown: Int = 0
-    var unknown1: Int = 0
+
+    /**
+     * Type of values stored in the map (e.g., int or string).
+     */
+    var valueType: Int = 0
+
+    /**
+     * Type of keys or additional flags for the mapping.
+     */
+    var keyType: Int = 0
+
+    /**
+     * Default string value if a key is missing.
+     */
     var defaultString: String? = null
+
+    /**
+     * Default integer value if a key is missing.
+     */
     var defaultInt: Int = 0
+
+    /**
+     * Map of keys to their corresponding values.
+     */
     var map: HashMap<Int, Any>? = null
+
+    /**
+     * Parallel array of values for fast indexed access.
+     */
     var array: Array<Any?>? = null
 
     companion object {
@@ -66,8 +90,8 @@ class CS2Mapping private constructor(val scriptId: Int) {
         while (true) {
             when (val opcode = buffer.g1()) {
                 0 -> return
-                1 -> unknown = buffer.g1()
-                2 -> unknown1 = buffer.g1()
+                1 -> valueType = buffer.g1()
+                2 -> keyType = buffer.g1()
                 3 -> defaultString = buffer.gjstr()
                 4 -> defaultInt = buffer.g4()
                 5, 6 -> {
