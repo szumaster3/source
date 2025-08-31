@@ -6,15 +6,15 @@ import core.cache.util.ByteBufferExtensions;
 import core.game.interaction.OptionHandler;
 import core.game.node.entity.player.Player;
 import core.game.node.scenery.Scenery;
-import core.tools.Log;
 import core.game.world.GameWorld;
+import core.tools.Log;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-import static core.api.ContentAPIKt.log;
 import static core.api.ContentAPIKt.getVarp;
+import static core.api.ContentAPIKt.log;
 import static core.cache.Cache.getData;
 import static core.cache.Cache.getIndexCapacity;
 
