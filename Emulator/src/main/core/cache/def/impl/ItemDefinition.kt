@@ -206,36 +206,23 @@ class ItemDefinition : Definition<Item?>() {
             val name = getName().lowercase(Locale.getDefault())
             val id = getId()
 
-            // If the item is explicitly listed as permitted, allow it.
             if (id in permittedItems) return true
-            // If the item is explicitly listed as forbidden, disallow it.
             if (id in forbiddenItems) return false
 
-            // If the item is in the allowed list by exact name, allow it.
-            val allowedName = listOf("trousers", "tribal top", "woven top", "chompy bird hat", "cape")
-            if (name in allowedName) return true
+            val allow = setOf("trousers", "tribal top", "woven top", "chompy bird hat", "cape")
+            if (name in allow) return true
 
-            // Substrings in item names that mark the item as disallowed.
-            val disallowedNameParts = listOf("(class", "camo ", "larupia", "kyatt", " stole", "moonclan", "villager ", "tribal", "spirit ", "gauntlets")
+            val excl = arrayOf("(class", "camo ", "larupia", "kyatt", " stole", "moonclan",
+                "villager ", "tribal", "spirit ", "gauntlets")
+            if (excl.any(name::contains)) return false
 
-            // If the item name contains a disallowed substring, disallow it.
-            if (disallowedNameParts.any { it in name }) return false
-
-            // Ammo slot items are allowed by default.
             if (equipSlot(id) == EquipmentSlot.AMMO) return true
-
-            // Substrings in item names that are allowed.
-            val allowedContains = listOf("satchel", "naval", " partyhat")
-
-            // If the name exactly matches an allowed one, or contains any allowed substring, allow it.
-            if (allowedContains.any { it in name }) return true
-
-            // Items starting with "afro", "ring", or "amulet" are allowed.
+            val allowSub = arrayOf("satchel", "naval", " partyhat")
+            if (allowSub.any(name::contains)) return true
             if (name.startsWith("afro") || name.startsWith("ring") || name.startsWith("amulet")) return true
 
-            // Check item bonuses; if none exist or all bonuses are 0, allow it.
             val bonuses = getConfiguration<IntArray>(ItemConfigParser.BONUS)
-            return bonuses == null || bonuses.all { it == 0 }
+            return bonuses?.all { it == 0 } ?: true
         }
 
     /**
